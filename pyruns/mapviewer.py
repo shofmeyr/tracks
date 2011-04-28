@@ -1,0 +1,114 @@
+#!/usr/bin/python
+
+import sys
+import gtk
+import os.path
+import gtk.gdk
+import gobject
+
+
+gobject.threads_init()
+gtk.gdk.threads_init()
+
+#Try static lib first
+mydir = os.path.dirname(os.path.abspath(__file__))
+libdir = os.path.abspath(os.path.join(mydir, "..", "python", ".libs"))
+sys.path.insert(0, libdir)
+
+import osmgpsmap
+
+class MapViewer(gtk.Window):
+    def __init__(self):
+        gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
+        self.set_default_size(800, 800)
+        self.connect('destroy', lambda x: gtk.main_quit())
+#        self.set_title(title)
+        self.vbox = gtk.VBox(False, 0)
+        self.add(self.vbox)
+#        self.osm = osmgpsmap.GpsMap(repo_uri = "http://acetate.geoiq.com/tiles/acetate-hillshading/#Z/#X/#Y.png")
+#        self.osm = osmgpsmap.GpsMap(repo_uri = "http://hikebikemap.de/?zoom=#z&lat=#X&lon=#Y&layers=B0000TFFF")
+        self.osm = osmgpsmap.GpsMap(repo_uri = "http://tile.openstreetmap.org/#Z/#X/#Y.png")
+        self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad = True, show_zoom = True))
+        self.osm.layer_add(TerrainLayer())
+        self.osm.connect('button_release_event', self.mapClicked)
+        self.osm.connect("motion_notify_event", self.updateDistance)
+        #connect keyboard shortcuts
+        self.osm.set_keyboard_shortcut(osmgpsmap.KEY_FULLSCREEN, gtk.gdk.keyval_from_name("F11"))
+        self.osm.set_keyboard_shortcut(osmgpsmap.KEY_UP, gtk.gdk.keyval_from_name("Up"))
+        self.osm.set_keyboard_shortcut(osmgpsmap.KEY_DOWN, gtk.gdk.keyval_from_name("Down"))
+        self.osm.set_keyboard_shortcut(osmgpsmap.KEY_LEFT, gtk.gdk.keyval_from_name("Left"))
+        self.osm.set_keyboard_shortcut(osmgpsmap.KEY_RIGHT, gtk.gdk.keyval_from_name("Right"))
+        self.vbox.pack_start(self.osm)
+        self.statusBar = gtk.Statusbar()
+        self.vbox.pack_start(self.statusBar, False, False, 0)
+
+        gobject.timeout_add(500, self.updateDistance)
+
+    def addTrack(self, lats, lngs, color = "red"):
+        if len(lats) == 0:
+            print "Track is empty"
+            return
+        # create the track
+        track = osmgpsmap.GpsMapTrack()
+        track.set_property("line-width", 2)
+        track.set_property("color", gtk.gdk.color_parse(color))
+        for i in range(0, len(lats)):
+            track.add_point(osmgpsmap.point_new_degrees(lats[i], lngs[i]))
+        self.osm.track_add(track)
+        # center the track
+        self.minLat = min(lats)
+        self.minLng = min(lngs)
+        latRange = abs(self.minLat - max(lats))
+        lngRange = abs(self.minLng - max(lngs))
+        centerLat = self.minLat + latRange / 2.0
+        centerLng = self.minLng + lngRange / 2.0
+        maxRange = max(latRange, lngRange)
+        if maxRange > 0.04: zoom = 14
+        else: zoom = 15
+        self.osm.set_center_and_zoom(latitude = centerLat, longitude = centerLng, zoom = zoom)
+        # TODO: add numbers every 1/2 mile on the track. We'll need an image for each number to do this
+#        pb = gtk.gdk.pixbuf_new_from_file_at_size (num + ".png", 24, 24)
+#        self.osm.image_add(lat, lon, pb)
+
+    def mapClicked(self, osm, event):
+        lat,lon = self.osm.get_event_location(event).get_degrees()
+        if event.button == 1:
+            self.statusBar.push(1, str(lat) + "," + str(lon))
+            pass
+        elif event.button == 2:
+            self.osm.gps_add(lat, lon, heading=osmgpsmap.INVALID);
+        elif event.button == 3:
+            pb = gtk.gdk.pixbuf_new_from_file_at_size ("num.png", 24, 24)
+            self.osm.image_add(lat, lon, pb)
+
+    def updateDistance(self, osm, event):
+        p = osmgpsmap.point_new_degrees(self.minLat, self.minLng)
+        self.osm.convert_screen_to_geographic(event.x, event.y, p)
+        self.statusBar.push(1, str(self.minLat + p.rlat) + "," + str(self.minLng + p.rlon))
+
+
+class TerrainLayer(gobject.GObject, osmgpsmap.GpsMapLayer):
+    def __init__(self):
+        gobject.GObject.__init__(self)
+        self.osm = osmgpsmap.GpsMap(repo_uri = "http://toolserver.org/~cmarqu/hill/#Z/#X/#Y.png")
+        self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad = False, show_zoom = False))
+
+    def do_draw(self, gpsmap, gdkdrawable):
+        pass
+
+    def do_render(self, gpsmap):
+        pass
+
+    def do_busy(self):
+        return False
+
+    def do_button_press(self, gpsmap, gdkeventbutton):
+        return False
+gobject.type_register(TerrainLayer)
+
+
+if __name__ == "__main__":
+    u = MapViewer()
+    u.show_all()
+    gtk.main()
+
