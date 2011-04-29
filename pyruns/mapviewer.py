@@ -83,7 +83,7 @@ class MapViewer(gtk.Window):
 
     def updateDistance(self, osm, event):
         p = osmgpsmap.point_new_degrees(self.minLat, self.minLng)
-        self.osm.convert_screen_to_geographic(event.x, event.y, p)
+        self.osm.convert_screen_to_geographic(int(event.x), int(event.y), p)
         self.statusBar.push(1, str(self.minLat + p.rlat) + "," + str(self.minLng + p.rlon))
 
 

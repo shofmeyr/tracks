@@ -10,25 +10,35 @@ class Coords:
 
     def __init__(self, points):
         self.points = points
+
+    def getElevChanges(self):
         # smooth the elevations
         gpsSmoothed = []
         mapSmoothed = []
-        for i in range(0, len(points) - Coords.elevWindow): 
+        for i in range(0, len(self.points) - Coords.elevWindow): 
             gpsSmoothed.append(numpy.average([p.gpsElev for p in self.points[i:i + Coords.elevWindow]]))
             mapSmoothed.append(numpy.average([p.mapElev for p in self.points[i:i + Coords.elevWindow]]))
         # compute elevation change
-        self.gpsChange = 0
-        self.mapChange = 0
+        gpsChange = 0
+        mapChange = 0
         for i in range(0, len(gpsSmoothed) - 1):
-            self.gpsChange += self.computeChange(gpsSmoothed[i + 1], gpsSmoothed[i])
-            self.mapChange += self.computeChange(mapSmoothed[i + 1], mapSmoothed[i])
-        self.gpsChange *= Coords.FEET_PER_METER
-        self.mapChange *= Coords.FEET_PER_METER
-        self.maxElev = 0
-        self.minElev = 3000000
-        for point in self.points: 
-            if self.maxElev < point.mapElev: self.maxElev = point.mapElev
-            if self.minElev > point.mapElev: self.minElev = point.mapElev
+            gpsChange += self.computeChange(gpsSmoothed[i + 1], gpsSmoothed[i])
+            mapChange += self.computeChange(mapSmoothed[i + 1], mapSmoothed[i])
+        gpsChange *= Coords.FEET_PER_METER
+        mapChange *= Coords.FEET_PER_METER
+        return (gpsChange, mapChange)
+
+    def getMinMaxElevs(self, useGps = False):
+        minElev = 30000.0
+        maxElev = 0.0
+        for point in self.points:
+            if useGps:
+                minElev = min(point.gpsElev, minElev)
+                maxElev = max(point.gpsElev, maxElev)
+            else:
+                minElev = min(point.mapElev, minElev)
+                maxElev = max(point.mapElev, maxElev)
+        return (minElev * Coords.FEET_PER_METER, maxElev * Coords.FEET_PER_METER)
 
     def computeChange(self, first, second):
         change = first - second
@@ -41,7 +51,7 @@ class Coords:
             print "ERROR in getting elev, num lats (", len(lats),\
                 ") != num longs (",len(lngs), ")"
         for i in range(0, min(len(lats), len(lngs))):
-            points.append(Coord(lats[i], lngs[i], dists[i] / METERS_PER_MILE, altitudes[i], 0))
+            points.append(Coord(lats[i], lngs[i], dists[i] / Coords.METERS_PER_MILE, altitudes[i], 0))
         points = Coords.fromGoogle(points)
         return cls(points)
     fromTrackpoints = classmethod(fromTrackpoints)
@@ -127,7 +137,7 @@ class Coords:
 
     def getMapElevs(self):
         elevs = []
-        for point in self.points: elevs.append(point.mapElev)
+        for point in self.points: elevs.append(point.mapElev * Coords.FEET_PER_METER)
         return elevs
     
     def getLats(self):

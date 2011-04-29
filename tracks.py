@@ -18,40 +18,37 @@ from pyruns.coords import Coords
 def main():
     # get the command line options
     cmdOptParser = optparse.OptionParser()
-    cmdOptParser.add_option("-f", action = "store", type = "string", dest = "summaryFname", 
-                            default = "summary", help = "Name of summary data file")
+    cmdOptParser.add_option("-f", action = "store", type = "string", dest = "runsFname", 
+                            default = "runs", help = "Name of runs file containing pickle data")
     cmdOptParser.add_option("-c", action = "store", type = "string", dest = "coursesFname", 
                             default = "courses.dat", help = "Name of courses data file")
-    cmdOptParser.add_option("--plotMap", action = "store", type = "string", dest = "plotMap", 
+    cmdOptParser.add_option("--map", action = "store", type = "string", dest = "plotMap", 
                             default = "", help = "Name of course to plot (all runs) or date (YYYY-MM-DD) of course to plot")
-    cmdOptParser.add_option("--plotGoogleMap", action = "store", type = "string", dest = "plotGoogleMap", 
+    cmdOptParser.add_option("--googlemap", action = "store", type = "string", dest = "plotGoogleMap", 
                             default = "", help = "Plots the run given by the date (YYYY-MM-DD) on a google terrain map")
-    cmdOptParser.add_option("--elevWindow", action = "store", type = "int", dest = "elevWindow", 
+    cmdOptParser.add_option("-w", action = "store", type = "int", dest = "elevWindow", 
                             default = 5, help = "Window size for smoothing elevations")
-    cmdOptParser.add_option("--useGpsDist", action = "store_true", dest = "useGpsDist", 
-                            default = False, help = "Use the GPS distance instead of the course distance")
-    cmdOptParser.add_option("--useGpsElev", action = "store_true", dest = "useGpsElev", 
-                            default = False, help = "Use the GPS/Google elevation instead of the course elevation")
+    cmdOptParser.add_option("-p", action = "store", type = "string", dest = "printRuns", default = "", 
+                            help = "Print run/s for course or date (YYYY-MM-DD), or 'all' for all runs")
+    cmdOptParser.add_option("-g", action = "store_true", dest = "useGps", 
+                            default = False, help = "Use the GPS distance and elev instead of the course values")
     (options, fnames) = cmdOptParser.parse_args()
-    # set params for modules
-    Run.useGpsElev = options.useGpsElev
-    Run.useGpsDist = options.useGpsDist
     Coords.elevWindow = options.elevWindow
     # get the course data
     Courses.load(options.coursesFname)
     runs = Runs()
-    runs.load(options.summaryFname)
-    runs.write(sys.stdout)
+    runs.load(options.runsFname)
     # now update with any new data
     runs.updateFromXML(fnames)
-    runs.save(options.summaryFname)
+    runs.save(options.runsFname)
     # plot efficiency vs elev rate
     #pyplot.plot(runs.getEfficiencies(), runs.getElevRates(), "x")
     #pyplot.show()
+    if options.printRuns != "": runs.write(sys.stdout, options.printRuns, options.useGps)
     if options.plotMap != "":
         runDate = None
         try: 
-            runDate = dt.strptime(options.plotMap, "%Y-%m-%d")
+            runDate = Run.getTimeFromFname(options.plotMap + ".tcx")
             title = "Run " + options.plotMap
         except ValueError: 
             pass
@@ -78,20 +75,22 @@ def main():
         found = False
         for run in runs.getSortedRuns():
             if run.coords != None: 
-                if (runDate != None and run.startTime.date() == runDate.date()) or run.course == options.plotMap:
+                if (runDate != None and run.startTime == runDate) or run.course == options.plotMap:
                     if not mapViewer.addTrack(run.coords.getLats(), run.coords.getLngs(), color = colors[i]):
                         print "Track", run.startTime, "is empty"
                     else:
+                        (gpsElevChange, mapElevChange) = run.coords.getElevChanges()
                         ax.plot(run.coords.getDists(), run.coords.getMapElevs(), 
-                                label = run.getDate() + " (" + ("%.0f" % run.coords.mapChange) + ")", color = colors[i])
-                    if maxElev < run.coords.maxElev: maxElev = run.coords.maxElev
-                    if minElev > run.coords.minElev: minElev = run.coords.minElev
+                                label = run.getDate() + " (" + ("%.0f" % mapElevChange) + ")", color = colors[i])
+                    (runMinElev, runMaxElev) = run.coords.getMinMaxElevs(options.useGps)
+                    if maxElev < runMaxElev: maxElev = runMaxElev
+                    if minElev > runMinElev: minElev = runMinElev
                     if maxDist < run.dist: maxDist = run.dist
                     found = True
                     i += 1
                     if i == len(colors): i = 0
                     if runDate != None: 
-                        title += ":  %.0f miles" % run.dist + " %.0f feet" % run.elevChange
+                        title += ":  %.0f miles" % run.dist + " %.0f feet" % run.getElevChange(options.useGps)
                         break
         if not found:
             if runDate != None: print "*** ERROR: Run", options.plotMap, "not found ***"
@@ -115,9 +114,9 @@ def main():
     elif options.plotGoogleMap != "":
         pyplot.axes([0,0,1,1], frameon=False).set_axis_off()
         found = False
-        for run in runs.runs:
+        for run in runs.getSortedRuns():
             if run.coords != None: 
-                if run.startTime.strftime("%Y-%m-%d") == options.plotGoogleMap:
+                if run.getStartTimeAsStr() == options.plotGoogleMap:
                     image = run.getGoogleImage()
                     pyplot.imshow(image)
                     pyplot.show()
