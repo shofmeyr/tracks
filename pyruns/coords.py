@@ -2,29 +2,28 @@ import numpy
 import simplejson, urllib
 from coord import Coord
 
-METERS_PER_MILE = 1609.344
-FEET_PER_METER = 3.28084
-
-elevWindow = 5
 
 class Coords:
+    METERS_PER_MILE = 1609.344
+    FEET_PER_METER = 3.28084
+    elevWindow = 5
+
     def __init__(self, points):
-        global elevWindow
         self.points = points
         # smooth the elevations
         gpsSmoothed = []
         mapSmoothed = []
-        for i in range(0, len(points) - elevWindow): 
-            gpsSmoothed.append(numpy.average([p.gpsElev for p in self.points[i:i + elevWindow]]))
-            mapSmoothed.append(numpy.average([p.mapElev for p in self.points[i:i + elevWindow]]))
+        for i in range(0, len(points) - Coords.elevWindow): 
+            gpsSmoothed.append(numpy.average([p.gpsElev for p in self.points[i:i + Coords.elevWindow]]))
+            mapSmoothed.append(numpy.average([p.mapElev for p in self.points[i:i + Coords.elevWindow]]))
         # compute elevation change
         self.gpsChange = 0
         self.mapChange = 0
         for i in range(0, len(gpsSmoothed) - 1):
             self.gpsChange += self.computeChange(gpsSmoothed[i + 1], gpsSmoothed[i])
             self.mapChange += self.computeChange(mapSmoothed[i + 1], mapSmoothed[i])
-        self.gpsChange *= FEET_PER_METER
-        self.mapChange *= FEET_PER_METER
+        self.gpsChange *= Coords.FEET_PER_METER
+        self.mapChange *= Coords.FEET_PER_METER
         self.maxElev = 0
         self.minElev = 3000000
         for point in self.points: 
@@ -140,3 +139,5 @@ class Coords:
         lngs = []
         for point in self.points: lngs.append(point.lng)
         return lngs
+
+

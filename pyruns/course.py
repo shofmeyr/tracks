@@ -25,4 +25,3 @@ class Course:
             "%8.0f" % self.elevChange,\
             "%6.2f" % self.dist,\
             " " + self.descrptn
-

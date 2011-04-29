@@ -46,8 +46,7 @@ class MapViewer(gtk.Window):
 
     def addTrack(self, lats, lngs, color = "red"):
         if len(lats) == 0:
-            print "Track is empty"
-            return
+            return False
         # create the track
         track = osmgpsmap.GpsMapTrack()
         track.set_property("line-width", 2)
@@ -69,6 +68,7 @@ class MapViewer(gtk.Window):
         # TODO: add numbers every 1/2 mile on the track. We'll need an image for each number to do this
 #        pb = gtk.gdk.pixbuf_new_from_file_at_size (num + ".png", 24, 24)
 #        self.osm.image_add(lat, lon, pb)
+        return True
 
     def mapClicked(self, osm, event):
         lat,lon = self.osm.get_event_location(event).get_degrees()

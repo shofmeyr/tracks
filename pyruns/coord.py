@@ -15,9 +15,6 @@ class Coord:
                    float(tokens[4]))
     fromFile = classmethod(fromFile)
 
-    def __setattr__(self, mapElev, elev):
-        self.__dict__[mapElev] = elev
-        
     def getUrlLatLng(self):
         return str(self.lat) + "," + str(self.lng)
 
@@ -25,3 +22,7 @@ class Coord:
         print >> outFile, self.lat, self.lng, "%6.3f" % self.dist, \
             "%6.0f" % round(self.gpsElev), "%6.0f" % round(self.mapElev)
         
+    def __setattr__(self, mapElev, val): 
+        self.__dict__[mapElev] = val
+
+
