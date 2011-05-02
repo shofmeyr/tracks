@@ -18,7 +18,7 @@ sys.path.insert(0, libdir)
 import osmgpsmap
 
 class MapViewer(gtk.Window):
-    def __init__(self):
+    def __init__(self, showTerrain = False):
         gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
         self.set_default_size(800, 800)
         self.connect('destroy', lambda x: gtk.main_quit())
@@ -26,8 +26,13 @@ class MapViewer(gtk.Window):
         self.vbox = gtk.VBox(False, 0)
         self.add(self.vbox)
 #        self.osm = osmgpsmap.GpsMap(repo_uri = "http://acetate.geoiq.com/tiles/acetate-hillshading/#Z/#X/#Y.png")
-#        self.osm = osmgpsmap.GpsMap(repo_uri = "http://hikebikemap.de/?zoom=#z&lat=#X&lon=#Y&layers=B0000TFFF")
-        self.osm = osmgpsmap.GpsMap(repo_uri = "http://tile.openstreetmap.org/#Z/#X/#Y.png")
+#        self.osm = osmgpsmap.GpsMap(repo_uri = "http://mt1.google.com/vt/x=#X&y=#Y&z=#Z")
+        if showTerrain:
+            self.osm = osmgpsmap.GpsMap(repo_uri = "http://khm.google.com/vt/lbw/lyrs=p&x=#X&y=#Y&z=#Z")
+        else:
+            self.osm = osmgpsmap.GpsMap(repo_uri = "http://mt1.google.com/vt/lyrs=y&x=#X&y=#Y&z=#Z")
+
+#        self.osm = osmgpsmap.GpsMap(repo_uri = "http://tile.openstreetmap.org/#Z/#X/#Y.png")
         self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad = True, show_zoom = True))
         self.osm.layer_add(TerrainLayer())
         self.osm.connect('button_release_event', self.mapClicked)

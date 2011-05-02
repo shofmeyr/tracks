@@ -24,14 +24,14 @@ def main():
                             default = "courses.dat", help = "Name of courses data file")
     cmdOptParser.add_option("--map", action = "store", type = "string", dest = "plotMap", 
                             default = "", help = "Name of course to plot (all runs) or date (YYYY-MM-DD) of course to plot")
-    cmdOptParser.add_option("--googlemap", action = "store", type = "string", dest = "plotGoogleMap", 
-                            default = "", help = "Plots the run given by the date (YYYY-MM-DD) on a google terrain map")
     cmdOptParser.add_option("-w", action = "store", type = "int", dest = "elevWindow", 
                             default = 5, help = "Window size for smoothing elevations")
     cmdOptParser.add_option("-p", action = "store", type = "string", dest = "printRuns", default = "", 
                             help = "Print run/s for course or date (YYYY-MM-DD), or 'all' for all runs")
     cmdOptParser.add_option("-g", action = "store_true", dest = "useGps", 
                             default = False, help = "Use the GPS distance and elev instead of the course values")
+    cmdOptParser.add_option("-t", action = "store_true", dest = "showTerrain", 
+                            default = False, help = "Show terrain on map instead of aerial photo")
     (options, fnames) = cmdOptParser.parse_args()
     Coords.elevWindow = options.elevWindow
     # get the course data
@@ -59,7 +59,7 @@ def main():
             except KeyError:
                 print "*** ERROR: course", options.plotMap, "not found ***"
                 sys.exit(0)
-        mapViewer = MapViewer()
+        mapViewer = MapViewer(options.showTerrain)
         colors = ["red", "green", "blue", "yellow", "black", "cyan", "magenta"]
         win = gtk.Window()
         win.connect("destroy", lambda x: gtk.main_quit())
@@ -111,19 +111,5 @@ def main():
         win.show_all()
         gtk.main()
 
-    elif options.plotGoogleMap != "":
-        pyplot.axes([0,0,1,1], frameon=False).set_axis_off()
-        found = False
-        for run in runs.getSortedRuns():
-            if run.coords != None: 
-                if run.getStartTimeAsStr() == options.plotGoogleMap:
-                    image = run.getGoogleImage()
-                    pyplot.imshow(image)
-                    pyplot.show()
-                    found = True
-                    break
-        if not found:
-            print "*** ERROR: course", options.plotMap, "not found ***"
-            sys.exit(0)
 
 if __name__ == "__main__": main()
