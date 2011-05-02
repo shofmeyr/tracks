@@ -34,7 +34,6 @@ class MapViewer(gtk.Window):
 
 #        self.osm = osmgpsmap.GpsMap(repo_uri = "http://tile.openstreetmap.org/#Z/#X/#Y.png")
         self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad = True, show_zoom = True))
-        self.osm.layer_add(TerrainLayer())
         self.osm.connect('button_release_event', self.mapClicked)
         self.osm.connect("motion_notify_event", self.updateDistance)
         #connect keyboard shortcuts
@@ -90,26 +89,6 @@ class MapViewer(gtk.Window):
         p = osmgpsmap.point_new_degrees(self.minLat, self.minLng)
         self.osm.convert_screen_to_geographic(int(event.x), int(event.y), p)
         self.statusBar.push(1, str(self.minLat + p.rlat) + "," + str(self.minLng + p.rlon))
-
-
-class TerrainLayer(gobject.GObject, osmgpsmap.GpsMapLayer):
-    def __init__(self):
-        gobject.GObject.__init__(self)
-        self.osm = osmgpsmap.GpsMap(repo_uri = "http://toolserver.org/~cmarqu/hill/#Z/#X/#Y.png")
-        self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad = False, show_zoom = False))
-
-    def do_draw(self, gpsmap, gdkdrawable):
-        pass
-
-    def do_render(self, gpsmap):
-        pass
-
-    def do_busy(self):
-        return False
-
-    def do_button_press(self, gpsmap, gdkeventbutton):
-        return False
-gobject.type_register(TerrainLayer)
 
 
 if __name__ == "__main__":
