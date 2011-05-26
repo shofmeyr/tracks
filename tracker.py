@@ -8,26 +8,26 @@ from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as Navig
 import optparse, string, os, sys
 import matplotlib.pyplot as pyplot
 import gtk
-import pyruns
-from pyruns.courses import Courses
-from pyruns.runs import Runs
-from pyruns.mapviewer import MapViewer
-from pyruns.run import Run
-from pyruns.coords import Coords
+import pytracks
+from pytracks.courses import Courses
+from pytracks.tracks import tracks
+from pytracks.mapviewer import MapViewer
+from pytracks.track import track
+from pytracks.trackpoints import trackpoints
 
 def main():
     # get the command line options
     cmdOptParser = optparse.OptionParser()
-    cmdOptParser.add_option("-f", action = "store", type = "string", dest = "runsFname", 
-                            default = "runs", help = "Name of runs file containing pickle data")
+    cmdOptParser.add_option("-f", action = "store", type = "string", dest = "tracksFname", 
+                            default = "tracks", help = "Name of tracks file containing pickle data")
     cmdOptParser.add_option("-c", action = "store", type = "string", dest = "coursesFname", 
                             default = "courses.dat", help = "Name of courses data file")
     cmdOptParser.add_option("--map", action = "store", type = "string", dest = "plotMap", 
-                            default = "", help = "Name of course to plot (all runs) or date (YYYY-MM-DD) of course to plot")
+                            default = "", help = "Name of course to plot (all tracks) or date (YYYY-MM-DD) of course to plot")
     cmdOptParser.add_option("-w", action = "store", type = "int", dest = "elevWindow", 
                             default = 5, help = "Window size for smoothing elevations")
-    cmdOptParser.add_option("-p", action = "store", type = "string", dest = "printRuns", default = "", 
-                            help = "Print run/s for course or date (YYYY-MM-DD), or 'all' for all runs")
+    cmdOptParser.add_option("-p", action = "store", type = "string", dest = "printTracks", default = "", 
+                            help = "Print track/s for course or date (YYYY-MM-DD), or 'all' for all tracks")
     cmdOptParser.add_option("-g", action = "store_true", dest = "useGps", 
                             default = False, help = "Use the GPS distance and elev instead of the course values")
     cmdOptParser.add_option("-t", action = "store_true", dest = "showTerrain", 
@@ -36,23 +36,23 @@ def main():
     Coords.elevWindow = options.elevWindow
     # get the course data
     Courses.load(options.coursesFname)
-    runs = Runs()
-    runs.load(options.runsFname)
+    tracks = Tracks()
+    tracks.load(options.tracksFname)
     # now update with any new data
-    runs.updateFromXML(fnames)
-    runs.save(options.runsFname)
+    tracks.updateFromXML(fnames)
+    tracks.save(options.tracksFname)
     # plot efficiency vs elev rate
-    #pyplot.plot(runs.getEfficiencies(), runs.getElevRates(), "x")
+    #pyplot.plot(tracks.getEfficiencies(), tracks.getElevRates(), "x")
     #pyplot.show()
-    if options.printRuns != "": runs.write(sys.stdout, options.printRuns, options.useGps)
+    if options.printTracks != "": tracks.write(sys.stdout, options.printTracks, options.useGps)
     if options.plotMap != "":
-        runDate = None
+        trackDate = None
         try: 
-            runDate = Run.getTimeFromFname(options.plotMap + ".tcx")
-            title = "Run " + options.plotMap
+            trackDate = Track.getTimeFromFname(options.plotMap + ".tcx")
+            title = "Track " + options.plotMap
         except ValueError: 
             pass
-        if runDate == None:
+        if trackDate == None:
             try:
                 title = "Course " + options.plotMap + ":  %.0f miles" % Courses.data[options.plotMap].dist + \
                     " %.0f feet" % Courses.data[options.plotMap].elevChange
@@ -73,27 +73,27 @@ def main():
         maxDist = 0
         i = 0
         found = False
-        for run in runs.getSortedRuns():
-            if run.coords != None: 
-                if (runDate != None and run.startTime == runDate) or run.course == options.plotMap:
-                    if not mapViewer.addTrack(run.coords.getLats(), run.coords.getLngs(), color = colors[i]):
-                        print "Track", run.startTime, "is empty"
+        for track in tracks.getSortedTracks():
+            if track.coords != None: 
+                if (trackDate != None and track.startTime == trackDate) or track.course == options.plotMap:
+                    if not mapViewer.addTrack(track.coords.getLats(), track.coords.getLngs(), color = colors[i]):
+                        print "Track", track.startTime, "is empty"
                     else:
-                        (gpsElevChange, mapElevChange) = run.coords.getElevChanges()
-                        ax.plot(run.coords.getDists(), run.coords.getMapElevs(), 
-                                label = run.getDate() + " (" + ("%.0f" % mapElevChange) + ")", color = colors[i])
-                    (runMinElev, runMaxElev) = run.coords.getMinMaxElevs(options.useGps)
-                    if maxElev < runMaxElev: maxElev = runMaxElev
-                    if minElev > runMinElev: minElev = runMinElev
-                    if maxDist < run.dist: maxDist = run.dist
+                        (gpsElevChange, mapElevChange) = track.coords.getElevChanges()
+                        ax.plot(track.coords.getDists(), track.coords.getMapElevs(), 
+                                label = track.getDate() + " (" + ("%.0f" % mapElevChange) + ")", color = colors[i])
+                    (trackMinElev, trackMaxElev) = track.coords.getMinMaxElevs(options.useGps)
+                    if maxElev < trackMaxElev: maxElev = trackMaxElev
+                    if minElev > trackMinElev: minElev = trackMinElev
+                    if maxDist < track.dist: maxDist = track.dist
                     found = True
                     i += 1
                     if i == len(colors): i = 0
-                    if runDate != None: 
-                        title += ":  %.0f miles" % run.dist + " %.0f feet" % run.getElevChange(options.useGps)
+                    if trackDate != None: 
+                        title += ":  %.0f miles" % track.dist + " %.0f feet" % track.getElevChange(options.useGps)
                         break
         if not found:
-            if runDate != None: print "*** ERROR: Run", options.plotMap, "not found ***"
+            if trackDate != None: print "*** ERROR: Track", options.plotMap, "not found ***"
             else: print "*** ERROR: course", options.plotMap, "not found ***"
             sys.exit(0)
         ax.legend(loc = "lower right", prop = font_manager.FontProperties(size = "x-small"))

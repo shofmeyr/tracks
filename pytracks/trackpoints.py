@@ -1,9 +1,17 @@
 import numpy
 import simplejson, urllib
-from coord import Coord
 
+class Trackpoint:
+    def __init__(self, tm, lat, lng, dist = 0, gpsElev = 0, mapElev = 0, hr = 0):
+        self.time = tm
+        self.lat = lat
+        self.lng = lng
+        self.dist = dist
+        self.gpsElev = gpsElev
+        self.mapElev = mapElev
+        self.hr = hr
 
-class Coords:
+class Trackpoints:
     METERS_PER_MILE = 1609.344
     FEET_PER_METER = 3.28084
     elevWindow = 5
@@ -15,17 +23,17 @@ class Coords:
         # smooth the elevations
         gpsSmoothed = []
         mapSmoothed = []
-        for i in range(0, len(self.points) - Coords.elevWindow): 
-            gpsSmoothed.append(numpy.average([p.gpsElev for p in self.points[i:i + Coords.elevWindow]]))
-            mapSmoothed.append(numpy.average([p.mapElev for p in self.points[i:i + Coords.elevWindow]]))
+        for i in range(0, len(self.points) - Trackpoints.elevWindow): 
+            gpsSmoothed.append(numpy.average([p.gpsElev for p in self.points[i:i + Trackpoints.elevWindow]]))
+            mapSmoothed.append(numpy.average([p.mapElev for p in self.points[i:i + Trackpoints.elevWindow]]))
         # compute elevation change
         gpsChange = 0
         mapChange = 0
         for i in range(0, len(gpsSmoothed) - 1):
             gpsChange += self.computeChange(gpsSmoothed[i + 1], gpsSmoothed[i])
             mapChange += self.computeChange(mapSmoothed[i + 1], mapSmoothed[i])
-        gpsChange *= Coords.FEET_PER_METER
-        mapChange *= Coords.FEET_PER_METER
+        gpsChange *= Trackpoints.FEET_PER_METER
+        mapChange *= Trackpoints.FEET_PER_METER
         return (gpsChange, mapChange)
 
     def getMinMaxElevs(self, useGps = False):
@@ -38,7 +46,7 @@ class Coords:
             else:
                 minElev = min(point.mapElev, minElev)
                 maxElev = max(point.mapElev, maxElev)
-        return (minElev * Coords.FEET_PER_METER, maxElev * Coords.FEET_PER_METER)
+        return (minElev * Trackpoints.FEET_PER_METER, maxElev * Trackpoints.FEET_PER_METER)
 
     def computeChange(self, first, second):
         change = first - second
@@ -51,15 +59,15 @@ class Coords:
             print "ERROR in getting elev, num lats (", len(lats),\
                 ") != num longs (",len(lngs), ")"
         for i in range(0, min(len(lats), len(lngs))):
-            points.append(Coord(lats[i], lngs[i], dists[i] / Coords.METERS_PER_MILE, altitudes[i], 0))
-        points = Coords.fromGoogle(points)
+            points.append(Trackpoint(lats[i], lngs[i], dists[i] / Trackpoints.METERS_PER_MILE, altitudes[i], 0))
+        points = Trackpoints.fromGoogle(points)
         return cls(points)
     fromTrackpoints = classmethod(fromTrackpoints)
 
     def fromFile(cls, fname):
         points = []
         f = open(fname, "r")
-        for line in f.readlines(): points.append(Coord.fromFile(line))
+        for line in f.readlines(): points.append(Trackpoint.fromFile(line))
         f.close()
         return cls(points)
     fromFile = classmethod(fromFile)
@@ -98,7 +106,7 @@ class Coords:
                     lat = float(resultset['location']['lat'])
                     lng = float(resultset['location']['lng'])
                     elev = float(resultset['elevation'])
-                    resultPoints.append(Coord(lat = lat, lng = lng, mapElev = elev))
+                    resultPoints.append(Trackpoint(lat = lat, lng = lng, mapElev = elev))
                 path = ""
         print "Found", i, "elevs for", len(points), "points"
         # now set the stored data
@@ -137,7 +145,7 @@ class Coords:
 
     def getMapElevs(self):
         elevs = []
-        for point in self.points: elevs.append(point.mapElev * Coords.FEET_PER_METER)
+        for point in self.points: elevs.append(point.mapElev * Trackpoints.FEET_PER_METER)
         return elevs
     
     def getLats(self):

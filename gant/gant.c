@@ -17,6 +17,15 @@
 
 #include "antdefs.h"
 
+#if 0
+#define dprintf(fmt,...)						\
+  ({  printf("[%s] " fmt, _PROG_NAME, __VA_ARGS__);			\
+    fflush(stdout);							\
+  })
+#else
+#define dprintf(...) ({})
+#endif
+
 // all version numbering according ant agent for windows 2.2.1
 char *releasetime = "Jul 30 2009, 17:42:56";
 uint majorrelease = 2;
@@ -51,8 +60,7 @@ typedef struct {
 
 activity_t activitybuf[MAXACTIVITIES];
 int nactivities;
-int nsummarized_activities;
-int current_activity = 0;
+int nsummarized_activities = 0;
 
 void decodeactivity(activity_t *pactivity, int activitynum, uchar *data) {
   pactivity->activitynum = activitynum;
@@ -142,6 +150,7 @@ trackpoint_t *trackpointbuf[MAXACTIVITIES]; //trackpoints per activity.
 int ntrackpoints[MAXACTIVITIES]; // # of trackpoints per activity.
 int ntotal_trackpoints;
 int current_trackpoint_activity;
+int current_activity_index = 0;
 
 void decodetrackpoint(trackpoint_t *ptrackpoint, uchar *data) {
   ptrackpoint->tv = antuint(data, 8) + GARMIN_TIME_EPOCH;
@@ -490,7 +499,7 @@ void write_output_files() {
     strftime(tbuf, sizeof tbuf, "%Y-%m-%d-%H%M%S.tcx",
              localtime(&lapbuf[pact->startlap].tv_lap));
     // open file and start with header of xml file
-    printf("Writing output file for activity %d: %s ", activity, tbuf);
+    printf("Writing output file %s for activity %d: ", tbuf, activity);
     tcxfile = fopen(tbuf, "wt");
     write_tcx_header(tcxfile);
 
@@ -597,12 +606,16 @@ void write_output_files() {
       
       if (pact->activitynum != -1) {
 	fprintf(tcxfile, "        <Track>\n");
+	int ntps = 0;
 	for (; trackpoint < ntrackpoints[pact->activitynum] ; trackpoint++) {
 	  trackpoint_t *ptrackpoint = &trackpointbuf[pact->activitynum][trackpoint];
 	  // trackpoints go inside of laps that they're within timewise.
 	  if ((lap < pact->stoplap) && (ptrackpoint->tv > lapbuf[lap+1].tv_lap)) break;
+	  ntps++;
 	  write_trackpoint(tcxfile, pact, plap, ptrackpoint);
 	}
+	//	printf("Writing %d trackpoints for lap %d of activity %d\n", 
+	//	       ntps, lap, pact->activitynum);
 	// repeat the last trackpoint in the next lap if it's the same second as
 	// this one.
 	if ((trackpoint > 0) && (lap < pact->stoplap) &&
@@ -618,9 +631,9 @@ void write_output_files() {
     write_tcx_footer(tcxfile);
     fclose(tcxfile);
 
-    printf("(");
+    //    printf("  Activity %u: ", activity);
     print_duration(activity_secs);
-    printf(")\n");
+    printf("\n");
   }
 
 
@@ -693,11 +706,11 @@ void version_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   int i = 0;
   char model[256];
   char gpsver[256];
-  printf("version decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
+  dprintf("version decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
 
   // any response here allows us to move forward.
   if (nacksent > nlastcompletedcmd) {
-    printf("completed command %d %d\n", nacksent, nlastcompletedcmd);
+    dprintf("completed command %d %d\n", nacksent, nlastcompletedcmd);
     nlastcompletedcmd = nacksent;
   }
 
@@ -707,19 +720,18 @@ void version_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     memcpy(model, data+doff+4, dsize-4);
     part=antshort(data, doff);
     ver=antshort(data, doff+2);
-    printf("%d Part#: %d ver: %d Name: %s\n", pkttype,
+    dprintf("Part#: %d ver: %d Name: %s\n", 
            part, ver, model);
     break;
   case 248:
     memset(gpsver, 0, sizeof gpsver);
     memcpy(gpsver, data+doff, dsize);
-    printf("%d GPSver: %s\n", pkttype,
-           gpsver);
+    printf("GPSver: %s\n", gpsver);
     break;
   case 253:
-    printf("%d Unknown\n", pkttype);
+    dprintf("%d Unknown\n", pkttype);
     for (i = 0; i < pktlen; i += 3)
-      printf("%d.%d.%d\n", data[doff+i], data[doff+i+1], data[doff+i+2]);
+      dprintf("%d.%d.%d\n", data[doff+i], data[doff+i+1], data[doff+i+2]);
     break;
   default:
     generic_decode(bloblen, pkttype, pktlen, dsize, data);
@@ -729,11 +741,11 @@ void version_decode(ushort bloblen, ushort pkttype, ushort pktlen,
 void name_decode(ushort bloblen, ushort pkttype, ushort pktlen,
                     int dsize, uchar *data) {
   int doff = 20;
-  printf("name decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
+  dprintf("name decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
 
   // any response here allows us to move forward.
   if (nacksent > nlastcompletedcmd) {
-    printf("completed command %d %d\n", nacksent, nlastcompletedcmd);
+    dprintf("completed command %d %d\n", nacksent, nlastcompletedcmd);
     nlastcompletedcmd = nacksent;
   }
 
@@ -741,7 +753,7 @@ void name_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   case 525:
     memset(devname, 0, sizeof devname);
     memcpy(devname, data+doff, dsize);
-    printf("%d Devname %s\n", pkttype, devname);
+    printf("Devname %s\n", devname);
     break;
   default:
     generic_decode(bloblen, pkttype, pktlen, dsize, data);
@@ -751,18 +763,18 @@ void name_decode(ushort bloblen, ushort pkttype, ushort pktlen,
 void unit_decode(ushort bloblen, ushort pkttype, ushort pktlen,
                     int dsize, uchar *data) {
   int doff = 20;
-  printf("unit decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
+  dprintf("unit decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
 
   // any response here allows us to move forward.
   if (nacksent > nlastcompletedcmd) {
-    printf("completed command %d %d\n", nacksent, nlastcompletedcmd);
+    dprintf("completed command %d %d\n", nacksent, nlastcompletedcmd);
     nlastcompletedcmd = nacksent;
   }
 
   switch (pkttype) {
   case 38:
     unitid = antuint(data, doff);
-    printf("%d unitid %u\n", pkttype, unitid);
+    printf("Unit ID %u\n", unitid);
     break;
   default:
     generic_decode(bloblen, pkttype, pktlen, dsize, data);
@@ -773,17 +785,17 @@ void position_decode(ushort bloblen, ushort pkttype, ushort pktlen,
                     int dsize, uchar *data) {
   int doff = 20;
   int i = 0;
-  printf("position decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
+  dprintf("position decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
 
   // any response here allows us to move forward.
   if (nacksent > nlastcompletedcmd) {
-    printf("completed command %d %d\n", nacksent, nlastcompletedcmd);
+    dprintf("completed command %d %d\n", nacksent, nlastcompletedcmd);
     nlastcompletedcmd = nacksent;
   }
 
   switch (pkttype) {
   case 17:
-    printf("%d position ? ", pkttype);
+    printf("Position ? ");
     for (i = 0; i < pktlen; i += 4)
       printf(" %u", antuint(data, doff+i));
     printf("\n");
@@ -796,17 +808,17 @@ void position_decode(ushort bloblen, ushort pkttype, ushort pktlen,
 void time_decode(ushort bloblen, ushort pkttype, ushort pktlen,
                     int dsize, uchar *data) {
   int doff = 20;
-  printf("time decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
+  dprintf("time decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
 
   // any response here allows us to move forward.
   if (nacksent > nlastcompletedcmd) {
-    printf("completed command %d %d\n", nacksent, nlastcompletedcmd);
+    dprintf("completed command %d %d\n", nacksent, nlastcompletedcmd);
     nlastcompletedcmd = nacksent;
   }
 
   switch (pkttype) {
   case 14:
-    printf("%d time: ", pkttype);
+    printf("time: ");
     printf("%02u-%02u-%u %02u:%02u:%02u\n", data[doff], data[doff+1], antshort(data, doff+2), data[doff+4], data[doff+6], data[doff+7]);
     break;
   default:
@@ -817,11 +829,11 @@ void time_decode(ushort bloblen, ushort pkttype, ushort pktlen,
 void software_decode(ushort bloblen, ushort pkttype, ushort pktlen,
                     int dsize, uchar *data) {
   int doff = 20;
-  printf("software decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
+  dprintf("software decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
 
   // any response here allows us to move forward.
   if (nacksent > nlastcompletedcmd) {
-    printf("completed command %d %d\n", nacksent, nlastcompletedcmd);
+    dprintf("completed command %d %d\n", nacksent, nlastcompletedcmd);
     nlastcompletedcmd = nacksent;
   }
 
@@ -829,7 +841,7 @@ void software_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   case 247:
     memset(modelname, 0, sizeof modelname);
     memcpy(modelname, data+doff+88, dsize-88);
-    printf("%d Device name %s\n", pkttype, modelname);
+    printf("Device name %s\n", modelname);
     break;
   default:
     generic_decode(bloblen, pkttype, pktlen, dsize, data);
@@ -842,22 +854,22 @@ void unknown_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   // interpret the results of.
   int doff = 20;
   int i = 0;
-  printf("unknown decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
+  dprintf("unknown decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
 
   // any response here allows us to move forward.
   if (nacksent > nlastcompletedcmd) {
-    printf("completed command %d %d\n", nacksent, nlastcompletedcmd);
+    dprintf("completed command %d %d\n", nacksent, nlastcompletedcmd);
     nlastcompletedcmd = nacksent;
   }
-
+  doff = 20;
   switch (pkttype) {
   case 1523:
   case 994:
   case 1066:
-    printf("%d ints?", pkttype);
+    dprintf("%d ints?", pkttype);
     for (i = 0; i < pktlen; i += 4)
-      printf(" %u", antuint(data, doff+i));
-    printf("\n");
+      dprintf(" %u", antuint(data, doff+i));
+    dprintf("\n");
     break;
   default:
     generic_decode(bloblen, pkttype, pktlen, dsize, data);
@@ -870,14 +882,14 @@ void laps_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   int lap = -1;
   int i = 0;
   int found_laps = 0;
-  printf("laps decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
+  dprintf("laps decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
   switch (pkttype) {
   case 12:
-    printf("%d xfer complete", pkttype);
+    dprintf("%d xfer complete", pkttype);
 
     for (i = 0; i < pktlen; i += 2)
-      printf(" %u", antshort(data, doff+i));
-    printf("\n");
+      dprintf(" %u", antshort(data, doff+i));
+    dprintf("\n");
     // don't know what to do with the code here
     // antshort(data, doff);
 
@@ -895,7 +907,7 @@ void laps_decode(ushort bloblen, ushort pkttype, ushort pktlen,
 
       // only allow completion if we get packet type 12 and have all the laps.
       if (nacksent > nlastcompletedcmd) {
-        printf("completed command %d %d\n", nacksent, nlastcompletedcmd);
+        dprintf("completed command %d %d\n", nacksent, nlastcompletedcmd);
         nlastcompletedcmd = nacksent;
       }
     }
@@ -906,11 +918,10 @@ void laps_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     break;
   case 27:
     nlaps = antshort(data, doff);
-    printf("%d laps %u\n", pkttype, nlaps);
+    printf("Expecting %u laps\n", nlaps);
     break;
   case 149:
-    printf("%d Lap data id: %u %u\n", pkttype,
-           antshort(data, doff), antshort(data, doff+2));
+    printf("Found lap %u\n", antshort(data, doff));
     lap = antshort(data, doff);
     if (lap < 0) {
       printf("Bad lap specified %d.\n", lap);
@@ -936,14 +947,14 @@ void activities_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   int i = 0;
   int activity = 0;
   int found_activities = 0;
-  printf("activities decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
+  dprintf("activities decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
   switch (pkttype) {
   case 12:
-    printf("%d xfer complete", pkttype);
+    dprintf("%d xfer complete", pkttype);
 
     for (i = 0; i < pktlen; i += 2)
-      printf(" %u", antshort(data, doff+i));
-    printf("\n");
+      dprintf(" %u", antshort(data, doff+i));
+    dprintf("\n");
 
     // don't know what to do with the code here
     // antshort(data, doff);
@@ -962,45 +973,37 @@ void activities_decode(ushort bloblen, ushort pkttype, ushort pktlen,
 	     found_activities, nsummarized_activities);
       // only allow completion if we get packet type 12.
       if (nacksent > nlastcompletedcmd) {
-        printf("completed command %d %d\n", nacksent, nlastcompletedcmd);
+        dprintf("completed command %d %d\n", nacksent, nlastcompletedcmd);
         nlastcompletedcmd = nacksent;
       }
     } else {
-      current_activity = 0;
       printf("Not all activities received; got %d/%d (%d summarized). Will retry.\n",
              found_activities, nactivities, nsummarized_activities);
     }
     break;
   case 27:
     nactivities = antshort(data, doff);
+    current_activity_index = 0;
     nsummarized_activities = 0;
-    printf("%d activities %u\n", pkttype, nactivities);
+    printf("Expecting %u activities\n", nactivities);
     break;
   case 990:
-    printf("%d activity %u lap %u-%u sport %u\n", pkttype,
+    printf("Found activity %u lap %u-%u sport %u\n", 
            antshort(data, doff), antshort(data, doff+2),
            antshort(data, doff+4), data[doff+6]);
-    //    printf("%d shorts?", pkttype);
-    //    for (i = 0; i < pktlen; i += 2) printf(" %u", antshort(data, doff+i));
-    //    printf("\n");
     activity = antshort(data, doff);
     // summarized activites (all trackpoints have been thrown away) are
     // represented as activities with -1 activitynums.
     if (activity < 0) {
-      printf("Summarized activity specified (%d) %d\n", activity, current_activity);
+      printf("Summarized activity specified (%d) %d\n", activity, nsummarized_activities);
+      // we are assuming that summarized activities are at the start of the input
       nsummarized_activities++;
     }
-    if (current_activity != activity) {
-      printf("Current activity (%d) != activity (%d), using current\n",
-	     current_activity, activity);
-    }
-    if (current_activity < MAXACTIVITIES) {
-      decodeactivity(&activitybuf[current_activity], current_activity, &data[doff]);
-    } else {
-      printf("Not enough activities.");
+    if (activity >= MAXACTIVITIES) {
+      printf("Not enough space for %d activities\n", activity);
       exit(1);
     }
-    current_activity++;
+    decodeactivity(&activitybuf[current_activity_index++], activity, &data[doff]);
     break;
   default:
     generic_decode(bloblen, pkttype, pktlen, dsize, data);
@@ -1014,14 +1017,14 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   int i = 0;
   //int j = 0;
   int found_trackpoints = 0;
-  printf("trackpoints decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
+  dprintf("trackpoints decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
   switch (pkttype) {
   case 12:
-    printf("%d xfer complete", pkttype);
+    dprintf("%d xfer complete", pkttype);
 
     for (i = 0; i < pktlen; i += 2)
-      printf(" %u", antshort(data, doff+i));
-    printf("\n");
+      dprintf(" %u", antshort(data, doff+i));
+    dprintf("\n");
     // don't know what to do with the code here
     // antshort(data, doff);
 
@@ -1029,7 +1032,7 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     for (i = 0 ; i < MAXACTIVITIES ; i++) {
       found_trackpoints += ntrackpoints[i];
       if (ntrackpoints[i] > 0) {
-        printf("%d trackpoints for activity %d\n", ntrackpoints[i], i);
+        printf("Found %d trackpoints for activity %d\n", ntrackpoints[i], i);
         //        int j = 0;
         //        for (j = 0 ; j < ntrackpoints[i] ; j++) {
         //          if (dbg) {
@@ -1048,7 +1051,7 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
       // only allow completion if we get packet type 12 and have all
       // trackpoints.
       if (nacksent > nlastcompletedcmd) {
-        printf("completed command %d %d\n", nacksent, nlastcompletedcmd);
+        dprintf("completed command %d %d\n", nacksent, nlastcompletedcmd);
         nlastcompletedcmd = nacksent;
       }
     } else {
@@ -1060,16 +1063,16 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   // trackpoints are given as a run of trackpoints per activity; they'll
   // give us a 99 to switch activities.
   case 99:
-    printf("%d trackindex %u\n", pkttype, antshort(data, doff));
-    printf("%d shorts?", pkttype);
+    dprintf("%d trackindex %u\n", pkttype, antshort(data, doff));
+    dprintf("%d shorts?", pkttype);
     for (i = 0; i < pktlen; i += 2)
-      printf(" %u", antshort(data, doff+i));
-    printf("\n");
+      dprintf(" %u", antshort(data, doff+i));
+    dprintf("\n");
     current_trackpoint_activity = antshort(data, doff);
     break;
   case 27:
     ntotal_trackpoints = antshort(data, doff);
-    printf("%d trackpoints %u\n", pkttype, ntotal_trackpoints);
+    printf("Expecting %u trackpoints\n", ntotal_trackpoints - (nactivities - nsummarized_activities));
     int i = 0;
     for (i = 0 ; i < MAXACTIVITIES ; i++) {
       ntrackpoints[i] = 0;
@@ -1079,10 +1082,10 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     current_trackpoint_activity = -1;
     break;
   case 1510:
-    printf("%d trackpoints", pkttype);
+    dprintf("%d trackpoints", pkttype);
     for (i = 0; i < 4 && i < pktlen; i += 4)
-      printf(" %u", antuint(data, doff+i));
-    printf("\n");
+      dprintf(" %u", antuint(data, doff+i));
+    dprintf("\n");
     for (i = 4; i < pktlen; i += 24) {
       // we should probably clean up this memory at some point.
       ntrackpoints[current_trackpoint_activity]++;
@@ -1349,9 +1352,9 @@ chevent(uchar chan, uchar event)
           // request next set of data
           ackdata = cmds[nacksent].cmd;
           nacksent++;
-          printf("Advancing to command %d\n", nacksent);
+          dprintf("Advancing to command %d\n", nacksent);
           if (!strcmp(ackdata, "")) { // finished
-            printf("cmds finished, resetting\n");
+            dprintf("cmds finished, resetting\n");
             ack.code = 0x44; ack.atype = 3; ack.c1 = 0x00;
             ack.c2 = 0x00; ack.id = 0;
             ANT_SendAcknowledgedData(chan, (void *)&ack); // go to idle
@@ -1520,11 +1523,11 @@ revent(uchar chan, uchar event)
     break;
     // TODO: something better.
   case 6: // EVENT_TRANSFER_TX_FAILED
-    printf("Reacking: %02x %s\n", chan, ackpkt);
+    dprintf("Reacking: %02x %s\n", chan, ackpkt);
     ANT_SendBurstTransferA(chan, ackpkt, strlen((char *)ackpkt)/16);
     break;
   default:
-    printf("Unhandled response event %02x\n", event);
+    dprintf("Unhandled response event %02x\n", event);
     break;
   }
   return 1;
@@ -1633,7 +1636,6 @@ int main(int ac, char *av[])
   ANT_SetChannelId(chan, devno, devtype, manid);
   ANT_OpenChannel(chan);
   ANT_RequestMessage(chan, MESG_CHANNEL_STATUS_ID); //informative
-
   // everything handled in event functions
   for(;;)
     sleep(10);
