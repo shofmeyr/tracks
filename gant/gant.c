@@ -921,7 +921,8 @@ void laps_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     printf("Expecting %u laps\n", nlaps);
     break;
   case 149:
-    printf("Found lap %u\n", antshort(data, doff));
+    printf("Found lap %u [%.0f%%]\n", 
+	   antshort(data, doff), 100.0 * (double)antshort(data, doff) / nlaps);
     lap = antshort(data, doff);
     if (lap < 0) {
       printf("Bad lap specified %d.\n", lap);
@@ -946,7 +947,6 @@ void activities_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   int doff = 20;
   int i = 0;
   int activity = 0;
-  int found_activities = 0;
   dprintf("activities decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
   switch (pkttype) {
   case 12:
@@ -959,18 +959,9 @@ void activities_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     // don't know what to do with the code here
     // antshort(data, doff);
 
-    // make sure we got all the activites.
-    for (i = 0 ; i < MAXACTIVITIES ; i++) {
-      if (activitybuf[i].activitynum != -1) {
-        //        if (dbg) {
-        //          printactivity(&activitybuf[i]);
-        //        }
-        found_activities++;
-      }
-    }
-    if (nactivities == found_activities) {
+    if (nactivities == current_activity_index) {
       printf("All activities received (%d complete, %d summarized).\n", 
-	     found_activities, nsummarized_activities);
+	     current_activity_index - nsummarized_activities, nsummarized_activities);
       // only allow completion if we get packet type 12.
       if (nacksent > nlastcompletedcmd) {
         dprintf("completed command %d %d\n", nacksent, nlastcompletedcmd);
@@ -978,7 +969,7 @@ void activities_decode(ushort bloblen, ushort pkttype, ushort pktlen,
       }
     } else {
       printf("Not all activities received; got %d/%d (%d summarized). Will retry.\n",
-             found_activities, nactivities, nsummarized_activities);
+             current_activity_index, nactivities, nsummarized_activities);
     }
     break;
   case 27:
@@ -988,17 +979,17 @@ void activities_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     printf("Expecting %u activities\n", nactivities);
     break;
   case 990:
-    printf("Found activity %u lap %u-%u sport %u\n", 
-           antshort(data, doff), antshort(data, doff+2),
-           antshort(data, doff+4), data[doff+6]);
     activity = antshort(data, doff);
     // summarized activites (all trackpoints have been thrown away) are
     // represented as activities with -1 activitynums.
     if (activity < 0) {
-      printf("Summarized activity specified (%d) %d\n", activity, nsummarized_activities);
+      printf("Found summarized activity %d [%.0f%%] ", 
+	     nsummarized_activities, 100.0 * (double)nsummarized_activities / nactivities);
       // we are assuming that summarized activities are at the start of the input
       nsummarized_activities++;
-    }
+    } else printf("Found activity %u  [%.0f%%] ", 
+		  activity, 100.0 * (double)activity / nactivities);
+    printf("lap %u-%u sport %u\n", antshort(data, doff+2), antshort(data, doff+4), data[doff+6]);
     if (activity >= MAXACTIVITIES) {
       printf("Not enough space for %d activities\n", activity);
       exit(1);
@@ -1029,17 +1020,10 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     // antshort(data, doff);
 
     // make sure we got all the trackpoints.
-    for (i = 0 ; i < MAXACTIVITIES ; i++) {
+    for (i = 0 ; i < nactivities ; i++) {
       found_trackpoints += ntrackpoints[i];
-      if (ntrackpoints[i] > 0) {
-        printf("Found %d trackpoints for activity %d\n", ntrackpoints[i], i);
-        //        int j = 0;
-        //        for (j = 0 ; j < ntrackpoints[i] ; j++) {
-        //          if (dbg) {
-        //            printtrackpoint(&trackpointbuf[i][j]);
-        //          }
-        //}
-      }
+      printf("Found %d [%.0f%%] trackpoints for activity %d\n", 
+	     ntrackpoints[i], 100.0 * (double) found_trackpoints / ntotal_trackpoints,  i);
     }
 
     // this check fails sometimes-- I think it's due to inconsistencies in
@@ -1221,7 +1205,7 @@ chevent(uchar chan, uchar event)
       if (newfreq) {
         // switch to new frequency
         ANT_SetChannelPeriod(chan, period);
-        ANT_SetChannelSearchTimeout(chan, 3);
+        ANT_SetChannelSearchTimeout(chan, 5);
         ANT_SetChannelRFFreq(chan, newfreq);
         newfreq = 0;
       }
