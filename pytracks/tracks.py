@@ -4,27 +4,42 @@ import sys, pickle, os
 
 from track import Track
 from courses import Courses
-from datetime import datetime as dt
 
 class Tracks:
     def __init__(self):
-        self.tracks = {}
+        self.data = {}
 
-    def load(self, fnames):
-        # each track is stored in a separate pickle file 
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, key):
+        return self.data[key]
+
+    def __setitem__(self, key, value):
+        self.data[key] = value
+
+    def load(self, fname, textFname):
+        # all the tracks are saved in one pickle file
         f = None
-        if os.path.exists(fname + ".pck"): f = open(fname + ".pck", "r")
+        if os.path.exists(fname): f = open(fname, "r")
         if f != None:
-            self.tracks = pickle.load(f)
-            f.close()
-        if len(self.tracks) == 0: print "Found no saved tracks"
-        else: print "Loaded data from", self.getSortedTracks()[0].startTime, "to", self.getSortedTracks()[-1].startTime
-        
-        return
+            try:
+                self.data = pickle.load(f)
+                f.close()
+            except Exception as e:
+                "Could not load pickle file " + fname + ": " + str(e)
+        if fname != "" and len(self.data) == 0: print>>sys.stderr, "Found no saved tracks in \"" + fname + "\""
+        else: print>>sys.stderr, "Loaded", len(self.data), "tracks from \"" + fname + "\":",\
+                self.getSortedTracks()[0].startTime, "to", self.getSortedTracks()[-1].startTime
+        if textFname != "": self.loadAdditionalFromText(textFname)
+
+    def loadAdditionalFromText(self, textFname):
         # below is my crude hack to input course and comments from a text file. Will be removed when other 
-        # editing functionality is added
-        f = open("summary.dat", "r")
+        # editing functionality is added. 
+        f = open(textFname, "r")
+        if f == None: return
         found = None
+        num = 0
         for line in f.readlines():
             if line.strip() == "": continue
             if line.lstrip()[0] == "#": 
@@ -32,50 +47,50 @@ class Tracks:
                 continue
             savedTrack = Track.fromString(line)
             found = None
-            for track in self.tracks.values():
+            for track in self.data.values():
                 if savedTrack.startTime == track.startTime: 
-                    print "found track", savedTrack.startTime, "in the file"
                     track.course = savedTrack.course
                     track.comment = savedTrack.comment
                     found = track
+                    num += 1
                     break
-            if found == None: self.tracks[savedTrack.getStartTimeAsStr()] = savedTrack
+            if found == None: 
+                self.data[savedTrack.getStartTimeAsStr()] = savedTrack
+                num += 1
+        print>>sys.stderr, "Loaded additional data for", num, "tracks from \"" + textFname + "\""
         f.close()
 
     def save(self, fname):
-        f = open(fname + ".pck", "w+")
-        pickle.dump(self.tracks, f)
-        f.close()
-        print "Saved data from", self.getSortedTracks()[0].startTime, "to", self.getSortedTracks()[-1].startTime
+        if fname == "": return
+        try:
+            f = open(fname, "w+")
+            pickle.dump(self.data, f)
+            f.close()
+        except Exception as e:
+            print>>sys.stderr, "Could not save data in " + fname + ": " + str(e)
+            return
+        print>>sys.stderr, "Saved data for", len(self.data), " tracks, from", \
+            self.getSortedTracks()[0].startTime, "to", self.getSortedTracks()[-1].startTime
 
     def updateFromXML(self, fnames):
+        if len(fnames) == 0: return
         totTime = 0.0
         totDist = 0.0
-        print "Updating... "
-        skipAll = False
+        print>>sys.stderr, "Updating from xml files... "
         for fname in fnames: 
             trackId = os.path.basename(fname)
-            update = False
-            if trackId in self.tracks:
-                if skipAll: continue
-                print "Found track", trackId, "corresponding to:"
-                self.tracks[trackId].write(sys.stdout, "all")
-                answer = raw_input("Would you like to update? (y)es/(N)o/(s)kip all ")
-                if answer == "": continue
-                if answer.lower() == "n": continue
-                if answer.lower() == "s": skipAll = True
-                else: update = True
+            if trackId in self.data: continue
             track = Track.fromXMLFile(fname)
             if track == None: continue
             totDist += track.dist
             totTime += track.duration
-            if update: self.tracks[trackId].update(track)
-            else: self.tracks[trackId] = track
-        if totTime > 0: print "Updated %.2f miles, %.1f mins" % (totDist, totTime)
-        else: print "no tracks added"
+            self.data[trackId] = track
+            print "Found new track", track.getStartTimeAsStr()
+        if totTime > 0: print>>sys.stderr, "Updated %.2f miles, %.1f mins" % (totDist, totTime)
+        else: print>>sys.stderr, "No tracks added"
 
     def getSortedTracks(self):
-        return sorted(self.tracks.values(), key=lambda track: track.startTime)
+        return sorted(self.data.values(), key=lambda track: track.startTime)
 
     def getEfficiencies(self):
         effs = []

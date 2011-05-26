@@ -1,6 +1,6 @@
 #!/usr/bin/python -u 
 
-import string
+import string, sys
 
 class Course:
     def __init__(self, id, elevChange, dist, descrptn):
@@ -8,9 +8,9 @@ class Course:
         self.elevChange = elevChange
         self.dist = dist
         self.descrptn = descrptn
-        if self.elevChange == 0: print "WARNING: no elev for course", self.id
-        if self.dist == 0: print "WARNING: no distance for course", self.id
-        if self.descrptn == 0: print "WARNING: no description for course", self.id
+        if self.elevChange == 0: print>>sys.stderr, "WARNING: no elev for course", self.id
+        if self.dist == 0: print>>sys.stderr, "WARNING: no distance for course", self.id
+        if self.descrptn == 0: print>>sys.stderr, "WARNING: no description for course", self.id
 
     def fromString(cls, line):
         numFields = 3

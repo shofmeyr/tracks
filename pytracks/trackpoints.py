@@ -1,5 +1,4 @@
-import numpy
-import simplejson, urllib
+import numpy, sys, simplejson, urllib, os
 
 class Trackpoint:
     def __init__(self, tm, lat, lng, dist = 0, gpsElev = 0, mapElev = 0, hr = 0):
@@ -18,6 +17,9 @@ class Trackpoints:
 
     def __init__(self, points):
         self.points = points
+
+    def __len__(self):
+        return len(self.points)
 
     def getElevChanges(self):
         # smooth the elevations
@@ -53,24 +55,44 @@ class Trackpoints:
         if change < 0: change = 0
         return change
 
-    def fromTrackpoints(cls, lats, lngs, dists, altitudes):
+    def fromXML(cls, xmlTree, fname):
+        times = xmlTree.findAll("Track/Trackpoint/Position/Time")
+        lats = xmlTree.findAll("Track/Trackpoint/Position/LatitudeDegrees")
+        lngs = xmlTree.findAll("Track/Trackpoint/Position/LongitudeDegrees")
+        dists = xmlTree.findAll("Track/Trackpoint/DistanceMeters")
+        altitudes = xmlTree.findAll("Track/Trackpoint/AltitudeMeters")
+        hrs = xmlTree.findAll("Track/Trackpoint/HeartRateBpm/Value")
         points = []
         if len(lats) != len(lngs): 
-            print "ERROR in getting elev, num lats (", len(lats),\
-                ") != num longs (",len(lngs), ")"
+            print>>sys.stderr, "ERROR in getting elev, num lats (", len(lats), ") != num longs (",len(lngs), ")"
         for i in range(0, min(len(lats), len(lngs))):
-            points.append(Trackpoint(lats[i], lngs[i], dists[i] / Trackpoints.METERS_PER_MILE, altitudes[i], 0))
-        points = Trackpoints.fromGoogle(points)
+            points.append(Trackpoint(tm = times[i], lat = lats[i], lng = lngs[i], 
+                                     dist = dists[i] / Trackpoints.METERS_PER_MILE, gpsElev = altitudes[i], 
+                                     mapElev = 0, hr = hrs[i]))
+        # check to see if there is already a file for elevations
+        elevFname = fname + ".elev"
+        if not os.path.exists(elevFname): 
+            # no previous elevs file, fetch from google
+            points = Trackpoints.getGoogleElevs(points)
+            if len(points) > 0:
+                # save the elevations to file
+                f = open(elevFname, "w+")
+                points.write(f)
+                f.close()
+        else:
+            # previous elevs file, load up
+            f = open(elevFname, "r")
+            i = 0
+            for line in f.readlines(): 
+                tp = Trackpoint.fromFile(line)
+                if tp.lat != points[i].lat or tp.lng != points[i].lng:
+                    print>>sys.stderr, "Mismatch between points at index", i, "in file", elevFname
+                    break
+                points[i].mapElev = tp.mapElev
+                i += 1
+            f.close()
         return cls(points)
-    fromTrackpoints = classmethod(fromTrackpoints)
-
-    def fromFile(cls, fname):
-        points = []
-        f = open(fname, "r")
-        for line in f.readlines(): points.append(Trackpoint.fromFile(line))
-        f.close()
-        return cls(points)
-    fromFile = classmethod(fromFile)
+    fromXML = classmethod(fromXML)
 
     def write(self, outFile):
         for point in self.points: point.write(outFile)
@@ -81,7 +103,9 @@ class Trackpoints:
     # so with the base, the maximum number of points that can be submitted in one request 
     # is 90 
     # The usage limits constrain us to 2500 request per day or 25000 locations
-    def fromGoogle(cls, points):
+    def getGoogleElevs(cls, points):
+        if len(points) == 0: return []
+        print>>sys.stdout, "Fetching elevations for", len(points), "points from google"
         ELEV_BASE_URL = 'http://maps.google.com/maps/api/elevation/json'
         baseUrlLen = len(ELEV_BASE_URL) + len("?locations=") + len("&sensor=false")
         path = ""
@@ -91,8 +115,7 @@ class Trackpoints:
             if path != "": path += "|"
             path += point.getUrlLatLng()
             i += 1
-            url = ELEV_BASE_URL + '?' + \
-                urllib.urlencode({'locations': path, 'sensor': 'false'})
+            url = ELEV_BASE_URL + '?' + urllib.urlencode({'locations': path, 'sensor': 'false'})
             # cannot have a longer url, so we make the request
             if len(url) > 2048 - 30 or i == len(points):
                 # print url
@@ -100,7 +123,7 @@ class Trackpoints:
                 response = simplejson.load(urllib.urlopen(url))
                 # print response
                 if response['status'] != "OK":
-                    print "Could not get elevs from Google: ", response['status']
+                    print>>sys.stderr, "Could not get elevs from Google:", response['status']
                     break
                 for resultset in response['results']: 
                     lat = float(resultset['location']['lat'])
@@ -108,17 +131,19 @@ class Trackpoints:
                     elev = float(resultset['elevation'])
                     resultPoints.append(Trackpoint(lat = lat, lng = lng, mapElev = elev))
                 path = ""
-        print "Found", i, "elevs for", len(points), "points"
+        if len(resultPoints) != len(points): 
+            print>>sys.stderr, "Could not retrieve all", len(points), "points from google, only got", \
+                len(resultPoints), "-- try again later"
         # now set the stored data
         for i in range(0, len(resultPoints)):
             if resultPoints[i].lat != points[i].lat:
-                print "Point mismatch at", i, ":"
+                print>>sys.stderr, "Point mismatch at", i, ":"
                 resultPoints[i].write(sys.stdout)
                 points[i].write(sys.stdout)
                 break
             else: points[i].mapElev = resultPoints[i].mapElev
         return points
-    fromGoogle = classmethod(fromGoogle)
+    getGoogleElevs = classmethod(getGoogleElevs)
 
     def getGoogleMap(self, fname):
         print "Getting map from Google for course", fname

@@ -1,35 +1,21 @@
-import string, os
-#import Image, pylab
+import string, os, sys
 import matplotlib.pyplot as pyplot
 from datetime import datetime as dt
-from coords import Coords
 from xmltree import XMLTree
 from courses import Courses
+from trackpoints import Trackpoints, Trackpoint
 
-class Run:
-    def __init__(self, startTime, duration, dist, maxPace, maxHR, avHR, course, comment):
+class Track:
+    def __init__(self, startTime, duration, dist, maxPace, maxHR, avHR, trackpoints, course, comment):
         self.startTime = startTime
         self.dist = dist
         self.duration = duration
         self.maxPace = maxPace
         self.maxHR = maxHR
         self.avHR = avHR
-        self.coords = None
+        self.trackpoints = trackpoints
         self.course = course
         self.comment = comment
-#                self.efficiency = Coords.METERS_PER_MILE / (self.avHR * self.duration / dist)
-        # for comparing elevations
-        # check to see if there is a file for elevations
-        elevFname = "data/" + self.getStartTimeAsStr() + ".tcx.coords"
-        if os.path.exists(elevFname): 
-            self.coords = Coords.fromFile(elevFname)
-            (gpsElevChange, mapElevChange) = self.coords.getElevChanges()
-            print self.startTime, "%.0f mins," % self.duration, "%.2f miles," % self.dist,\
-                "%.0f ft (gps)," % gpsElevChange, "%.0f ft (map)," % mapElevChange, 
-            if self.course in Courses.data and Courses.data[self.course].elevChange > 0: 
-                print "%.0f miles (course)" % Courses.data[self.course].dist,
-                "%.0f ft (course)" % Courses.data[self.course].elevChange, 
-            else: print "course %s," % self.course
 
     def fromString(cls, line):
         numFields = 13
@@ -43,6 +29,7 @@ class Run:
                    maxPace = float(tokens[5]),
                    maxHR = float(tokens[7]), 
                    avHR = float(tokens[8]),
+                   trackpoints = None,
                    course = tokens[12],
                    comment = comment)
     fromString = classmethod(fromString)
@@ -53,52 +40,49 @@ class Run:
         # for some reason, the date/time in the file is GMT whereas the file name is local, 
         # so we use the file name
         #self.setStartTime(dt.strptime(tree.find("Activity/Id").text, "%Y-%m-%dT%H:%M:%SZ"))
-        startTime = Run.getTimeFromFname(fname)
+        startTime = Track.getTimeFromFname(fname)
         durations = xmlTree.findAll("TotalTimeSeconds")
         duration = sum(durations) / 60.0
-        # drop point if the runtime is too small
-        if duration <= 5: return None
-        maxPace = max(xmlTree.findAll("MaximumSpeed"))
-        if maxPace > 0: maxPace = 60.0 / (maxPace * Coords.METERS_PER_MILE / 1000.0)
-        dist = sum(xmlTree.findAll("DistanceMeters")) / Coords.METERS_PER_MILE
+        # drop point if the tracktime is too small
+        if duration <= 5: 
+            print>>sys.stderr, "Dropping", fname, "time is < 5 mins"
+            return None
+        try:
+            maxPace = max(xmlTree.findAll("MaximumSpeed"))
+        except:
+            maxPace = 0
+        if maxPace > 0: maxPace = 60.0 / (maxPace * Trackpoints.METERS_PER_MILE / 1000.0)
+        dist = sum(xmlTree.findAll("DistanceMeters")) / Trackpoints.METERS_PER_MILE
         # drop point if the dist is measured, but small
-        if dist > 0 and dist < 1.0: return None
+        if dist > 0 and dist < 1.0: 
+            print>>sys.stderr, "Dropping", fname, "distance is > 0 and < 1.0"
+            return None
         maxHRs = xmlTree.findAll("MaximumHeartRateBpm/Value")
         if len(maxHRs) > 0: maxHR = max(maxHRs)
         else: maxHR = 0
         avHRs = xmlTree.findAll("AverageHeartRateBpm/Value")
         avHR = sum([avHRs[i] * durations[i] / 60 for i in range(0, len(avHRs))]) / duration
         # drop all points that have low heart rates
-        if avHR < 80 and avHR > 0: return None
-        # check to see if there is a file for elevations
-        elevFname = fname + ".coords"
-        if os.path.exists(elevFname): coords = Coords.fromFile(elevFname)
-        else: 
-            print "fetching elevations from google for", fname, "..."
-            # get coords if we have the trackpoints
-            coords = Coords.fromTrackpoints(
-                xmlTree.findAll("Track/Trackpoint/Position/LatitudeDegrees"),
-                xmlTree.findAll("Track/Trackpoint/Position/LongitudeDegrees"),
-                xmlTree.findAll("Track/Trackpoint/DistanceMeters"),
-                xmlTree.findAll("Track/Trackpoint/AltitudeMeters"))
-            # save the elevations to file
-            f = open(elevFname, "w+")
-            coords.write(f)
-            f.close()
+        if avHR < 80 and avHR > 0: 
+            print>>sys.stderr, "Dropping", fname, "av HR is < 80 and > 0"
+            return None
+        # extract trackpoints from xml
+        trackpoints = Trackpoints.fromXML(xmlTree, fname)
         # FIXME: try to find a matching course, ask if it is the correct one, or to name the course otherwise
         # FIXME: add an input option to add a comment
         return cls(startTime = startTime, duration = duration, dist = dist, 
-                   maxPace = maxPace, maxHR = maxHR, avHR = avHR, course = "0", comment = "")
+                   maxPace = maxPace, maxHR = maxHR, avHR = avHR, trackpoints = trackpoints, 
+                   course = "0", comment = "")
     fromXMLFile = classmethod(fromXMLFile)
 
-    def update(self, run):
-        self.startTime = run.startTime
-        self.dist = run.dist
-        self.duration = run.duration
-        self.maxPace = run.maxPace
-        self.maxHR = run.maxHR
-        self.avHR = run.avHR
-        self.coords = run.coords
+    def update(self, track):
+        self.startTime = track.startTime
+        self.dist = track.dist
+        self.duration = track.duration
+        self.maxPace = track.maxPace
+        self.maxHR = track.maxHR
+        self.avHR = track.avHR
+        self.trackpoints = track.trackpoints
         # don't change course or comments
 
     def write(self, outFile, useGps):
@@ -122,7 +106,7 @@ class Run:
             avPace = self.duration / dist
             elevRate = elev / dist
         if self.avHR > 0 and self.duration > 0:
-            efficiency = dist * Coords.METERS_PER_MILE / (self.avHR * self.duration)
+            efficiency = dist * Trackpoints.METERS_PER_MILE / (self.avHR * self.duration)
 
         print >> outFile, \
             "%-18s" % self.startTime,\
@@ -140,7 +124,7 @@ class Run:
             " %s " % self.comment
 
     def writeHeader(cls, outFile):
-        print >> outFile, "%-19s" % "Date & time",\
+        print >> outFile, "#%-18s" % "Date & time",\
             "%5s" % "dist",\
             "%5s" % "rdist",\
             "%6s" % "rtime",\
@@ -166,8 +150,8 @@ class Run:
 
     def getGoogleImage(self):
         pngFname = "data/" + self.getStartTimeAsStr() + ".tcx.png"
-        if self.coords != None and not os.path.exists(pngFname):
-            self.coords.getGoogleMap(pngFname)
+        if self.trackpoints != None and not os.path.exists(pngFname):
+            self.trackpoints.getGoogleMap(pngFname)
         return pyplot.imread(pngFname)
 
     def getTimeFromFname(cls, fname):
@@ -178,8 +162,10 @@ class Run:
         return self.startTime.strftime("%Y-%m-%d-%H%M%S")
 
     def getElevChange(self, useGps):
-        if self.coords != None: 
-            (gpsElevChange, mapElevChange) = self.coords.getElevChanges()
+        elev = 0
+        gpsElevChange = 0
+        if self.trackpoints != None: 
+            (gpsElevChange, mapElevChange) = self.trackpoints.getElevChanges()
             elev = mapElevChange
         if self.course in Courses.data: 
             elev = Courses.data[self.course].elevChange
