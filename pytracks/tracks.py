@@ -1,7 +1,6 @@
 #!/usr/bin/python -u 
 
 import sys, pickle, os
-
 from track import Track
 from courses import Courses
 
@@ -69,7 +68,7 @@ class Tracks:
         except Exception as e:
             print>>sys.stderr, "Could not save data in " + fname + ": " + str(e)
             return
-        print>>sys.stderr, "Saved data for", len(self.data), " tracks, from", \
+        print>>sys.stderr, "Saved data for", len(self.data), "tracks, from", \
             self.getSortedTracks()[0].startTime, "to", self.getSortedTracks()[-1].startTime
 
     def updateFromXML(self, fnames):
@@ -85,7 +84,7 @@ class Tracks:
             totDist += track.dist
             totTime += track.duration
             self.data[trackId] = track
-            print "Found new track", track.getStartTimeAsStr()
+            print>>sys.stderr, "Found new track", track.getStartTimeAsStr()
         if totTime > 0: print>>sys.stderr, "Updated %.2f miles, %.1f mins" % (totDist, totTime)
         else: print>>sys.stderr, "No tracks added"
 

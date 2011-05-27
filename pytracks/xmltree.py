@@ -1,19 +1,13 @@
-import xml.etree.ElementTree as ElementTree
+import sys
+from lxml import etree
 
 class XMLTree:
     def __init__(self, fname):
-        # clean up xml file
-        f = open(fname, "r+")
-        cleanXml = ""
-        addLine = False
-        for line in f.readlines():
-            if "Activities" in line: addLine = True
-            if addLine: cleanXml += line.replace("xsi:", "")
-            if "/Activities" in line: break
-        f.close()
-        self.tree = ElementTree.fromstring(cleanXml)
+        self.ns = "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+        self.tree = etree.parse(fname)
+        self.root = "t:Activities/t:Activity/t:Lap/"
         
-    def findAll(self, token):
-        root = "Activity/Lap/"
-        return [float(t.text) for t in self.tree.findall(root + token)]
+    def findAll(self, token, isFloat = True):
+        if isFloat: return [float(t.text) for t in self.tree.xpath(self.root + "t:" + token, namespaces={"t":self.ns})]
+        else: return [t.text for t in self.tree.xpath(self.root + "t:" + token, namespaces={"t":self.ns})]
     

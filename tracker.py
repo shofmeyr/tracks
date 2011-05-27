@@ -77,15 +77,15 @@ def main():
         i = 0
         found = False
         for track in tracks.getSortedTracks():
-            if track.coords != None: 
+            if len(track) > 0:
                 if (trackDate != None and track.startTime == trackDate) or track.course == options.plotMap:
-                    if not mapViewer.addTrack(track.coords.getLats(), track.coords.getLngs(), color = colors[i]):
+                    if not mapViewer.addTrack(track.trackpoints.getLats(), track.trackpoints.getLngs(), color = colors[i]):
                         print>>sys.stderr, "Track", track.startTime, "is empty"
                     else:
-                        (gpsElevChange, mapElevChange) = track.coords.getElevChanges()
-                        ax.plot(track.coords.getDists(), track.coords.getMapElevs(), 
+                        (gpsElevChange, mapElevChange) = track.trackpoints.getElevChanges()
+                        ax.plot(track.trackpoints.getDists(), track.trackpoints.getMapElevs(), 
                                 label = track.getDate() + " (" + ("%.0f" % mapElevChange) + ")", color = colors[i])
-                    (trackMinElev, trackMaxElev) = track.coords.getMinMaxElevs(options.useGps)
+                    (trackMinElev, trackMaxElev) = track.trackpoints.getMinMaxElevs(options.useGps)
                     if maxElev < trackMaxElev: maxElev = trackMaxElev
                     if minElev > trackMinElev: minElev = trackMinElev
                     if maxDist < track.dist: maxDist = track.dist

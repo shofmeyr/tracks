@@ -1,9 +1,9 @@
 import string, os, sys
 import matplotlib.pyplot as pyplot
 from datetime import datetime as dt
-from xmltree import XMLTree
 from courses import Courses
 from trackpoints import Trackpoints, Trackpoint
+from xmltree import XMLTree
 
 class Track:
     def __init__(self, startTime, duration, dist, maxPace, maxHR, avHR, trackpoints, course, comment):
@@ -16,6 +16,15 @@ class Track:
         self.trackpoints = trackpoints
         self.course = course
         self.comment = comment
+
+    def __len__(self):
+        return len(self.trackpoints)
+
+    def __getitem__(self, key):
+        return self.trackpoints[key]
+
+    def __setitem__(self, key, value):
+        self.trackpoints[key] = value
 
     def fromString(cls, line):
         numFields = 13
@@ -36,38 +45,38 @@ class Track:
 
     def fromXMLFile(cls, fname):
         # load the xml file into a tree
-        xmlTree = XMLTree(fname)
+        tree = XMLTree(fname)
         # for some reason, the date/time in the file is GMT whereas the file name is local, 
         # so we use the file name
         #self.setStartTime(dt.strptime(tree.find("Activity/Id").text, "%Y-%m-%dT%H:%M:%SZ"))
-        startTime = Track.getTimeFromFname(fname)
-        durations = xmlTree.findAll("TotalTimeSeconds")
+        startTime = Track.getTimeFromFname(fname, )
+        durations = tree.findAll("TotalTimeSeconds")
         duration = sum(durations) / 60.0
         # drop point if the tracktime is too small
         if duration <= 5: 
             print>>sys.stderr, "Dropping", fname, "time is < 5 mins"
             return None
         try:
-            maxPace = max(xmlTree.findAll("MaximumSpeed"))
+            maxPace = max(tree.findAll("MaximumSpeed"))
         except:
             maxPace = 0
         if maxPace > 0: maxPace = 60.0 / (maxPace * Trackpoints.METERS_PER_MILE / 1000.0)
-        dist = sum(xmlTree.findAll("DistanceMeters")) / Trackpoints.METERS_PER_MILE
+        dist = sum(tree.findAll("DistanceMeters")) / Trackpoints.METERS_PER_MILE
         # drop point if the dist is measured, but small
         if dist > 0 and dist < 1.0: 
             print>>sys.stderr, "Dropping", fname, "distance is > 0 and < 1.0"
             return None
-        maxHRs = xmlTree.findAll("MaximumHeartRateBpm/Value")
+        maxHRs = tree.findAll("MaximumHeartRateBpm/t:Value")
         if len(maxHRs) > 0: maxHR = max(maxHRs)
         else: maxHR = 0
-        avHRs = xmlTree.findAll("AverageHeartRateBpm/Value")
+        avHRs = tree.findAll("AverageHeartRateBpm/t:Value")
         avHR = sum([avHRs[i] * durations[i] / 60 for i in range(0, len(avHRs))]) / duration
         # drop all points that have low heart rates
         if avHR < 80 and avHR > 0: 
             print>>sys.stderr, "Dropping", fname, "av HR is < 80 and > 0"
             return None
         # extract trackpoints from xml
-        trackpoints = Trackpoints.fromXML(xmlTree, fname)
+        trackpoints = Trackpoints.fromXML(tree, fname)
         # FIXME: try to find a matching course, ask if it is the correct one, or to name the course otherwise
         # FIXME: add an input option to add a comment
         return cls(startTime = startTime, duration = duration, dist = dist, 

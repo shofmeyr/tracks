@@ -1,4 +1,5 @@
 import numpy, sys, simplejson, urllib, os
+from xmltree import XMLTree
 
 class Trackpoint:
     def __init__(self, tm, lat, lng, dist = 0, gpsElev = 0, mapElev = 0, hr = 0):
@@ -9,6 +10,10 @@ class Trackpoint:
         self.gpsElev = gpsElev
         self.mapElev = mapElev
         self.hr = hr
+
+    def getUrlLatLng(self):
+        return str(self.lat) + "," + str(self.lng)
+
 
 class Trackpoints:
     METERS_PER_MILE = 1609.344
@@ -55,16 +60,20 @@ class Trackpoints:
         if change < 0: change = 0
         return change
 
-    def fromXML(cls, xmlTree, fname):
-        times = xmlTree.findAll("Track/Trackpoint/Position/Time")
-        lats = xmlTree.findAll("Track/Trackpoint/Position/LatitudeDegrees")
-        lngs = xmlTree.findAll("Track/Trackpoint/Position/LongitudeDegrees")
-        dists = xmlTree.findAll("Track/Trackpoint/DistanceMeters")
-        altitudes = xmlTree.findAll("Track/Trackpoint/AltitudeMeters")
-        hrs = xmlTree.findAll("Track/Trackpoint/HeartRateBpm/Value")
+    def fromXML(cls, tree, fname):
+        root = "Track/t:Trackpoint/t:"
+        times = tree.findAll(root + "Time", False)
+        lats = tree.findAll(root + "Position/t:LatitudeDegrees")
+        lngs = tree.findAll(root + "Position/t:LongitudeDegrees")
+        dists = tree.findAll(root + "DistanceMeters")
+        altitudes = tree.findAll(root + "AltitudeMeters")
+        hrs = tree.findAll(root + "HeartRateBpm/t:Value")
         points = []
-        if len(lats) != len(lngs): 
-            print>>sys.stderr, "ERROR in getting elev, num lats (", len(lats), ") != num longs (",len(lngs), ")"
+        if not (len(times) >= len(lats) == len(lngs) == len(dists) == len(altitudes) == len(hrs)): 
+            print>>sys.stderr, "ERROR in getting data from xml file: missing points:",\
+                "times", len(times), "lats", len(lats), "lngs", len(lngs), "dists", len(dists),\
+                "altitudes", len(altitudes), "hrs", len(hrs)
+            return
         for i in range(0, min(len(lats), len(lngs))):
             points.append(Trackpoint(tm = times[i], lat = lats[i], lng = lngs[i], 
                                      dist = dists[i] / Trackpoints.METERS_PER_MILE, gpsElev = altitudes[i], 
@@ -77,25 +86,29 @@ class Trackpoints:
             if len(points) > 0:
                 # save the elevations to file
                 f = open(elevFname, "w+")
-                points.write(f)
+                for point in points: print>>f, point.lat, point.lng, point.dist, point.gpsElev, point.mapElev
                 f.close()
         else:
             # previous elevs file, load up
             f = open(elevFname, "r")
             i = 0
             for line in f.readlines(): 
-                tp = Trackpoint.fromFile(line)
-                if tp.lat != points[i].lat or tp.lng != points[i].lng:
-                    print>>sys.stderr, "Mismatch between points at index", i, "in file", elevFname
+                tokens = line.lstrip().rstrip().split()
+                lat = float(tokens[0])
+                lng = float(tokens[1])
+                mapElev = float(tokens[4])
+                if lat != points[i].lat or lng != points[i].lng:
+                    print>>sys.stderr, "Mismatch between points at index", i, "in file", elevFname,\
+                        lat, points[i].lat, lng, points[i].lng
                     break
-                points[i].mapElev = tp.mapElev
+                points[i].mapElev = mapElev
                 i += 1
             f.close()
         return cls(points)
     fromXML = classmethod(fromXML)
 
     def write(self, outFile):
-        for point in self.points: point.write(outFile)
+        for point in self.points: print>>outFile, point.lat, point.lng, point.dist, point.gpsElev, point.mapElev
 
     # this is taken from a google eg at 
     # http://gmaps-samples.googlecode.com/svn/trunk/elevation/python/ElevationChartCreator.py
@@ -129,7 +142,7 @@ class Trackpoints:
                     lat = float(resultset['location']['lat'])
                     lng = float(resultset['location']['lng'])
                     elev = float(resultset['elevation'])
-                    resultPoints.append(Trackpoint(lat = lat, lng = lng, mapElev = elev))
+                    resultPoints.append(Trackpoint(tm = 0, lat = lat, lng = lng, mapElev = elev))
                 path = ""
         if len(resultPoints) != len(points): 
             print>>sys.stderr, "Could not retrieve all", len(points), "points from google, only got", \
