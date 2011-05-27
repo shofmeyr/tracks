@@ -51,26 +51,26 @@ class Track:
         # so we use the file name
         #self.setStartTime(dt.strptime(tree.find("Activity/Id").text, "%Y-%m-%dT%H:%M:%SZ"))
         startTime = Track.getTimeFromFname(fname, )
-        durations = tree.findAll("TotalTimeSeconds")
+        durations = tree.findAll("t:TotalTimeSeconds")
         duration = sum(durations) / 60.0
         # drop point if the tracktime is too small
         if duration <= 5: 
             print>>sys.stderr, "Dropping", fname, "time is < 5 mins"
             return None
         try:
-            maxPace = max(tree.findAll("MaximumSpeed"))
+            maxPace = max(tree.findAll("t:MaximumSpeed"))
         except:
             maxPace = 0
         if maxPace > 0: maxPace = 60.0 / (maxPace * Trackpoints.METERS_PER_MILE / 1000.0)
-        dist = sum(tree.findAll("DistanceMeters")) / Trackpoints.METERS_PER_MILE
+        dist = sum(tree.findAll("t:DistanceMeters")) / Trackpoints.METERS_PER_MILE
         # drop point if the dist is measured, but small
         if dist > 0 and dist < 1.0: 
             print>>sys.stderr, "Dropping", fname, "distance is > 0 and < 1.0"
             return None
-        maxHRs = tree.findAll("MaximumHeartRateBpm/t:Value")
+        maxHRs = tree.findAll("t:MaximumHeartRateBpm/t:Value")
         if len(maxHRs) > 0: maxHR = max(maxHRs)
         else: maxHR = 0
-        avHRs = tree.findAll("AverageHeartRateBpm/t:Value")
+        avHRs = tree.findAll("t:AverageHeartRateBpm/t:Value")
         avHR = sum([avHRs[i] * durations[i] / 60 for i in range(0, len(avHRs))]) / duration
         # drop all points that have low heart rates
         if avHR < 80 and avHR > 0: 
@@ -80,6 +80,10 @@ class Track:
         trackpoints = Trackpoints.fromXML(tree, fname)
         # FIXME: try to find a matching course, ask if it is the correct one, or to name the course otherwise
         # FIXME: add an input option to add a comment
+        # now write the modified tree back to the file
+        f = open(fname, "w")
+        tree.write(f)
+        f.close()
         return cls(startTime = startTime, duration = duration, dist = dist, 
                    maxPace = maxPace, maxHR = maxHR, avHR = avHR, trackpoints = trackpoints, 
                    course = "0", comment = "")

@@ -76,7 +76,7 @@ def main():
         print>>f, "    <Name>Garmin ANT Agent(tm)</Name>"
         print>>f, "    <Build>"
         print>>f, "      <Version>"
-        print>>f, "        <VersionMajor>2</VersionMajor\">"
+        print>>f, "        <VersionMajor>2</VersionMajor>"
         print>>f, "        <VersionMinor>2</VersionMinor>"
         print>>f, "        <BuildMajor>7</BuildMajor>"
         print>>f, "        <BuildMinor>0</BuildMinor>"
