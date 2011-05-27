@@ -2,12 +2,12 @@ import sys
 from lxml import etree
 
 class XMLTree:
-    def __init__(self, fname):
-        self.ns = "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+    def __init__(self, fname, namespace, root):
+        self.ns = namespace
         self.tree = etree.parse(fname)
-        self.root = "t:Activities/t:Activity/t:Lap/"
+        self.root = root
         
     def findAll(self, token, isFloat = True):
-        if isFloat: return [float(t.text) for t in self.tree.xpath(self.root + "t:" + token, namespaces={"t":self.ns})]
-        else: return [t.text for t in self.tree.xpath(self.root + "t:" + token, namespaces={"t":self.ns})]
+        if isFloat: return [float(t.text) for t in self.tree.xpath(self.root + "t:" + token, namespaces=self.ns)]
+        else: return [t.text for t in self.tree.xpath(self.root + "t:" + token, namespaces=self.ns)]
     

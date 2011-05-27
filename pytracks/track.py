@@ -45,7 +45,8 @@ class Track:
 
     def fromXMLFile(cls, fname):
         # load the xml file into a tree
-        tree = XMLTree(fname)
+        tree = XMLTree(fname, namespace = {"t":"http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"}, 
+                       root = "t:Activities/t:Activity/t:Lap/")
         # for some reason, the date/time in the file is GMT whereas the file name is local, 
         # so we use the file name
         #self.setStartTime(dt.strptime(tree.find("Activity/Id").text, "%Y-%m-%dT%H:%M:%SZ"))
