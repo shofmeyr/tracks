@@ -71,19 +71,21 @@ class Trackpoints:
         mapAltitudes = tree.findAll(root + "t:MapAltitudeMeters")
         points = []
         if not (len(times) >= len(lats) == len(lngs) == len(dists) == len(altitudes) == len(hrs)): 
-            print>>sys.stderr, "ERROR in getting data from xml file: missing points:",\
+            print>>sys.stderr, "Missing points in xml file", fname, ":",\
                 "times", len(times), "lats", len(lats), "lngs", len(lngs), "dists", len(dists),\
                 "altitudes", len(altitudes), "hrs", len(hrs)
-            return None
         if len(mapAltitudes) == 0 and len(altitudes) > 0:
             # no previous elevations, fetch from google
             if not os.path.exists(fname + ".elev"): mapAltitudes = Trackpoints.getGoogleElevs(lats, lngs)
             else: mapAltitudes = Trackpoints.readElevsFile(fname + ".elev")
             # add the elevs to the xmltree
-            print>>sys.stderr, "adding", len(mapAltitudes), "elems from file", fname + ".elev"
+            print>>sys.stderr, "Adding", len(mapAltitudes), "map elevations to", fname
             tree.addElems("t:Track/t:Trackpoint", "MapAltitudeMeters", mapAltitudes, "AltitudeMeters")
         # set up the points array
         for i in range(0, min(len(lats), len(lngs))):
+            if len(hrs) <= i: hrs.append(0)
+            if len(altitudes) <= i: altitudes.append(0)
+            if len(dists) <= i: dists.append(0)
             points.append(Trackpoint(tm = times[i], lat = lats[i], lng = lngs[i], 
                                      dist = dists[i] / Trackpoints.METERS_PER_MILE, gpsElev = altitudes[i], 
                                      mapElev = mapAltitudes[i], 

@@ -84,8 +84,11 @@ class Tracks:
             totDist += track.dist
             totTime += track.duration
             self.data[trackId] = track
-            print>>sys.stderr, "Found new track", track.getStartTimeAsStr()
-        if totTime > 0: print>>sys.stderr, "Updated %.2f miles, %.1f mins" % (totDist, totTime)
+            print>>sys.stderr, "Added new track", track.getStartTimeAsStr()
+        if totTime > 0: 
+            hours = int(totTime) / int(60)
+            mins = totTime - hours * 60
+            print>>sys.stderr, "Updated %.2f miles, %.0f hrs %.0f mins" % (totDist, hours, mins)
         else: print>>sys.stderr, "No tracks added"
 
     def getSortedTracks(self):
