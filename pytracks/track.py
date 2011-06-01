@@ -2,7 +2,7 @@ import string, os, sys
 import matplotlib.pyplot as pyplot
 import datetime
 from courses import Courses
-from trackpoints import Trackpoints, Trackpoint
+from trackpoints import Trackpoints
 from xmltree import XMLTree
 import pytz
 
@@ -21,11 +21,11 @@ class Track:
     def __len__(self):
         return len(self.trackpoints)
 
-    def __getitem__(self, key):
-        return self.trackpoints[key]
+#    def __getitem__(self, key):
+#        return self.trackpoints[key]
 
-    def __setitem__(self, key, value):
-        self.trackpoints[key] = value
+#    def __setitem__(self, key, value):
+#        self.trackpoints[key] = value
 
     @classmethod
     def fromXMLFile(cls, fname, tz = None):
@@ -66,7 +66,8 @@ class Track:
             print>>sys.stderr, "Dropping", fname, "av HR is < 80 and > 0"
             return None
         # extract trackpoints from xml
-        trackpoints = Trackpoints.fromXML(tree, fname)
+        trackpoints = Trackpoints()
+        trackpoints.loadFromXML(tree, fname)
         # FIXME: try to find a matching course, ask if it is the correct one, or to name the course otherwise
         # FIXME: add an input option to add a comment
         # now write the modified tree back to the file
@@ -75,7 +76,7 @@ class Track:
         f.close()
         # time is UTC, try to convert it here
         lng = None
-        if len(trackpoints) > 0: lng =  trackpoints[0].lng
+        if len(trackpoints) > 0: lng =  trackpoints.lngs[0]
         startTime = Track.getLocalTime(utcStartTime, lng, tz)
         return (cls(startTime = startTime, duration = duration, dist = dist, 
                     maxPace = maxPace, maxHR = maxHR, avHR = avHR, trackpoints = trackpoints, 
@@ -175,8 +176,8 @@ class Track:
         return elev
         
     def getMidPointRange(self, t):
-        if t == "lats": x = self.trackpoints.getLats()
-        else: x = self.trackpoints.getLngs()
+        if t == "lats": x = self.trackpoints.lats
+        else: x = self.trackpoints.lngs
         minX = min(x)
         maxX = max(x)
         return (minX + (maxX - minX) / 2.0, maxX - minX)

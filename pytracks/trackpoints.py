@@ -1,44 +1,37 @@
 import numpy, sys, simplejson, urllib, os
 from xmltree import XMLTree
 
-class Trackpoint:
-    def __init__(self, tm, lat, lng, dist = 0, gpsElev = 0, mapElev = 0, hr = 0):
-        self.time = tm
-        self.lat = lat
-        self.lng = lng
-        self.dist = dist
-        self.gpsElev = gpsElev
-        self.mapElev = mapElev
-        self.hr = hr
-
-    def getUrlLatLng(self):
-        return str(self.lat) + "," + str(self.lng)
-
-
 class Trackpoints:
     METERS_PER_MILE = 1609.344
     FEET_PER_METER = 3.28084
     elevWindow = 5
 
-    def __init__(self, points):
-        self.points = points
+    def __init__(self):
+        self.times = []
+        self.lats = []
+        self.lngs = []
+        self.dists = []
+        self.gpsElevs = []
+        self.mapElevs = []
+        self.hrs = []
+        self.length = 0
 
     def __len__(self):
-        return len(self.points)
+        return self.length
 
-    def __getitem__(self, key):
-        return self.points[key]
+#    def __getitem__(self, key):
+#        return self.points[key]
 
-    def __setitem__(self, key, value):
-        self.points[key] = value
+#    def __setitem__(self, key, value):
+#        self.points[key] = value
 
     def getElevChanges(self):
         # smooth the elevations
         gpsSmoothed = []
         mapSmoothed = []
-        for i in range(0, len(self.points) - Trackpoints.elevWindow): 
-            gpsSmoothed.append(numpy.average([p.gpsElev for p in self.points[i:i + Trackpoints.elevWindow]]))
-            mapSmoothed.append(numpy.average([p.mapElev for p in self.points[i:i + Trackpoints.elevWindow]]))
+        for i in range(0, len(self) - Trackpoints.elevWindow): 
+            gpsSmoothed.append(numpy.average(self.gpsElevs[i:i + Trackpoints.elevWindow]))
+            mapSmoothed.append(numpy.average(self.mapElevs[i:i + Trackpoints.elevWindow]))
         # compute elevation change
         gpsChange = 0
         mapChange = 0
@@ -50,15 +43,12 @@ class Trackpoints:
         return (gpsChange, mapChange)
 
     def getMinMaxElevs(self, useGps = False):
-        minElev = 30000.0
-        maxElev = 0.0
-        for point in self.points:
-            if useGps:
-                minElev = min(point.gpsElev, minElev)
-                maxElev = max(point.gpsElev, maxElev)
-            else:
-                minElev = min(point.mapElev, minElev)
-                maxElev = max(point.mapElev, maxElev)
+        if useGps:
+            minElev = min(self.gpsElevs)
+            maxElev = max(self.gpsElevs)
+        else:
+            minElev = min(self.mapElevs)
+            maxElev = max(self.mapElevs)
         return (minElev * Trackpoints.FEET_PER_METER, maxElev * Trackpoints.FEET_PER_METER)
 
     def computeChange(self, first, second):
@@ -66,38 +56,29 @@ class Trackpoints:
         if change < 0: change = 0
         return change
 
-    @classmethod
-    def fromXML(cls, tree, fname):
+    def loadFromXML(self, tree, fname):
         root = "t:Track/t:Trackpoint/"
-        times = tree.findAll(root + "t:Time", False)
-        lats = tree.findAll(root + "t:Position/t:LatitudeDegrees")
-        lngs = tree.findAll(root + "t:Position/t:LongitudeDegrees")
-        dists = tree.findAll(root + "t:DistanceMeters")
-        altitudes = tree.findAll(root + "t:AltitudeMeters")
-        hrs = tree.findAll(root + "t:HeartRateBpm/t:Value")
-        mapAltitudes = tree.findAll(root + "t:MapAltitudeMeters")
-        points = []
-        if not (len(times) >= len(lats) == len(lngs) == len(dists) == len(altitudes) == len(hrs)): 
+        self.times = tree.findAll(root + "t:Time", False)
+        self.lats = tree.findAll(root + "t:Position/t:LatitudeDegrees")
+        self.lngs = tree.findAll(root + "t:Position/t:LongitudeDegrees")
+        self.dists = [d / Trackpoints.METERS_PER_MILE for d in tree.findAll(root + "t:DistanceMeters")]
+        self.gpsElevs = tree.findAll(root + "t:AltitudeMeters")
+        self.hrs = tree.findAll(root + "t:HeartRateBpm/t:Value")
+        self.mapElevs = tree.findAll(root + "t:MapAltitudeMeters")
+        if not (len(self.times) >= len(self.lats) == len(self.lngs) == len(self.dists) == 
+                len(self.gpsElevs) == len(self.hrs)): 
             print>>sys.stderr, "Missing points in xml file", fname, ":",\
-                "times", len(times), "lats", len(lats), "lngs", len(lngs), "dists", len(dists),\
-                "altitudes", len(altitudes), "hrs", len(hrs)
-        if len(mapAltitudes) == 0 and len(altitudes) > 0:
+                "times", len(self.times), "lats", len(self.lats), "lngs", len(self.lngs), "dists", len(self.dists),\
+                "altitudes", len(self.gpsElevs), "hrs", len(self.hrs)
+        self.length = min([len(self.times), len(self.lats), len(self.lngs), len(self.dists), len(self.gpsElevs), 
+                           len(self.hrs)])
+        if len(self.mapElevs) == 0 and len(self.gpsElevs) > 0:
             # no previous elevations, fetch from google
-            if not os.path.exists(fname + ".elev"): mapAltitudes = Trackpoints.getGoogleElevs(lats, lngs)
-            else: mapAltitudes = Trackpoints.readElevsFile(fname + ".elev")
+            if not os.path.exists(fname + ".elev"): self.mapElevs = Trackpoints.getGoogleElevs(lats, lngs)
+            else: mapElevs = Trackpoints.readElevsFile(fname + ".elev")
             # add the elevs to the xmltree
-            print>>sys.stderr, "Adding", len(mapAltitudes), "map elevations to", fname
-            tree.addElems("t:Track/t:Trackpoint", "MapAltitudeMeters", mapAltitudes, "AltitudeMeters")
-        # set up the points array
-        for i in range(0, min(len(lats), len(lngs))):
-            if len(hrs) <= i: hrs.append(0)
-            if len(altitudes) <= i: altitudes.append(0)
-            if len(dists) <= i: dists.append(0)
-            points.append(Trackpoint(tm = times[i], lat = lats[i], lng = lngs[i], 
-                                     dist = dists[i] / Trackpoints.METERS_PER_MILE, gpsElev = altitudes[i], 
-                                     mapElev = mapAltitudes[i], 
-                                     hr = hrs[i]))
-        return cls(points)
+            print>>sys.stderr, "Adding", len(self.mapElevs), "map elevations to", fname
+            tree.addElems("t:Track/t:Trackpoint", "MapAltitudeMeters", self.mapElevs, "AltitudeMeters")
 
     @classmethod
     def readElevsFile(cls, elevFname):
@@ -113,7 +94,8 @@ class Trackpoints:
         return elevs
 
     def write(self, outFile):
-        for point in self.points: print>>outFile, point.lat, point.lng, point.dist, point.gpsElev, point.mapElev
+        for i in range(0, len(self)):
+            print>>outFile, self.lats[i], self.lngs[i], self.dists[i], self.gpsElevs[i], self.mapElevs[i], self.hrs[i]
 
     # this is taken from a google eg at 
     # http://gmaps-samples.googlecode.com/svn/trunk/elevation/python/ElevationChartCreator.py
@@ -146,43 +128,5 @@ class Trackpoints:
                 len(elevs), "-- try again later"
             return []
         return elevs
-
-    def getGoogleMap(self, fname):
-        print "Getting map from Google for course", fname
-        # the url is limited to length 2048. the header is 127 chars, and each point is 28 chars, so we are limited to
-        # about 68 points
-        urlBase = "https://maps.googleapis.com/maps/api/staticmap?"
-        sampleInterval = len(self.points) / 60
-        path = ""
-        for i in range(0, len(self.points), sampleInterval):
-            if path != "": path += "|"
-            path += self.points[i].getUrlLatLng()
-        path += "|" + self.points[-1].getUrlLatLng()
-        url = urlBase + urllib.urlencode({"sensor": "false", "size": "1000x1000", "maptype": "terrain", 
-                                          "path": "weight:2|color:0xFF0000|" + path})
-        response = (urllib.urlopen(url))
-        f = open(fname, "w+")
-        f.write(response.read())
-        f.close()
-
-    def getDists(self):
-        dists = []
-        for point in self.points: dists.append(point.dist)
-        return dists
-
-    def getMapElevs(self):
-        elevs = []
-        for point in self.points: elevs.append(point.mapElev * Trackpoints.FEET_PER_METER)
-        return elevs
-    
-    def getLats(self):
-        lats = []
-        for point in self.points: lats.append(point.lat)
-        return lats
-    
-    def getLngs(self):
-        lngs = []
-        for point in self.points: lngs.append(point.lng)
-        return lngs
 
 

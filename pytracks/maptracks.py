@@ -48,16 +48,20 @@ class MapTracks(gtk.Window):
         
     def addTracks(self, tracks, trackDates, colors):
         colorIndex = 0
+        found = False
         for trackDate in trackDates:
-            track = tracks[trackDate]
+            try: track = tracks[trackDate]
+            except: continue
             if len(track) == 0: continue
+            found = True
             # create the track
             mapTrack = osmgpsmap.GpsMapTrack()
             mapTrack.set_property("line-width", 2)
             mapTrack.set_property("color", gtk.gdk.color_parse(colors[colorIndex]))
             colorIndex += 1
             if colorIndex == len(colors): break
-            for trackpoint in track: mapTrack.add_point(osmgpsmap.point_new_degrees(trackpoint.lat, trackpoint.lng))
+            for i in range(0, len(track.trackpoints)): 
+                mapTrack.add_point(osmgpsmap.point_new_degrees(track.trackpoints.lats[i], track.trackpoints.lngs[i]))
             self.osm.track_add(mapTrack)
             # center the track
             (centerLat, latRange) = track.getMidPointRange("lats")
@@ -69,6 +73,7 @@ class MapTracks(gtk.Window):
             # TODO: add numbers every 1/2 mile on the track. We'll need an image for each number to do this
             #        pb = gtk.gdk.pixbuf_new_from_file_at_size (num + ".png", 24, 24)
             #        self.osm.image_add(lat, lon, pb)
+        return found
 
     def mapClicked(self, osm, event):
         lat,lon = self.osm.get_event_location(event).get_degrees()

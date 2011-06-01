@@ -50,15 +50,12 @@ class Tracks:
         totDist = 0.0
         print>>sys.stderr, "Updating from xml files... "
         for fname in fnames: 
-#            trackId = os.path.basename(fname)
-#            if trackId in self.data: continue
             track = Track.fromXMLFile(fname, tz)[0]
             if track == None: continue
             startTime = track.getStartTimeAsStr()
             if startTime in self.data: continue
             totDist += track.dist
             totTime += track.duration
-#            self.data[trackId] = track
             self.data[startTime] = track
             print>>sys.stderr, "Added new track", startTime
         if totTime > 0: 
@@ -67,9 +64,6 @@ class Tracks:
             print>>sys.stderr, "Updated %.2f miles, %.0f hrs %.0f mins" % (totDist, hours, mins)
         else: print>>sys.stderr, "No tracks added"
         self.sortedKeys = sorted(self.data.keys())
-
-#    def getSortedTracks(self):
-#        return sorted(self.data.values(), key=lambda track: track.startTime)
 
     def getEfficiencies(self):
         effs = []

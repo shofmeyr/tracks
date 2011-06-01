@@ -73,8 +73,9 @@ def main():
         if len(trackDates) == 0:
             print>>sys.stderr, "No tracks found with trackpoints"
             sys.exit(0)
-        print trackDates
-        mapTracks.addTracks(tracks, trackDates, colors)
+        if not mapTracks.addTracks(tracks, trackDates, colors):
+            print>>sys.stderr, "No tracks found with trackpoints"
+            sys.exit(0)
 
         
         #             if not maptracks.addTrack(track.trackpoints.getLats(), track.trackpoints.getLngs(), color = colors[i]):
