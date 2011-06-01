@@ -1,13 +1,12 @@
 #!/usr/bin/python -u 
 
-from datetime import datetime as dt
 from matplotlib.figure import Figure
 import matplotlib.font_manager as font_manager
 from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
 from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
 import optparse, string, os, sys
 import matplotlib.pyplot as pyplot
-import gtk
+import gtk, datetime
 import pytracks
 from pytracks.courses import Courses
 from pytracks.tracks import Tracks
@@ -23,7 +22,7 @@ def main():
     cmdOptParser.add_option("-c", action = "store", type = "string", dest = "coursesFname", 
                             default = "", help = "Name of courses data file")
     cmdOptParser.add_option("-m", action = "store", type = "string", dest = "plotMap", 
-                            default = "", help = "Print track/s for course or date (YYYY-MM-DD), or 'all' for all tracks")
+                            default = "", help = "Show track/s on map for course or date (YYYY-MM-DD)")
     cmdOptParser.add_option("-w", action = "store", type = "int", dest = "elevWindow", 
                             default = 5, help = "Window size for smoothing elevations")
     cmdOptParser.add_option("-p", action = "store", type = "string", dest = "printTracks", 
@@ -32,16 +31,16 @@ def main():
                             default = False, help = "Use the GPS distance and elev instead of the course values")
     cmdOptParser.add_option("-t", action = "store_true", dest = "showTerrain", 
                             default = False, help = "Show terrain on map instead of aerial photo")
-    cmdOptParser.add_option("--fromtext", action = "store", type = "string", dest = "textSummaryFname", 
-                            default = "", help = "Read additional tracks data from named text file")
+    cmdOptParser.add_option("-z", action = "store", type = "string", dest = "tz", 
+                            default = "", help = "Set time zone for all points converted from xml")
     (options, fnames) = cmdOptParser.parse_args()
     Trackpoints.elevWindow = options.elevWindow
     # get the course data
     Courses.load(options.coursesFname)
     tracks = Tracks()
-    tracks.load(options.tracksFname, options.textSummaryFname)
+    tracks.load(options.tracksFname)
     # now update with any new data
-    tracks.updateFromXML(fnames)
+    tracks.updateFromXML(fnames, options.tz)
     if len(tracks) == 0: 
         print>>sys.stderr, "No tracks found"
         sys.exit(0)
@@ -51,7 +50,7 @@ def main():
     if options.plotMap != "":
         trackDate = None
         try: 
-            trackDate = Track.getTimeFromFname(options.plotMap + ".tcx")
+            trackDate = datetime.datetime.strptime(options.plotMap, "%Y-%m-%d-%H%M%S")
             title = "Track " + options.plotMap
         except ValueError: 
             pass
@@ -96,7 +95,7 @@ def main():
                         title += ":  %.0f miles" % track.dist + " %.0f feet" % track.getElevChange(options.useGps)
                         break
         if not found:
-            if trackDate != None: print>>sys.stderr, "*** ERROR: Track", options.plotMap, "not found ***"
+            if trackDate != None: print>>sys.stderr, "*** ERROR: No tracks for", options.plotMap, "with trackpoints ***"
             else: print>>sys.stderr, "*** ERROR: course", options.plotMap, "not found ***"
             sys.exit(0)
         ax.legend(loc = "lower right", prop = font_manager.FontProperties(size = "x-small"))

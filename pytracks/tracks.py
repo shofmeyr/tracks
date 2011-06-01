@@ -17,7 +17,7 @@ class Tracks:
     def __setitem__(self, key, value):
         self.data[key] = value
 
-    def load(self, fname, textFname):
+    def load(self, fname):
         # all the tracks are saved in one pickle file
         f = None
         if os.path.exists(fname): f = open(fname, "r")
@@ -30,34 +30,6 @@ class Tracks:
         if fname != "" and len(self.data) == 0: print>>sys.stderr, "Found no saved tracks in \"" + fname + "\""
         else: print>>sys.stderr, "Loaded", len(self.data), "tracks from \"" + fname + "\":",\
                 self.getSortedTracks()[0].startTime, "to", self.getSortedTracks()[-1].startTime
-        if textFname != "": self.loadAdditionalFromText(textFname)
-
-    def loadAdditionalFromText(self, textFname):
-        # below is my crude hack to input course and comments from a text file. Will be removed when other 
-        # editing functionality is added. 
-        f = open(textFname, "r")
-        if f == None: return
-        found = None
-        num = 0
-        for line in f.readlines():
-            if line.strip() == "": continue
-            if line.lstrip()[0] == "#": 
-                if found != None: found.comment += "\n" + line.rstrip()
-                continue
-            savedTrack = Track.fromString(line)
-            found = None
-            for track in self.data.values():
-                if savedTrack.startTime == track.startTime: 
-                    track.course = savedTrack.course
-                    track.comment = savedTrack.comment
-                    found = track
-                    num += 1
-                    break
-            if found == None: 
-                self.data[savedTrack.getStartTimeAsStr()] = savedTrack
-                num += 1
-        print>>sys.stderr, "Loaded additional data for", num, "tracks from \"" + textFname + "\""
-        f.close()
 
     def save(self, fname):
         if fname == "": return
@@ -71,7 +43,7 @@ class Tracks:
         print>>sys.stderr, "Saved data for", len(self.data), "tracks, from", \
             self.getSortedTracks()[0].startTime, "to", self.getSortedTracks()[-1].startTime
 
-    def updateFromXML(self, fnames):
+    def updateFromXML(self, fnames, tz = None):
         if len(fnames) == 0: return
         totTime = 0.0
         totDist = 0.0
@@ -79,7 +51,7 @@ class Tracks:
         for fname in fnames: 
             trackId = os.path.basename(fname)
             if trackId in self.data: continue
-            track = Track.fromXMLFile(fname)
+            track = Track.fromXMLFile(fname, tz)[0]
             if track == None: continue
             totDist += track.dist
             totTime += track.duration

@@ -22,5 +22,12 @@ class XMLTree:
             i += 1
             if i >= len(values): break
 
+    def addElem(self, parent, child, value):
+        i = 0
+        elem = etree.Element("{" + self.ns.values()[0] + "}" + child)
+        elem.text = str(value)
+        t = self.tree.xpath(self.root + parent, namespaces = self.ns)[0]
+        t.append(elem)
+
     def write(self, outf):
         self.tree.write(outf)

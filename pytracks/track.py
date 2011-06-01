@@ -1,9 +1,10 @@
 import string, os, sys
 import matplotlib.pyplot as pyplot
-from datetime import datetime as dt
+import datetime
 from courses import Courses
 from trackpoints import Trackpoints, Trackpoint
 from xmltree import XMLTree
+import pytz
 
 class Track:
     def __init__(self, startTime, duration, dist, maxPace, maxHR, avHR, trackpoints, course, comment):
@@ -26,31 +27,18 @@ class Track:
     def __setitem__(self, key, value):
         self.trackpoints[key] = value
 
-    def fromString(cls, line):
-        numFields = 13
-        tokens = string.split(line, None, numFields)
-        if tokens[1] == "0": tokens[1] = "00:00:00"
-        if len(tokens) == numFields: comment = ""
-        else: comment = tokens[numFields].rstrip()
-        return cls(startTime = dt.strptime(tokens[0] + tokens[1], "%Y-%m-%d%H:%M:%S"),
-                   dist = float(tokens[2]), 
-                   duration = float(tokens[4]), 
-                   maxPace = float(tokens[5]),
-                   maxHR = float(tokens[7]), 
-                   avHR = float(tokens[8]),
-                   trackpoints = None,
-                   course = tokens[12],
-                   comment = comment)
-    fromString = classmethod(fromString)
-
-    def fromXMLFile(cls, fname):
+    def fromXMLFile(cls, fname, tz = None):
         # load the xml file into a tree
         tree = XMLTree(fname, namespace = {"t":"http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"}, 
-                       root = "t:Activities/t:Activity/t:Lap/")
-        # for some reason, the date/time in the file is GMT whereas the file name is local, 
-        # so we use the file name
-        #self.setStartTime(dt.strptime(tree.find("Activity/Id").text, "%Y-%m-%dT%H:%M:%SZ"))
-        startTime = Track.getTimeFromFname(fname, )
+                       root = "t:Activities/t:Activity/")
+        utcStartTime = tree.findAll("t:Id", isFloat = False)[0]
+        comment = tree.findAll("t:Comment", isFloat = False)
+        if len(comment) > 0: comment = comment[0]
+        else: comment = ""
+        course = tree.findAll("t:Course", isFloat = False)
+        if len(course) > 0: course = course[0]
+        else: course = 0
+        tree.root += "t:Lap/"
         durations = tree.findAll("t:TotalTimeSeconds")
         duration = sum(durations) / 60.0
         # drop point if the tracktime is too small
@@ -84,20 +72,31 @@ class Track:
         f = open(fname, "w")
         tree.write(f)
         f.close()
-        return cls(startTime = startTime, duration = duration, dist = dist, 
-                   maxPace = maxPace, maxHR = maxHR, avHR = avHR, trackpoints = trackpoints, 
-                   course = "0", comment = "")
+        # time is UTC, try to convert it here
+        lng = None
+        if len(trackpoints) > 0: lng =  trackpoints[0].lng
+        startTime = Track.getLocalTime(utcStartTime, lng, tz)
+        return (cls(startTime = startTime, duration = duration, dist = dist, 
+                    maxPace = maxPace, maxHR = maxHR, avHR = avHR, trackpoints = trackpoints, 
+                    course = course, comment = comment), tree)
     fromXMLFile = classmethod(fromXMLFile)
 
-    def update(self, track):
-        self.startTime = track.startTime
-        self.dist = track.dist
-        self.duration = track.duration
-        self.maxPace = track.maxPace
-        self.maxHR = track.maxHR
-        self.avHR = track.avHR
-        self.trackpoints = track.trackpoints
-        # don't change course or comments
+
+    def getLocalTime(cls, utcTimeStr, lng, tz):
+        # FIXME: the time is given as UTC. What is needed is a way to convert the time to the correct one for
+        # the geographic location, as given by the gps coordinates. We use something very simple here which
+        # gives an approximation of the actual time. A better way to do this is use a timezone service.
+        # This can always be corrected later.
+        utcTime = datetime.datetime.strptime(utcTimeStr, "%Y-%m-%dT%H:%M:%SZ")
+#        print "utcTime", utcTime
+        utcTime = utcTime.replace(tzinfo=pytz.utc)
+#        print "UTC replaced", utcTime
+        if tz != None and tz != "": localTime = utcTime.astimezone(pytz.timezone(tz))
+        elif lng != None: localTime = utcTime + datetime.timedelta(hours = int(round(lng / 15.0)))
+        else: localTime = utcTime
+#        print "Local time", str(localTime)
+        return localTime
+    getLocalTime = classmethod(getLocalTime)
 
     def write(self, outFile, useGps):
         dist = 0
@@ -123,7 +122,7 @@ class Track:
             efficiency = dist * Trackpoints.METERS_PER_MILE / (self.avHR * self.duration)
 
         print >> outFile, \
-            "%-18s" % self.startTime,\
+            "%-18s" % self.startTime.strftime("%Y-%m-%d %H:%M:%S"),\
             "%5.2f" % self.dist,\
             "%5.2f" % realDist,\
             "%6.1f" % self.duration,\
@@ -161,16 +160,6 @@ class Track:
 
     def getDate(self):
         return self.startTime.strftime("%Y-%m-%d")
-
-    def getGoogleImage(self):
-        pngFname = "data/" + self.getStartTimeAsStr() + ".tcx.png"
-        if self.trackpoints != None and not os.path.exists(pngFname):
-            self.trackpoints.getGoogleMap(pngFname)
-        return pyplot.imread(pngFname)
-
-    def getTimeFromFname(cls, fname):
-        return dt.strptime(os.path.basename(fname), "%Y-%m-%d-%H%M%S.tcx")
-    getTimeFromFname = classmethod(getTimeFromFname)
 
     def getStartTimeAsStr(self):
         return self.startTime.strftime("%Y-%m-%d-%H%M%S")

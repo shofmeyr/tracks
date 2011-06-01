@@ -1,6 +1,7 @@
 #!/usr/bin/python -u
 
 import sys, datetime
+from datetime import datetime 
 from pytracks.track import Track
 
 METERS_PER_MILE = 1609.344
@@ -12,12 +13,24 @@ def main():
     if f == None: return
     found = None
     num = 0
+    numFields = 13
     for line in f.readlines():
         if line.strip() == "": continue
         if line.lstrip()[0] == "#": 
             if found != None: found.comment += "\n" + line.rstrip()
             continue
-        savedTrack = Track.fromString(line)
+        tokens = line.split(None, numFields)
+        if len(tokens) == numFields: comment = ""
+        else: comment = tokens[numFields].rstrip()
+        savedTrack = Track(startTime = datetime.strptime(tokens[0] + tokens[1], "%Y-%m-%d%H:%M:%S"),
+                      dist = float(tokens[2]), 
+                      duration = float(tokens[4]), 
+                      maxPace = float(tokens[5]),
+                      maxHR = float(tokens[7]), 
+                      avHR = float(tokens[8]),
+                      trackpoints = None,
+                      course = tokens[12],
+                      comment = comment)
         found = None
         for track in tracks.values():
             if savedTrack.startTime == track.startTime: 
