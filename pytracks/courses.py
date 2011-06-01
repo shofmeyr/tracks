@@ -7,6 +7,7 @@ from course import Course
 class Courses:
     data = {}
 
+    @classmethod
     def load(cls, fname):
         if fname == "": return
         try:
@@ -26,7 +27,6 @@ class Courses:
         f.close()
         if len(Courses.data) == 0: print>>sys.stderr, "Found no courses in \"" + fname + "\""
         else: print>>sys.stderr, "Loaded", len(Courses.data), "courses from \"" + fname + "\""
-    load = classmethod(load)
 
     
 

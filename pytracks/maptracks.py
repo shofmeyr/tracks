@@ -17,7 +17,7 @@ sys.path.insert(0, libdir)
 
 import osmgpsmap
 
-class MapViewer(gtk.Window):
+class MapTracks(gtk.Window):
     def __init__(self, showTerrain = False):
         gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
         self.set_default_size(800, 800)
@@ -31,11 +31,10 @@ class MapViewer(gtk.Window):
             self.osm = osmgpsmap.GpsMap(repo_uri = "http://khm.google.com/vt/lbw/lyrs=p&x=#X&y=#Y&z=#Z")
         else:
             self.osm = osmgpsmap.GpsMap(repo_uri = "http://mt1.google.com/vt/lyrs=y&x=#X&y=#Y&z=#Z")
-
 #        self.osm = osmgpsmap.GpsMap(repo_uri = "http://tile.openstreetmap.org/#Z/#X/#Y.png")
         self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad = True, show_zoom = True))
         self.osm.connect('button_release_event', self.mapClicked)
-        self.osm.connect("motion_notify_event", self.updateDistance)
+#        self.osm.connect("motion_notify_event", self.updateDistance)
         #connect keyboard shortcuts
         self.osm.set_keyboard_shortcut(osmgpsmap.KEY_FULLSCREEN, gtk.gdk.keyval_from_name("F11"))
         self.osm.set_keyboard_shortcut(osmgpsmap.KEY_UP, gtk.gdk.keyval_from_name("Up"))
@@ -45,34 +44,31 @@ class MapViewer(gtk.Window):
         self.vbox.pack_start(self.osm)
         self.statusBar = gtk.Statusbar()
         self.vbox.pack_start(self.statusBar, False, False, 0)
-
-        gobject.timeout_add(500, self.updateDistance)
-
-    def addTrack(self, lats, lngs, color = "red"):
-        if len(lats) == 0:
-            return False
-        # create the track
-        track = osmgpsmap.GpsMapTrack()
-        track.set_property("line-width", 2)
-        track.set_property("color", gtk.gdk.color_parse(color))
-        for i in range(0, len(lats)):
-            track.add_point(osmgpsmap.point_new_degrees(lats[i], lngs[i]))
-        self.osm.track_add(track)
-        # center the track
-        self.minLat = min(lats)
-        self.minLng = min(lngs)
-        latRange = abs(self.minLat - max(lats))
-        lngRange = abs(self.minLng - max(lngs))
-        centerLat = self.minLat + latRange / 2.0
-        centerLng = self.minLng + lngRange / 2.0
-        maxRange = max(latRange, lngRange)
-        if maxRange > 0.04: zoom = 14
-        else: zoom = 15
-        self.osm.set_center_and_zoom(latitude = centerLat, longitude = centerLng, zoom = zoom)
-        # TODO: add numbers every 1/2 mile on the track. We'll need an image for each number to do this
-#        pb = gtk.gdk.pixbuf_new_from_file_at_size (num + ".png", 24, 24)
-#        self.osm.image_add(lat, lon, pb)
-        return True
+#        gobject.timeout_add(500, self.updateDistance)
+        
+    def addTracks(self, tracks, trackDates, colors):
+        colorIndex = 0
+        for trackDate in trackDates:
+            track = tracks[trackDate]
+            if len(track) == 0: continue
+            # create the track
+            mapTrack = osmgpsmap.GpsMapTrack()
+            mapTrack.set_property("line-width", 2)
+            mapTrack.set_property("color", gtk.gdk.color_parse(colors[colorIndex]))
+            colorIndex += 1
+            if colorIndex == len(colors): break
+            for trackpoint in track: mapTrack.add_point(osmgpsmap.point_new_degrees(trackpoint.lat, trackpoint.lng))
+            self.osm.track_add(mapTrack)
+            # center the track
+            (centerLat, latRange) = track.getMidPointRange("lats")
+            (centerLng, lngRange) = track.getMidPointRange("lngs")
+            maxRange = max(latRange, lngRange)
+            if maxRange > 0.04: zoom = 14
+            else: zoom = 15
+            self.osm.set_center_and_zoom(latitude = centerLat, longitude = centerLng, zoom = zoom)
+            # TODO: add numbers every 1/2 mile on the track. We'll need an image for each number to do this
+            #        pb = gtk.gdk.pixbuf_new_from_file_at_size (num + ".png", 24, 24)
+            #        self.osm.image_add(lat, lon, pb)
 
     def mapClicked(self, osm, event):
         lat,lon = self.osm.get_event_location(event).get_degrees()
@@ -92,7 +88,7 @@ class MapViewer(gtk.Window):
 
 
 if __name__ == "__main__":
-    u = MapViewer()
+    u = MapTracks()
     u.show_all()
     gtk.main()
 

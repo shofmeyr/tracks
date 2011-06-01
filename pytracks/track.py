@@ -27,6 +27,7 @@ class Track:
     def __setitem__(self, key, value):
         self.trackpoints[key] = value
 
+    @classmethod
     def fromXMLFile(cls, fname, tz = None):
         # load the xml file into a tree
         tree = XMLTree(fname, namespace = {"t":"http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"}, 
@@ -79,9 +80,8 @@ class Track:
         return (cls(startTime = startTime, duration = duration, dist = dist, 
                     maxPace = maxPace, maxHR = maxHR, avHR = avHR, trackpoints = trackpoints, 
                     course = course, comment = comment), tree)
-    fromXMLFile = classmethod(fromXMLFile)
 
-
+    @classmethod
     def getLocalTime(cls, utcTimeStr, lng, tz):
         # FIXME: the time is given as UTC. What is needed is a way to convert the time to the correct one for
         # the geographic location, as given by the gps coordinates. We use something very simple here which
@@ -96,7 +96,6 @@ class Track:
         else: localTime = utcTime
 #        print "Local time", str(localTime)
         return localTime
-    getLocalTime = classmethod(getLocalTime)
 
     def write(self, outFile, useGps):
         dist = 0
@@ -136,6 +135,7 @@ class Track:
             "%4s" % self.course,\
             " %s " % self.comment
 
+    @classmethod
     def writeHeader(cls, outFile):
         print >> outFile, "#%-18s" % "Date & time",\
             "%5s" % "dist",\
@@ -150,7 +150,6 @@ class Track:
             "%5s" % "eff",\
             "%4s" % "crs",\
             " %s " % "comment"
-    writeHeader = classmethod(writeHeader)
 
     def getDist(self, useGps):
         dist = 0
@@ -175,3 +174,10 @@ class Track:
         if useGps and gpsElevChange > 0: elev = gpsElevChange
         return elev
         
+    def getMidPointRange(self, t):
+        if t == "lats": x = self.trackpoints.getLats()
+        else: x = self.trackpoints.getLngs()
+        minX = min(x)
+        maxX = max(x)
+        return (minX + (maxX - minX) / 2.0, maxX - minX)
+

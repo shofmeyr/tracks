@@ -66,6 +66,7 @@ class Trackpoints:
         if change < 0: change = 0
         return change
 
+    @classmethod
     def fromXML(cls, tree, fname):
         root = "t:Track/t:Trackpoint/"
         times = tree.findAll(root + "t:Time", False)
@@ -97,8 +98,8 @@ class Trackpoints:
                                      mapElev = mapAltitudes[i], 
                                      hr = hrs[i]))
         return cls(points)
-    fromXML = classmethod(fromXML)
 
+    @classmethod
     def readElevsFile(cls, elevFname):
         f = open(elevFname, "r")
         elevs = []
@@ -110,32 +111,6 @@ class Trackpoints:
             elevs.append(mapElev)
         f.close()
         return elevs
-    readElevsFile = classmethod(readElevsFile)
-
-        # check to see if there is already a file for elevations
-#        elevFname = fname + ".elev"
-#        if not os.path.exists(elevFname): 
-#            if len(points) > 0:
-#                # save the elevations to file
-#                f = open(elevFname, "w+")
-#                for point in points: print>>f, point.lat, point.lng, point.dist, point.gpsElev, point.mapElev
-#                f.close()
-        # else:
-        #     # previous elevs file, load up
-        #     f = open(elevFname, "r")
-        #     i = 0
-        #     for line in f.readlines(): 
-        #         tokens = line.lstrip().rstrip().split()
-        #         lat = float(tokens[0])
-        #         lng = float(tokens[1])
-        #         mapElev = float(tokens[4])
-        #         if lat != points[i].lat or lng != points[i].lng:
-        #             print>>sys.stderr, "Mismatch between points at index", i, "in file", elevFname,\
-        #                 lat, points[i].lat, lng, points[i].lng
-        #             break
-        #         points[i].mapElev = mapElev
-        #         i += 1
-        #     f.close()
 
     def write(self, outFile):
         for point in self.points: print>>outFile, point.lat, point.lng, point.dist, point.gpsElev, point.mapElev
@@ -146,6 +121,7 @@ class Trackpoints:
     # so with the base, the maximum number of points that can be submitted in one request 
     # is 90 
     # The usage limits constrain us to 2500 request per day or 25000 locations
+    @classmethod
     def getGoogleElevs(cls, lats, lngs):
         if len(lats) == 0: return []
         print>>sys.stdout, "Fetching elevations for", len(lats), "points from google"
@@ -159,10 +135,7 @@ class Trackpoints:
             url = ELEV_BASE_URL + '?' + urllib.urlencode({'locations': path, 'sensor': 'false'})
             # cannot have a longer url, so we make the request
             if len(url) > 2048 - 30 or i == len(lats) - 1:
-                # print url
-                # print "sending url of length", (baseUrlLen + len(path)), len(url)
                 response = simplejson.load(urllib.urlopen(url))
-                # print response
                 if response['status'] != "OK":
                     print>>sys.stderr, "Could not get elevs from Google:", response['status']
                     break
@@ -173,7 +146,6 @@ class Trackpoints:
                 len(elevs), "-- try again later"
             return []
         return elevs
-    getGoogleElevs = classmethod(getGoogleElevs)
 
     def getGoogleMap(self, fname):
         print "Getting map from Google for course", fname
