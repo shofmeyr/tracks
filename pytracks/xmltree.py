@@ -8,7 +8,8 @@ class XMLTree:
         self.root = root
         
     def findAll(self, token, isFloat = True):
-        if isFloat: return [float(t.text) for t in self.tree.xpath(self.root + token, namespaces=self.ns)]
+        if isFloat: 
+            return [float(t.text) for t in self.tree.xpath(self.root + token, namespaces=self.ns)]
         else: return [t.text for t in self.tree.xpath(self.root + token, namespaces=self.ns)]
     
     def addElems(self, parent, child, values, mustExist):

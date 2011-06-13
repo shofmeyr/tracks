@@ -2,7 +2,6 @@
 
 import sys, pickle, os
 from track import Track
-from courses import Courses
 
 class Tracks:
     def __init__(self):
@@ -29,7 +28,8 @@ class Tracks:
                 f.close()
             except Exception as e: "Could not load pickle file " + fname + ": " + str(e)
         self.sortedKeys = sorted(self.data.keys())
-        if fname != "" and len(self.data) == 0: print>>sys.stderr, "Found no saved tracks in \"" + fname + "\""
+        if fname != "" and len(self.data) == 0: 
+            print>>sys.stderr, "Found no saved tracks in \"" + fname + "\""
         else: print>>sys.stderr, "Loaded", len(self.data), "tracks from \"" + fname + "\":",\
                 self.sortedKeys[0], "to", self.sortedKeys[-1]
 
@@ -42,7 +42,8 @@ class Tracks:
         except Exception as e:
             print>>sys.stderr, "Could not save data in " + fname + ": " + str(e)
             return
-        print>>sys.stderr, "Saved data for", len(self.data), "tracks, from", self.sortedKeys[0], "to", self.sortedKeys[-1]
+        print>>sys.stderr, "Saved data for", len(self.data), \
+            "tracks, from", self.sortedKeys[0], "to", self.sortedKeys[-1]
 
     def updateFromXML(self, fnames, tz = None):
         if len(fnames) == 0: return
@@ -75,11 +76,10 @@ class Tracks:
         for track in self: elevRates.append(track.elevRate)
         return elevRates
     
-    def write(self, outFile, name = "all", useGps = False):
+    def write(self, outFile, name = "all"):
         Track.writeHeader(outFile)
         for track in self:
-            if name == "all" or name == track.getStartTimeAsStr() or name == track.course:
-                track.write(outFile, useGps)
+            if name == "all" or name == track.getStartTimeAsStr(): track.write(outFile)
 
     def __iter__(self):
         self.index = 0

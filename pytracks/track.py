@@ -1,13 +1,9 @@
 import string, os, sys
-import matplotlib.pyplot as pyplot
 import datetime
-from courses import Courses
 from trackpoints import Trackpoints
-from xmltree import XMLTree
-import pytz
 
 class Track:
-    def __init__(self, startTime, duration, dist, maxPace, maxHR, avHR, trackpoints, course, comment):
+    def __init__(self, startTime, duration, dist, maxPace, maxHR, avHR, trackpoints, comment):
         self.startTime = startTime
         self.dist = dist
         self.duration = duration
@@ -15,7 +11,6 @@ class Track:
         self.maxHR = maxHR
         self.avHR = avHR
         self.trackpoints = trackpoints
-        self.course = course
         self.comment = comment
 
     def __len__(self):
@@ -29,16 +24,15 @@ class Track:
 
     @classmethod
     def fromXMLFile(cls, fname, tz = None):
+        from xmltree import XMLTree
         # load the xml file into a tree
-        tree = XMLTree(fname, namespace = {"t":"http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"}, 
+        tree = XMLTree(fname, namespace = 
+                       {"t":"http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"}, 
                        root = "t:Activities/t:Activity/")
         utcStartTime = tree.findAll("t:Id", isFloat = False)[0]
         comment = tree.findAll("t:Comment", isFloat = False)
         if len(comment) > 0: comment = comment[0]
         else: comment = ""
-        course = tree.findAll("t:Course", isFloat = False)
-        if len(course) > 0: course = course[0]
-        else: course = 0
         tree.root += "t:Lap/"
         durations = tree.findAll("t:TotalTimeSeconds")
         duration = sum(durations) / 60.0
@@ -68,7 +62,6 @@ class Track:
         # extract trackpoints from xml
         trackpoints = Trackpoints()
         trackpoints.loadFromXML(tree, fname)
-        # FIXME: try to find a matching course, ask if it is the correct one, or to name the course otherwise
         # FIXME: add an input option to add a comment
         # now write the modified tree back to the file
         f = open(fname, "w")
@@ -80,13 +73,15 @@ class Track:
         startTime = Track.getLocalTime(utcStartTime, lng, tz)
         return (cls(startTime = startTime, duration = duration, dist = dist, 
                     maxPace = maxPace, maxHR = maxHR, avHR = avHR, trackpoints = trackpoints, 
-                    course = course, comment = comment), tree)
+                    comment = comment), tree)
 
     @classmethod
     def getLocalTime(cls, utcTimeStr, lng, tz):
-        # FIXME: the time is given as UTC. What is needed is a way to convert the time to the correct one for
-        # the geographic location, as given by the gps coordinates. We use something very simple here which
-        # gives an approximation of the actual time. A better way to do this is use a timezone service.
+        import pytz
+        # FIXME: the time is given as UTC. What is needed is a way to convert the time to the 
+        # correct one for the geographic location, as given by the gps coordinates. We use 
+        # something very simple here which gives an approximation of the actual time. A better way 
+        # to do this is use a timezone service.
         # This can always be corrected later.
         utcTime = datetime.datetime.strptime(utcTimeStr, "%Y-%m-%dT%H:%M:%SZ")
 #        print "utcTime", utcTime
@@ -98,33 +93,21 @@ class Track:
 #        print "Local time", str(localTime)
         return localTime
 
-    def write(self, outFile, useGps):
-        dist = 0
+    def write(self, outFile):
         elev = 0
         elevRate = 0
-        realDist = 0
         avPace = 0
         efficiency = 0
-        if self.course in Courses.data: realDist = Courses.data[self.course].dist
-        elev = self.getElevChange(useGps)
-        dist = self.getDist(useGps)
-        if useGps:
-            if dist == 0: dist = realDist
-            if elev == 0: elev = self.getElevChange(False)
-        else:
-            if dist == 0: dist = self.getDist(True)
-            if elev == 0: elev = self.getElevChange(True) 
-
-        if dist > 0:
-            avPace = self.duration / dist
-            elevRate = elev / dist
+        elev = self.getElevChange()
+        if self.dist > 0:
+            avPace = self.duration / self.dist
+            elevRate = elev / self.dist
         if self.avHR > 0 and self.duration > 0:
             efficiency = dist * Trackpoints.METERS_PER_MILE / (self.avHR * self.duration)
 
         print >> outFile, \
             "%-18s" % self.startTime.strftime("%Y-%m-%d %H:%M:%S"),\
             "%5.2f" % self.dist,\
-            "%5.2f" % realDist,\
             "%6.1f" % self.duration,\
             "%5.2f" % self.maxPace,\
             "%5.2f" % avPace,\
@@ -133,14 +116,12 @@ class Track:
             "%5.0f" % elev,\
             "%5.0f" % elevRate,\
             "%5.2f" % efficiency,\
-            "%4s" % self.course,\
             " %s " % self.comment
 
     @classmethod
     def writeHeader(cls, outFile):
         print >> outFile, "#%-18s" % "Date & time",\
             "%5s" % "dist",\
-            "%5s" % "rdist",\
             "%6s" % "rtime",\
             "%5s" % "mxPc",\
             "%5s" % "avPc",\
@@ -152,27 +133,16 @@ class Track:
             "%4s" % "crs",\
             " %s " % "comment"
 
-    def getDist(self, useGps):
-        dist = 0
-        if self.course in Courses.data: dist = Courses.data[self.course].dist
-        if useGps and self.dist > 0: dist = self.dist
-        return dist
-
     def getDate(self):
         return self.startTime.strftime("%Y-%m-%d")
 
     def getStartTimeAsStr(self):
         return self.startTime.strftime("%Y-%m-%d-%H%M%S")
 
-    def getElevChange(self, useGps):
+    def getElevChange(self):
         elev = 0
-        gpsElevChange = 0
         if self.trackpoints != None: 
-            (gpsElevChange, mapElevChange) = self.trackpoints.getElevChanges()
-            elev = mapElevChange
-        if self.course in Courses.data: 
-            elev = Courses.data[self.course].elevChange
-        if useGps and gpsElevChange > 0: elev = gpsElevChange
+            elev = self.trackpoints.getElevChanges()
         return elev
         
     def getMidPointRange(self, t):

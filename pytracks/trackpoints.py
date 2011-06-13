@@ -1,5 +1,4 @@
 import numpy, sys, simplejson, urllib, os
-from xmltree import XMLTree
 
 class Trackpoints:
     METERS_PER_MILE = 1609.344
@@ -19,12 +18,6 @@ class Trackpoints:
     def __len__(self):
         return self.length
 
-#    def __getitem__(self, key):
-#        return self.points[key]
-
-#    def __setitem__(self, key, value):
-#        self.points[key] = value
-
     def getElevChanges(self):
         # smooth the elevations
         gpsSmoothed = []
@@ -42,13 +35,9 @@ class Trackpoints:
         mapChange *= Trackpoints.FEET_PER_METER
         return (gpsChange, mapChange)
 
-    def getMinMaxElevs(self, useGps = False):
-        if useGps:
-            minElev = min(self.gpsElevs)
-            maxElev = max(self.gpsElevs)
-        else:
-            minElev = min(self.mapElevs)
-            maxElev = max(self.mapElevs)
+    def getMinMaxElevs(self):
+        minElev = min(self.mapElevs)
+        maxElev = max(self.mapElevs)
         return (minElev * Trackpoints.FEET_PER_METER, maxElev * Trackpoints.FEET_PER_METER)
 
     def computeChange(self, first, second):
@@ -61,24 +50,28 @@ class Trackpoints:
         self.times = tree.findAll(root + "t:Time", False)
         self.lats = tree.findAll(root + "t:Position/t:LatitudeDegrees")
         self.lngs = tree.findAll(root + "t:Position/t:LongitudeDegrees")
-        self.dists = [d / Trackpoints.METERS_PER_MILE for d in tree.findAll(root + "t:DistanceMeters")]
+        self.dists = [d / Trackpoints.METERS_PER_MILE 
+                      for d in tree.findAll(root + "t:DistanceMeters")]
         self.gpsElevs = tree.findAll(root + "t:AltitudeMeters")
         self.hrs = tree.findAll(root + "t:HeartRateBpm/t:Value")
         self.mapElevs = tree.findAll(root + "t:MapAltitudeMeters")
         if not (len(self.times) >= len(self.lats) == len(self.lngs) == len(self.dists) == 
                 len(self.gpsElevs) == len(self.hrs)): 
             print>>sys.stderr, "Missing points in xml file", fname, ":",\
-                "times", len(self.times), "lats", len(self.lats), "lngs", len(self.lngs), "dists", len(self.dists),\
+                "times", len(self.times), "lats", len(self.lats), "lngs",\
+                len(self.lngs), "dists", len(self.dists),\
                 "altitudes", len(self.gpsElevs), "hrs", len(self.hrs)
-        self.length = min([len(self.times), len(self.lats), len(self.lngs), len(self.dists), len(self.gpsElevs), 
-                           len(self.hrs)])
+        self.length = min([len(self.times), len(self.lats), len(self.lngs), len(self.dists), 
+                           len(self.gpsElevs), len(self.hrs)])
         if len(self.mapElevs) == 0 and len(self.gpsElevs) > 0:
             # no previous elevations, fetch from google
-            if not os.path.exists(fname + ".elev"): self.mapElevs = Trackpoints.getGoogleElevs(lats, lngs)
+            if not os.path.exists(fname + ".elev"): 
+                self.mapElevs = Trackpoints.getGoogleElevs(lats, lngs)
             else: mapElevs = Trackpoints.readElevsFile(fname + ".elev")
             # add the elevs to the xmltree
             print>>sys.stderr, "Adding", len(self.mapElevs), "map elevations to", fname
-            tree.addElems("t:Track/t:Trackpoint", "MapAltitudeMeters", self.mapElevs, "AltitudeMeters")
+            tree.addElems("t:Track/t:Trackpoint", "MapAltitudeMeters", 
+                          self.mapElevs, "AltitudeMeters")
 
     @classmethod
     def readElevsFile(cls, elevFname):
@@ -95,7 +88,8 @@ class Trackpoints:
 
     def write(self, outFile):
         for i in range(0, len(self)):
-            print>>outFile, self.lats[i], self.lngs[i], self.dists[i], self.gpsElevs[i], self.mapElevs[i], self.hrs[i]
+            print>>outFile, self.lats[i], self.lngs[i], self.dists[i], self.gpsElevs[i], \
+                self.mapElevs[i], self.hrs[i]
 
     # this is taken from a google eg at 
     # http://gmaps-samples.googlecode.com/svn/trunk/elevation/python/ElevationChartCreator.py

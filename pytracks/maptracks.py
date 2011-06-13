@@ -28,7 +28,8 @@ class MapTracks(gtk.Window):
 #        self.osm = osmgpsmap.GpsMap(repo_uri = "http://acetate.geoiq.com/tiles/acetate-hillshading/#Z/#X/#Y.png")
 #        self.osm = osmgpsmap.GpsMap(repo_uri = "http://mt1.google.com/vt/x=#X&y=#Y&z=#Z")
         if showTerrain:
-            self.osm = osmgpsmap.GpsMap(repo_uri = "http://khm.google.com/vt/lbw/lyrs=p&x=#X&y=#Y&z=#Z")
+            self.osm = osmgpsmap.GpsMap(repo_uri = 
+                                        "http://khm.google.com/vt/lbw/lyrs=p&x=#X&y=#Y&z=#Z")
         else:
             self.osm = osmgpsmap.GpsMap(repo_uri = "http://mt1.google.com/vt/lyrs=y&x=#X&y=#Y&z=#Z")
 #        self.osm = osmgpsmap.GpsMap(repo_uri = "http://tile.openstreetmap.org/#Z/#X/#Y.png")
@@ -61,7 +62,8 @@ class MapTracks(gtk.Window):
             colorIndex += 1
             if colorIndex == len(colors): break
             for i in range(0, len(track.trackpoints)): 
-                mapTrack.add_point(osmgpsmap.point_new_degrees(track.trackpoints.lats[i], track.trackpoints.lngs[i]))
+                mapTrack.add_point(osmgpsmap.point_new_degrees(track.trackpoints.lats[i], 
+                                                               track.trackpoints.lngs[i]))
             self.osm.track_add(mapTrack)
             # center the track
             (centerLat, latRange) = track.getMidPointRange("lats")
@@ -70,7 +72,8 @@ class MapTracks(gtk.Window):
             if maxRange > 0.04: zoom = 14
             else: zoom = 15
             self.osm.set_center_and_zoom(latitude = centerLat, longitude = centerLng, zoom = zoom)
-            # TODO: add numbers every 1/2 mile on the track. We'll need an image for each number to do this
+            # TODO: add numbers every 1/2 mile on the track. We'll need an image for each number to 
+            # do this
             #        pb = gtk.gdk.pixbuf_new_from_file_at_size (num + ".png", 24, 24)
             #        self.osm.image_add(lat, lon, pb)
         return found
