@@ -1,0 +1,6 @@
+* keep track of total elev in xml file
+* write total elev from course info into xml files
+* remove courses 
+* put plots in separate class
+* plot avhr, eff, avpace for all tracks with similar elev gain and dist with date on x axis
+* enable plots of many different track-level stats against each other, eg avpace vs elev gain
