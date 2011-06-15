@@ -1,6 +1,6 @@
 #!/usr/bin/python -u 
 
-import sys
+import sys, string
 
 class Course:
     def __init__(self, id, elevChange, dist, descrptn):

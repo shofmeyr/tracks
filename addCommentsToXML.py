@@ -1,10 +1,11 @@
 #!/usr/bin/python -u
 
-import sys, optparse
+import sys, optparse, string, os
 from datetime import datetime
 from lxml import etree
 
 from pytracks.track import Track
+from pytracks.courses import Courses
 
 def main():
     cmdOptParser = optparse.OptionParser()
@@ -12,10 +13,14 @@ def main():
     numFields = 13
     fname = "summary.dat"
     summaryTracks = {}
+    elevs = {}
+    knownDists = {}
     f = open(fname, "r")
     if f == None: return
     track = None
     num = 0
+    METERS_PER_MILE = 1609.344
+    FEET_PER_METER = 3.28084
     for line in f.readlines():
         if line.strip() == "": continue
         if line.lstrip()[0] == "#": 
@@ -31,27 +36,31 @@ def main():
                       maxHR = float(tokens[7]), 
                       avHR = float(tokens[8]),
                       trackpoints = None,
-                      course = tokens[12],
                       comment = comment)
+        elevs[track.getStartTimeAsStr()] = float(tokens[9]) / FEET_PER_METER
+        knownDists[track.getStartTimeAsStr()] = float(tokens[3]) * METERS_PER_MILE
         summaryTracks[track.getStartTimeAsStr()] = track
         num += 1
     print>>sys.stderr, "Read", num, "tracks from summary.dat"
     f.close()
 #    for track in summaryTracks.values(): track.write(sys.stdout, False)
-    # read from courses.dat into courses dictionary
-    Courses.load("courses.dat")
-
     for fname in fnames:
         (track, tree) = Track.fromXMLFile(fname)
         tree.root = "t:Activities/t:Activity"
-        startTime = track.getStartTimeAsStr()
+        startTime = os.path.basename(fname).split(".")[0]
         if startTime in summaryTracks:
-#            if summaryTracks[startTime].comment != "": 
-#                tree.addElem("", "Comment", summaryTracks[startTime].comment)
-            if summaryTracks[startTime].course != "": 
-#                tree.addElem("", "Course", summaryTracks[startTime].course)
-                tree.addElem("", "MaxElevationMeters", 
-                             courses[summaryTracks[startTime].course].elevGain)
+            print startTime, elevs[startTime], knownDists[startTime], track.comment
+#            tree.delElem("", "Course")
+            if elevs[startTime] > 0: 
+                tree.addElem("", "KnownElevationMeters", elevs[startTime])
+            if knownDists[startTime] > 0:
+                 tree.addElem("", "KnownDistanceMeters", knownDists[startTime])
+            # if summaryTracks[startTime].comment != "": 
+            #     tree.addElem("", "Comment", summaryTracks[startTime].comment)
             tree.write(fname)
+
+#            if courses[startTime] in Courses.data:
+#                tree.addElem("", "Course", summaryTracks[startTime].course)
+#                tree.write(fname)
 
 if __name__ == "__main__": main()

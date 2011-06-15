@@ -29,12 +29,10 @@ def main():
                       maxHR = float(tokens[7]), 
                       avHR = float(tokens[8]),
                       trackpoints = None,
-                      course = tokens[12],
                       comment = comment)
         found = None
         for track in tracks.values():
             if savedTrack.startTime == track.startTime: 
-                track.course = savedTrack.course
                 track.comment = savedTrack.comment
                 found = track
                 num += 1

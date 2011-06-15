@@ -18,32 +18,24 @@ class Trackpoints:
     def __len__(self):
         return self.length
 
-    def getElevChanges(self):
+    def getElevChange(self):
         # smooth the elevations
-        gpsSmoothed = []
-        mapSmoothed = []
+        smoothedElevs = []
         for i in range(0, len(self) - Trackpoints.elevWindow): 
-            gpsSmoothed.append(numpy.average(self.gpsElevs[i:i + Trackpoints.elevWindow]))
-            mapSmoothed.append(numpy.average(self.mapElevs[i:i + Trackpoints.elevWindow]))
+            smoothedElevs.append(numpy.average(self.mapElevs[i:i + Trackpoints.elevWindow]))
         # compute elevation change
-        gpsChange = 0
-        mapChange = 0
-        for i in range(0, len(gpsSmoothed) - 1):
-            gpsChange += self.computeChange(gpsSmoothed[i + 1], gpsSmoothed[i])
-            mapChange += self.computeChange(mapSmoothed[i + 1], mapSmoothed[i])
-        gpsChange *= Trackpoints.FEET_PER_METER
-        mapChange *= Trackpoints.FEET_PER_METER
-        return (gpsChange, mapChange)
+        totChange = 0
+        for i in range(0, len(smoothedElevs) - 1):
+            change = smoothedElevs[i + 1] - smoothedElevs[i]
+            if change < 0: change = 0
+            totChange += change
+        totChange *= Trackpoints.FEET_PER_METER
+        return totChange
 
     def getMinMaxElevs(self):
         minElev = min(self.mapElevs)
         maxElev = max(self.mapElevs)
         return (minElev * Trackpoints.FEET_PER_METER, maxElev * Trackpoints.FEET_PER_METER)
-
-    def computeChange(self, first, second):
-        change = first - second
-        if change < 0: change = 0
-        return change
 
     def loadFromXML(self, tree, fname):
         root = "t:Track/t:Trackpoint/"

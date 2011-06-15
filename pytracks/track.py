@@ -3,7 +3,8 @@ import datetime
 from trackpoints import Trackpoints
 
 class Track:
-    def __init__(self, startTime, duration, dist, maxPace, maxHR, avHR, trackpoints, comment):
+    def __init__(self, startTime, duration, dist, maxPace, maxHR, avHR, trackpoints, comment,
+                 knownElev = 0, knownDist = 0):
         self.startTime = startTime
         self.dist = dist
         self.duration = duration
@@ -12,6 +13,8 @@ class Track:
         self.avHR = avHR
         self.trackpoints = trackpoints
         self.comment = comment
+        self.knownElev = knownElev
+        self.knownDist = knownDist
 
     def __len__(self):
         return len(self.trackpoints)
@@ -33,6 +36,13 @@ class Track:
         comment = tree.findAll("t:Comment", isFloat = False)
         if len(comment) > 0: comment = comment[0]
         else: comment = ""
+        knownElev = tree.findAll("t:KnownElevationMeters")
+        if len(knownElev) > 0: knownElev = knownElev[0]
+        else: knownElev = 0
+        knownDist = tree.findAll("t:KnownDistanceMeters")
+        if len(knownDist) > 0: knownDist = knownDist[0]
+        else: knownDist = 0
+
         tree.root += "t:Lap/"
         durations = tree.findAll("t:TotalTimeSeconds")
         duration = sum(durations) / 60.0
@@ -50,6 +60,7 @@ class Track:
         if dist > 0 and dist < 1.0: 
             print>>sys.stderr, "Dropping", fname, "distance is > 0 and < 1.0"
             return None
+        if dist == 0: dist = knownDist / Trackpoints.METERS_PER_MILE
         maxHRs = tree.findAll("t:MaximumHeartRateBpm/t:Value")
         if len(maxHRs) > 0: maxHR = max(maxHRs)
         else: maxHR = 0
@@ -73,7 +84,7 @@ class Track:
         startTime = Track.getLocalTime(utcStartTime, lng, tz)
         return (cls(startTime = startTime, duration = duration, dist = dist, 
                     maxPace = maxPace, maxHR = maxHR, avHR = avHR, trackpoints = trackpoints, 
-                    comment = comment), tree)
+                    comment = comment, knownElev = knownElev, knownDist = knownDist), tree)
 
     @classmethod
     def getLocalTime(cls, utcTimeStr, lng, tz):
@@ -103,7 +114,7 @@ class Track:
             avPace = self.duration / self.dist
             elevRate = elev / self.dist
         if self.avHR > 0 and self.duration > 0:
-            efficiency = dist * Trackpoints.METERS_PER_MILE / (self.avHR * self.duration)
+            efficiency = self.dist * Trackpoints.METERS_PER_MILE / (self.avHR * self.duration)
 
         print >> outFile, \
             "%-18s" % self.startTime.strftime("%Y-%m-%d %H:%M:%S"),\
@@ -114,6 +125,7 @@ class Track:
             "%5.0f" % self.maxHR,\
             "%5.0f" % self.avHR,\
             "%5.0f" % elev,\
+            "%5.0f" % (self.knownElev * Trackpoints.FEET_PER_METER),\
             "%5.0f" % elevRate,\
             "%5.2f" % efficiency,\
             " %s " % self.comment
@@ -128,9 +140,9 @@ class Track:
             "%5s" % "mxHR",\
             "%5s" % "avHR",\
             "%5s" % "elev",\
+            "%5s" % "kElev",\
             "%5s" % "eRate",\
             "%5s" % "eff",\
-            "%4s" % "crs",\
             " %s " % "comment"
 
     def getDate(self):
@@ -140,10 +152,10 @@ class Track:
         return self.startTime.strftime("%Y-%m-%d-%H%M%S")
 
     def getElevChange(self):
-        elev = 0
-        if self.trackpoints != None: 
-            elev = self.trackpoints.getElevChanges()
-        return elev
+        elevChange = 0
+        if self.trackpoints != None: elevChange = self.trackpoints.getElevChange()
+        if elevChange == 0: return self.knownElev * Trackpoints.FEET_PER_METER
+        return elevChange
         
     def getMidPointRange(self, t):
         if t == "lats": x = self.trackpoints.lats

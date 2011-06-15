@@ -3,6 +3,8 @@
 #from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
 #from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
 #import matplotlib.pyplot as pyplot
+
+
         # fig = Figure()
         # ax = fig.add_subplot(111)
         # minElev = 300000

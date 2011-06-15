@@ -18,11 +18,10 @@ sys.path.insert(0, libdir)
 import osmgpsmap
 
 class MapTracks(gtk.Window):
-    def __init__(self, showTerrain = False):
+    def __init__(self, tracks, trackDate, color, width, height, showTerrain):
         gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
         self.set_default_size(800, 800)
         self.connect('destroy', lambda x: gtk.main_quit())
-#        self.set_title(title)
         self.vbox = gtk.VBox(False, 0)
         self.add(self.vbox)
 #        self.osm = osmgpsmap.GpsMap(repo_uri = "http://acetate.geoiq.com/tiles/acetate-hillshading/#Z/#X/#Y.png")
@@ -46,37 +45,46 @@ class MapTracks(gtk.Window):
         self.statusBar = gtk.Statusbar()
         self.vbox.pack_start(self.statusBar, False, False, 0)
 #        gobject.timeout_add(500, self.updateDistance)
+
+        if not self.addTracks(tracks, trackDate, color):
+            print>>sys.stderr, "No tracks found with trackpoints"
+            sys.exit(0)
+        win = gtk.Window()
+        win.connect("destroy", lambda x: gtk.main_quit())
+        win.set_default_size(width, height)
+        vbox = gtk.VBox()
+        win.add(vbox)
+        self.set_title("Track %s, %.1f m, %.0f ft" % (trackDate, tracks[trackDate].dist,
+                                                      tracks[trackDate].getElevChange()))
+        self.show_all()
+
         
-    def addTracks(self, tracks, trackDates, colors):
+    def addTracks(self, tracks, trackDate, color):
         colorIndex = 0
         found = False
-        for trackDate in trackDates:
-            try: track = tracks[trackDate]
-            except: continue
-            if len(track) == 0: continue
-            found = True
-            # create the track
-            mapTrack = osmgpsmap.GpsMapTrack()
-            mapTrack.set_property("line-width", 2)
-            mapTrack.set_property("color", gtk.gdk.color_parse(colors[colorIndex]))
-            colorIndex += 1
-            if colorIndex == len(colors): break
-            for i in range(0, len(track.trackpoints)): 
-                mapTrack.add_point(osmgpsmap.point_new_degrees(track.trackpoints.lats[i], 
-                                                               track.trackpoints.lngs[i]))
-            self.osm.track_add(mapTrack)
-            # center the track
-            (centerLat, latRange) = track.getMidPointRange("lats")
-            (centerLng, lngRange) = track.getMidPointRange("lngs")
-            maxRange = max(latRange, lngRange)
-            if maxRange > 0.04: zoom = 14
-            else: zoom = 15
-            self.osm.set_center_and_zoom(latitude = centerLat, longitude = centerLng, zoom = zoom)
-            # TODO: add numbers every 1/2 mile on the track. We'll need an image for each number to 
-            # do this
-            #        pb = gtk.gdk.pixbuf_new_from_file_at_size (num + ".png", 24, 24)
-            #        self.osm.image_add(lat, lon, pb)
-        return found
+        try: track = tracks[trackDate]
+        except: return False
+        if len(track) == 0: return False
+        # create the track
+        mapTrack = osmgpsmap.GpsMapTrack()
+        mapTrack.set_property("line-width", 2)
+        mapTrack.set_property("color", gtk.gdk.color_parse(color))
+        for i in range(0, len(track.trackpoints)): 
+            mapTrack.add_point(osmgpsmap.point_new_degrees(track.trackpoints.lats[i], 
+                                                           track.trackpoints.lngs[i]))
+        self.osm.track_add(mapTrack)
+        # center the track
+        (centerLat, latRange) = track.getMidPointRange("lats")
+        (centerLng, lngRange) = track.getMidPointRange("lngs")
+        maxRange = max(latRange, lngRange)
+        if maxRange > 0.04: zoom = 14
+        else: zoom = 15
+        self.osm.set_center_and_zoom(latitude = centerLat, longitude = centerLng, zoom = zoom)
+        # TODO: add numbers every 1/2 mile on the track. We'll need an image for each number to 
+        # do this
+        #        pb = gtk.gdk.pixbuf_new_from_file_at_size (num + ".png", 24, 24)
+        #        self.osm.image_add(lat, lon, pb)
+        return True
 
     def mapClicked(self, osm, event):
         lat,lon = self.osm.get_event_location(event).get_degrees()
