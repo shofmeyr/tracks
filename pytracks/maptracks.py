@@ -5,27 +5,16 @@ import gtk
 import os.path
 import gtk.gdk
 import gobject
-
-
-gobject.threads_init()
-gtk.gdk.threads_init()
-
-#Try static lib first
-mydir = os.path.dirname(os.path.abspath(__file__))
-libdir = os.path.abspath(os.path.join(mydir, "..", "python", ".libs"))
-sys.path.insert(0, libdir)
-
 import osmgpsmap
 
 class MapTracks(gtk.Window):
-    def __init__(self, tracks, trackDate, color, width, height, showTerrain):
+    def __init__(self, track, title, color, width, height, showTerrain):
         gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
-        self.set_default_size(800, 800)
+        self.set_default_size(width, height)
         self.connect('destroy', lambda x: gtk.main_quit())
         self.vbox = gtk.VBox(False, 0)
         self.add(self.vbox)
 #        self.osm = osmgpsmap.GpsMap(repo_uri = "http://acetate.geoiq.com/tiles/acetate-hillshading/#Z/#X/#Y.png")
-#        self.osm = osmgpsmap.GpsMap(repo_uri = "http://mt1.google.com/vt/x=#X&y=#Y&z=#Z")
         if showTerrain:
             self.osm = osmgpsmap.GpsMap(repo_uri = 
                                         "http://khm.google.com/vt/lbw/lyrs=p&x=#X&y=#Y&z=#Z")
@@ -46,25 +35,6 @@ class MapTracks(gtk.Window):
         self.vbox.pack_start(self.statusBar, False, False, 0)
 #        gobject.timeout_add(500, self.updateDistance)
 
-        if not self.addTracks(tracks, trackDate, color):
-            print>>sys.stderr, "No tracks found with trackpoints"
-            sys.exit(0)
-        win = gtk.Window()
-        win.connect("destroy", lambda x: gtk.main_quit())
-        win.set_default_size(width, height)
-        vbox = gtk.VBox()
-        win.add(vbox)
-        self.set_title("Track %s, %.1f m, %.0f ft" % (trackDate, tracks[trackDate].dist,
-                                                      tracks[trackDate].getElevChange()))
-        self.show_all()
-
-        
-    def addTracks(self, tracks, trackDate, color):
-        colorIndex = 0
-        found = False
-        try: track = tracks[trackDate]
-        except: return False
-        if len(track) == 0: return False
         # create the track
         mapTrack = osmgpsmap.GpsMapTrack()
         mapTrack.set_property("line-width", 2)
@@ -84,7 +54,7 @@ class MapTracks(gtk.Window):
         # do this
         #        pb = gtk.gdk.pixbuf_new_from_file_at_size (num + ".png", 24, 24)
         #        self.osm.image_add(lat, lon, pb)
-        return True
+        self.set_title(title)
 
     def mapClicked(self, osm, event):
         lat,lon = self.osm.get_event_location(event).get_degrees()

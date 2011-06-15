@@ -7,7 +7,6 @@ from pytracks.tracks import Tracks
 from pytracks.track import Track
 from pytracks.trackpoints import Trackpoints
 
-
 def main():
     # get the command line options
     cmdOptParser = argparse.ArgumentParser(description = "Analyze Garmin GPS data",
@@ -48,14 +47,23 @@ def main():
     if options.printTracks != "": tracks.write(sys.stdout, options.printTracks)
     if options.plotMap != "": 
         from pytracks.maptracks import MapTracks
-        colors = ["red", "green", "blue", "yellow", "black", "cyan", "magenta"]
-        mapTracks = MapTracks(tracks = tracks, trackDate = options.plotMap, 
-                              color = "red", width = 600, height = 400, 
+        from pytracks.plottracks import PlotTracks
+        try:
+            track = tracks[options.plotMap]
+        except:
+            print "Cannot find track for", options.plotMap
+            sys.exit(0)
+        if len(track) == 0: 
+            print "Track", options.plotMap, "has no trackpoints"
+            sys.exit(0)
+        title = "Track %s, %.1f m, %.0f ft" % (options.plotMap, track.dist, track.getElevChange())
+        mapTracks = MapTracks(track, title, color = "red", width = 800, height = 600, 
                               showTerrain = options.showTerrain)
-
+        mapTracks.show_all()
         # Now here we plot elev profile, pace profile, hr profile, comparison to other similar
         # runs, etc
-#        plotTracks = PlotTracks()
+        plotTracks = PlotTracks(track, title, color = "red", width = 700, height = 500)
+        plotTracks.show_all()
 
         gtk.main()
 

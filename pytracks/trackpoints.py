@@ -37,6 +37,9 @@ class Trackpoints:
         maxElev = max(self.mapElevs)
         return (minElev * Trackpoints.FEET_PER_METER, maxElev * Trackpoints.FEET_PER_METER)
 
+    def getElevs(self):
+        return [e * Trackpoints.FEET_PER_METER for e in self.mapElevs]
+
     def loadFromXML(self, tree, fname):
         root = "t:Track/t:Trackpoint/"
         self.times = tree.findAll(root + "t:Time", False)

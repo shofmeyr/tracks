@@ -1,6 +1,3 @@
-* TODO put plots in separate class
-  should be flexible to allow plotting of any two quantities against
-  time, with two different y-axes
 * TODO plot avhr, eff, avpace for all tracks with similar elev gain and dist with date on x axis
   have a param to define similar, eg 20% similar elev gain, and 20%
   similar dist. 
