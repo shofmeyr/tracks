@@ -70,17 +70,19 @@ def main():
                               "Distance (miles)", "Elevation (ft)",
                               "Elevation for " + title, color = "red", width = 700, height = 300, 
                               smoothingWindow = options.elevWindow)
+        plotElev.addSecond(track.trackpoints.dists, track.trackpoints.hrs, "Heart Rate (bpm)",
+                           smoothingWindow = options.hrWindow)
         plotElev.show_all()
         plotHrs = PlotTracks(track.trackpoints.dists, track.trackpoints.hrs, 
                              "Distance (miles)", "Heart Rate (bpm)",
                              "Heart rate for " + title, color = "red", width = 700, height = 300,
                              smoothingWindow = options.hrWindow)
-        plotHrs.show_all()
+#        plotHrs.show_all()
         plotPace = PlotTracks(track.trackpoints.dists, track.trackpoints.getPaces(),
                               "Distance (miles)", "Pace (min/mile)",
                               "Pace for " + title, color = "red", width = 700, height = 300,
                               smoothingWindow = options.paceWindow)
-        plotPace.show_all()
+#        plotPace.show_all()
 
         gtk.main()
 

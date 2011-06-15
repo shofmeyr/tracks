@@ -38,3 +38,18 @@ class PlotTracks(gtk.Window):
         self.ax.get_axes().set_xlabel(xLabel)
         self.ax.get_axes().set_ylabel(yLabel)
 
+    def addSecond(self, x, y, yLabel, smoothingWindow):
+        if len(x) != len(y): 
+            print "Warning", len(x), "x values in plot but", \
+                len(y), "y values (" + yLabel, "truncating"
+            if len(x) < len(y): y = y[:len(x)]
+            elif len(y) < len(x): x = x[:len(y)]
+        if smoothingWindow > 1:
+            smoothedY = []
+            for i in range(0, len(y) - smoothingWindow): 
+                smoothedY.append(numpy.average(y[i:i + smoothingWindow]))
+            y = smoothedY
+            x = x[:len(y)]
+        ax2 = self.ax.twinx()
+        ax2.plot(x, y, "green")
+        ax2.set_ylabel(yLabel)
