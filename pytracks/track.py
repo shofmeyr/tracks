@@ -151,9 +151,9 @@ class Track:
     def getStartTimeAsStr(self):
         return self.startTime.strftime("%Y-%m-%d-%H%M%S")
 
-    def getElevChange(self):
+    def getElevChange(self, smoothingWindow):
         elevChange = 0
-        if self.trackpoints != None: elevChange = self.trackpoints.getElevChange()
+        if self.trackpoints != None: elevChange = self.trackpoints.getElevChange(smoothingWindow)
         if elevChange == 0: return self.knownElev * Trackpoints.FEET_PER_METER
         return elevChange
         

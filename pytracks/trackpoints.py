@@ -1,9 +1,9 @@
 import numpy, sys, simplejson, urllib, os
+from datetime import datetime
 
 class Trackpoints:
     METERS_PER_MILE = 1609.344
     FEET_PER_METER = 3.28084
-    elevWindow = 5
 
     def __init__(self):
         self.times = []
@@ -18,11 +18,11 @@ class Trackpoints:
     def __len__(self):
         return self.length
 
-    def getElevChange(self):
+    def getElevChange(self, smoothingWindow):
         # smooth the elevations
         smoothedElevs = []
-        for i in range(0, len(self) - Trackpoints.elevWindow): 
-            smoothedElevs.append(numpy.average(self.mapElevs[i:i + Trackpoints.elevWindow]))
+        for i in range(0, len(self) - smoothingWindow): 
+            smoothedElevs.append(numpy.average(self.mapElevs[i:i + smoothingWindow]))
         # compute elevation change
         totChange = 0
         for i in range(0, len(smoothedElevs) - 1):
@@ -39,6 +39,27 @@ class Trackpoints:
 
     def getElevs(self):
         return [e * Trackpoints.FEET_PER_METER for e in self.mapElevs]
+
+    def getPaces(self):
+        totTime = 0
+        paces = []
+        firstI = 0
+        pace = 0
+        for i in range(0, min(len(self.times), len(self.dists))):
+            distDiff = self.dists[i] - self.dists[firstI]
+            if distDiff < 0.02: 
+                paces.append(pace)
+                continue
+            t1 = datetime.strptime(self.times[firstI], "%Y-%m-%dT%H:%M:%SZ") 
+            t2 = datetime.strptime(self.times[i], "%Y-%m-%dT%H:%M:%SZ")
+            td = t2 - t1
+            totMins = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6 / 60.0
+            pace = totMins / distDiff
+            if pace < 4: pace = 4
+            if pace > 25: pace = 25
+            paces.append(pace)
+            firstI = i
+        return paces
 
     def loadFromXML(self, tree, fname):
         root = "t:Track/t:Trackpoint/"
@@ -113,8 +134,8 @@ class Trackpoints:
                 for resultset in response['results']: elevs.append(float(resultset['elevation']))
                 path = ""
         if len(elevs) != len(lats): 
-            print>>sys.stderr, "Could not retrieve all", len(lats), "points from google, only got", \
-                len(elevs), "-- try again later"
+            print>>sys.stderr, "Could not retrieve all", len(lats), \
+                "points from google, only got", len(elevs), "-- try again later"
             return []
         return elevs
 

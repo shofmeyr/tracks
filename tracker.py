@@ -21,6 +21,8 @@ def main():
                               default = 5, help = "Window size for smoothing elevations")
     cmdOptParser.add_argument("-r", action = "store", type = int, dest = "hrWindow", 
                               default = 10, help = "Window size for smoothing heart rates")
+    cmdOptParser.add_argument("-c", action = "store", type = int, dest = "paceWindow", 
+                              default = 10, help = "Window size for smoothing paces")
     cmdOptParser.add_argument("-p", action = "store", type = str, dest = "printTracks", 
                               default = "", 
                               help = "Print track for date (YYYY-MM-DD-HHMMSS), " +\
@@ -37,7 +39,6 @@ def main():
                               help="a list of xml files containing TCX data")
     options = cmdOptParser.parse_args()
 
-    Trackpoints.elevWindow = options.elevWindow
     tracks = Tracks()
     tracks.load(options.tracksFname)
     # now update with any new data
@@ -58,22 +59,28 @@ def main():
         if len(track) == 0: 
             print "Track", options.plotMap, "has no trackpoints"
             sys.exit(0)
-        title = "Track %s, %.1f m, %.0f ft" % (options.plotMap, track.dist, track.getElevChange())
+        title = "Track %s, %.1f m, %.0f ft" % (options.plotMap, track.dist, 
+                                               track.getElevChange(options.elevWindow))
         mapTracks = MapTracks(track, "Map of " + title, color = "red", width = 800, height = 600, 
                               showTerrain = options.showTerrain)
-        mapTracks.show_all()
+#        mapTracks.show_all()
         # Now here we plot elev profile, pace profile, hr profile, comparison to other similar
         # runs, etc
-        plotElev = PlotTracks(track.trackpoints.dists, track.trackpoints.getElevs(), 
+        plotElev = PlotTracks(track.trackpoints.dists, track.trackpoints.getElevs(),
                               "Distance (miles)", "Elevation (ft)",
-                              "Elevation for " + title, color = "red", width = 700, height = 500, 
+                              "Elevation for " + title, color = "red", width = 700, height = 300, 
                               smoothingWindow = options.elevWindow)
         plotElev.show_all()
         plotHrs = PlotTracks(track.trackpoints.dists, track.trackpoints.hrs, 
                              "Distance (miles)", "Heart Rate (bpm)",
-                             "Heart rate for " + title, color = "red", width = 700, height = 500,
+                             "Heart rate for " + title, color = "red", width = 700, height = 300,
                              smoothingWindow = options.hrWindow)
         plotHrs.show_all()
+        plotPace = PlotTracks(track.trackpoints.dists, track.trackpoints.getPaces(),
+                              "Distance (miles)", "Pace (min/mile)",
+                              "Pace for " + title, color = "red", width = 700, height = 300,
+                              smoothingWindow = options.paceWindow)
+        plotPace.show_all()
 
         gtk.main()
 
