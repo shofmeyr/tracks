@@ -17,8 +17,10 @@ def main():
     cmdOptParser.add_argument("-m", action = "store", type = str, dest = "plotMap", 
                               default = "", 
                               help = "Show track on map for date (YYYY-MM-DD)")
-    cmdOptParser.add_argument("-w", action = "store", type = int, dest = "elevWindow", 
+    cmdOptParser.add_argument("-e", action = "store", type = int, dest = "elevWindow", 
                               default = 5, help = "Window size for smoothing elevations")
+    cmdOptParser.add_argument("-r", action = "store", type = int, dest = "hrWindow", 
+                              default = 10, help = "Window size for smoothing heart rates")
     cmdOptParser.add_argument("-p", action = "store", type = str, dest = "printTracks", 
                               default = "", 
                               help = "Print track for date (YYYY-MM-DD-HHMMSS), " +\
@@ -57,13 +59,21 @@ def main():
             print "Track", options.plotMap, "has no trackpoints"
             sys.exit(0)
         title = "Track %s, %.1f m, %.0f ft" % (options.plotMap, track.dist, track.getElevChange())
-        mapTracks = MapTracks(track, title, color = "red", width = 800, height = 600, 
+        mapTracks = MapTracks(track, "Map of " + title, color = "red", width = 800, height = 600, 
                               showTerrain = options.showTerrain)
         mapTracks.show_all()
         # Now here we plot elev profile, pace profile, hr profile, comparison to other similar
         # runs, etc
-        plotTracks = PlotTracks(track, title, color = "red", width = 700, height = 500)
-        plotTracks.show_all()
+        plotElev = PlotTracks(track.trackpoints.dists, track.trackpoints.getElevs(), 
+                              "Distance (miles)", "Elevation (ft)",
+                              "Elevation for " + title, color = "red", width = 700, height = 500, 
+                              smoothingWindow = options.elevWindow)
+        plotElev.show_all()
+        plotHrs = PlotTracks(track.trackpoints.dists, track.trackpoints.hrs, 
+                             "Distance (miles)", "Heart Rate (bpm)",
+                             "Heart rate for " + title, color = "red", width = 700, height = 500,
+                             smoothingWindow = options.hrWindow)
+        plotHrs.show_all()
 
         gtk.main()
 
