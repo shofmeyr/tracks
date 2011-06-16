@@ -6,6 +6,8 @@ import pytracks
 from pytracks.tracks import Tracks
 from pytracks.track import Track
 from pytracks.trackpoints import Trackpoints
+from pytracks.maptracks import MapTracks
+from pytracks.plotxy import PlotXY
 
 def main():
     # get the command line options
@@ -25,8 +27,8 @@ def main():
                               default = 20, help = "Window size for smoothing paces")
     cmdOptParser.add_argument("-p", action = "store", type = str, dest = "printTracks", 
                               default = "", 
-                              help = "Print track for date (YYYY-MM-DD-HHMMSS), " +\
-                                  "'all' for all tracks")
+                              help = "Print tracks for dates of form (YYYY-MM-DD-HHMMSS) or " +\
+                                  "a substritng of that, e.g. 2011-04")
     cmdOptParser.add_argument("-s", action = "store", type = str, dest = "printSimilar", 
                               default = "", 
                               help = "Print all tracks similar to date (YYYY-MM-DD-HHMMSS)")
@@ -35,6 +37,8 @@ def main():
     cmdOptParser.add_argument("-z", action = "store", type = str, dest = "tz", 
                               default = "US/Pacific", 
                               help = "Set time zone for xml conversion")
+    cmdOptParser.add_argument("-n", action = "store_true", dest = "monthlyStats", 
+                              default = False, help = "Plot monthly stats")
     cmdOptParser.add_argument("fnames", metavar='N', type = str, nargs = '*',
                               help="a list of xml files containing TCX data")
     options = cmdOptParser.parse_args()
@@ -49,8 +53,6 @@ def main():
     tracks.save(options.tracksFname)
     if options.printTracks != "": tracks.write(sys.stdout, options.printTracks)
     if options.plotMap != "": 
-        from pytracks.maptracks import MapTracks
-        from pytracks.plottracks import PlotTracks
         try:
             track = tracks[options.plotMap]
         except:
@@ -66,7 +68,7 @@ def main():
         mapTracks.show_all()
         # Now here we plot elev profile, pace profile, hr profile, comparison to other similar
         # runs, etc
-        plotElevHrs = PlotTracks(track.trackpoints.dists, track.trackpoints.getElevs(),
+        plotElevHrs = PlotXY(track.trackpoints.dists, track.trackpoints.getElevs(),
                                  "Distance (miles)", "Elevation (ft)",
                                  "Elevation and heart rate for " + title, color = "red", 
                                  width = 700, height = 300, 
@@ -74,7 +76,7 @@ def main():
         plotElevHrs.addSecond(track.trackpoints.dists, track.trackpoints.hrs, "Heart Rate (bpm)",
                               "green", smoothingWindow = options.hrWindow)
         plotElevHrs.show_all()
-        plotElevPace = PlotTracks(track.trackpoints.dists, track.trackpoints.getElevs(),
+        plotElevPace = PlotXY(track.trackpoints.dists, track.trackpoints.getElevs(),
                                   "Distance (miles)", "Elevation (ft)",
                                   "Elevation and pace for " + title, color = "red", 
                                   width = 700, height = 300, 
@@ -82,8 +84,14 @@ def main():
         plotElevPace.addSecond(track.trackpoints.dists, track.trackpoints.getPaces(), 
                                "Pace (mile / min)", "green", smoothingWindow = options.paceWindow)
         plotElevPace.show_all()
-
         gtk.main()
-
+    if options.monthlyStats:
+        (months, dists, paces) = tracks.getMonthlyStats()
+        plotMonthly = PlotXY(months, dists, "Date", "Distance (miles)",
+                             "Monthly distance and pace", color = "red", width = 700, height = 300)
+        plotMonthly.addSecond(months, paces, "Pace (mile / min)", "green")
+        plotMonthly.show_all()
+        gtk.main()
+        
 
 if __name__ == "__main__": main()

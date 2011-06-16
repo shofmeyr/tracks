@@ -7,8 +7,8 @@ from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanva
 from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
 #import matplotlib.pyplot as pyplot
 
-class PlotTracks(gtk.Window):
-    def __init__(self, x, y, xLabel, yLabel, title, color, width, height, smoothingWindow):
+class PlotXY(gtk.Window):
+    def __init__(self, x, y, xLabel, yLabel, title, color, width, height, smoothingWindow = 0):
         if len(x) != len(y): 
             print "Warning", len(x), "x values in plot (" + xLabel + ") but", \
                 len(y), "y values (" + yLabel, "truncating"
@@ -32,15 +32,18 @@ class PlotTracks(gtk.Window):
         toolbar = NavigationToolbar(canvas, self)
         vbox.pack_start(toolbar, False, False)
         self.add(vbox)
-        self.ax.plot(x, y, color = color)
+        # plot this with string values on the x-axis 
+        if type(x[0]) == str: self.ax.bar(x, y, color = color)
+        else: 
+            self.ax.plot(x, y, color = color)
+            self.ax.axis([min(x), max(x), min(y) * 0.95, max(y) * 1.05])
         self.set_title(title)
 #        self.ax.legend(loc = "lower right", prop = font_manager.FontProperties(size = "x-small"))
-        self.ax.axis([min(x), max(x), min(y) * 0.95, max(y) * 1.05])
         self.ax.get_axes().set_xlabel(xLabel)
         self.ax.get_axes().set_ylabel(yLabel, color = color)
         for tick in self.ax.yaxis.get_major_ticks(): tick.label.set_color(color)
 
-    def addSecond(self, x, y, yLabel, color, smoothingWindow):
+    def addSecond(self, x, y, yLabel, color, smoothingWindow = 0):
         if len(x) != len(y): 
             print "Warning", len(x), "x values in plot but", \
                 len(y), "y values (" + yLabel, "truncating"
@@ -53,8 +56,10 @@ class PlotTracks(gtk.Window):
             y = smoothedY
             x = x[:len(y)]
         ax2 = self.ax.twinx()
-        ax2.plot(x, y, color)
+        if type(x[0]) == str: ax2.bar(x, y, color)
+        else: 
+            ax2.plot(x, y, color)
+            ax2.axis([min(x), max(x), min(y) * 0.95, max(y) * 1.05])
         ax2.set_ylabel(yLabel, color = color)
-        ax2.axis([min(x), max(x), min(y) * 0.95, max(y) * 1.05])
         for tick in ax2.yaxis.get_major_ticks(): tick.label.set_color(color)
 

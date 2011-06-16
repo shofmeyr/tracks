@@ -104,7 +104,7 @@ class Track:
 #        print "Local time", str(localTime)
         return localTime
 
-    def write(self, outFile, elevWindow):
+    def write(self, outFile, elevWindow, timeStr = None):
         elev = 0
         elevRate = 0
         avPace = 0
@@ -116,31 +116,32 @@ class Track:
         if self.avHR > 0 and self.duration > 0:
             efficiency = self.dist * Trackpoints.METERS_PER_MILE / (self.avHR * self.duration)
 
+        if timeStr == None: timeStr = self.startTime.strftime("%Y-%m-%d %H:%M:%S")
         print >> outFile, \
-            "%-18s" % self.startTime.strftime("%Y-%m-%d %H:%M:%S"),\
-            "%5.2f" % self.dist,\
-            "%6.1f" % self.duration,\
+            "%-20s" % timeStr,\
+            "%6.2f" % self.dist,\
+            "%7.1f" % self.duration,\
             "%5.2f" % self.maxPace,\
             "%5.2f" % avPace,\
             "%5.0f" % self.maxHR,\
             "%5.0f" % self.avHR,\
-            "%5.0f" % elev,\
-            "%5.0f" % (self.knownElev * Trackpoints.FEET_PER_METER),\
+            "%6.0f" % elev,\
+            "%6.0f" % (self.knownElev * Trackpoints.FEET_PER_METER),\
             "%5.0f" % elevRate,\
             "%5.2f" % efficiency,\
             " %s " % self.comment
 
     @classmethod
     def writeHeader(cls, outFile):
-        print >> outFile, "#%-18s" % "Date & time",\
-            "%5s" % "dist",\
-            "%6s" % "rtime",\
+        print >> outFile, "#%-19s" % "Date & time",\
+            "%6s" % "dist",\
+            "%7s" % "rtime",\
             "%5s" % "mxPc",\
             "%5s" % "avPc",\
             "%5s" % "mxHR",\
             "%5s" % "avHR",\
-            "%5s" % "elev",\
-            "%5s" % "kElev",\
+            "%6s" % "elev",\
+            "%6s" % "kElev",\
             "%5s" % "eRate",\
             "%5s" % "eff",\
             " %s " % "comment"
