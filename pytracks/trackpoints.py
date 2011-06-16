@@ -18,11 +18,11 @@ class Trackpoints:
     def __len__(self):
         return self.length
 
-    def getElevChange(self, smoothingWindow):
+    def getElevChange(self, smoothWindow):
         # smooth the elevations
         smoothedElevs = []
-        for i in range(0, len(self) - smoothingWindow): 
-            smoothedElevs.append(numpy.average(self.mapElevs[i:i + smoothingWindow]))
+        for i in range(smoothWindow, len(self) - smoothWindow): 
+            smoothedElevs.append(numpy.average(self.mapElevs[i - smoothWindow:i + smoothWindow]))
         # compute elevation change
         totChange = 0
         for i in range(0, len(smoothedElevs) - 1):
@@ -47,7 +47,7 @@ class Trackpoints:
         pace = 0
         for i in range(0, min(len(self.times), len(self.dists))):
             distDiff = self.dists[i] - self.dists[firstI]
-            if distDiff < 0.02: 
+            if distDiff < 0.05: 
                 paces.append(pace)
                 continue
             t1 = datetime.strptime(self.times[firstI], "%Y-%m-%dT%H:%M:%SZ") 

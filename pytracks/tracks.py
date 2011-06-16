@@ -76,10 +76,10 @@ class Tracks:
         for track in self: elevRates.append(track.elevRate)
         return elevRates
     
-    def write(self, outFile, name = "all"):
+    def write(self, outFile, name = "all", elevWindow = 2):
         Track.writeHeader(outFile)
         for track in self:
-            if name == "all" or name == track.getStartTimeAsStr(): track.write(outFile)
+            if name == "all" or name == track.getStartTimeAsStr(): track.write(outFile, elevWindow)
 
     def __iter__(self):
         self.index = 0

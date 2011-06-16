@@ -104,12 +104,12 @@ class Track:
 #        print "Local time", str(localTime)
         return localTime
 
-    def write(self, outFile):
+    def write(self, outFile, elevWindow):
         elev = 0
         elevRate = 0
         avPace = 0
         efficiency = 0
-        elev = self.getElevChange()
+        elev = self.getElevChange(elevWindow)
         if self.dist > 0:
             avPace = self.duration / self.dist
             elevRate = elev / self.dist

@@ -1,6 +1,7 @@
 import sys, numpy, gtk, os.path, gtk.gdk, gobject
 
 from matplotlib.figure import Figure
+from matplotlib.spines import Spine
 #import matplotlib.font_manager as font_manager
 from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
 from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
@@ -13,10 +14,10 @@ class PlotTracks(gtk.Window):
                 len(y), "y values (" + yLabel, "truncating"
             if len(x) < len(y): y = y[:len(x)]
             elif len(y) < len(x): x = x[:len(y)]
-        if smoothingWindow > 1:
+        if smoothingWindow > 0:
             smoothedY = []
-            for i in range(0, len(y) - smoothingWindow): 
-                smoothedY.append(numpy.average(y[i:i + smoothingWindow]))
+            for i in range(smoothingWindow, len(y) - smoothingWindow): 
+                smoothedY.append(numpy.average(y[i - smoothingWindow:i + smoothingWindow]))
             y = smoothedY
             x = x[:len(y)]
         gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
@@ -36,9 +37,10 @@ class PlotTracks(gtk.Window):
 #        self.ax.legend(loc = "lower right", prop = font_manager.FontProperties(size = "x-small"))
         self.ax.axis([min(x), max(x), min(y) * 0.95, max(y) * 1.05])
         self.ax.get_axes().set_xlabel(xLabel)
-        self.ax.get_axes().set_ylabel(yLabel)
+        self.ax.get_axes().set_ylabel(yLabel, color = color)
+        for tick in self.ax.yaxis.get_major_ticks(): tick.label.set_color(color)
 
-    def addSecond(self, x, y, yLabel, smoothingWindow):
+    def addSecond(self, x, y, yLabel, color, smoothingWindow):
         if len(x) != len(y): 
             print "Warning", len(x), "x values in plot but", \
                 len(y), "y values (" + yLabel, "truncating"
@@ -51,5 +53,8 @@ class PlotTracks(gtk.Window):
             y = smoothedY
             x = x[:len(y)]
         ax2 = self.ax.twinx()
-        ax2.plot(x, y, "green")
-        ax2.set_ylabel(yLabel)
+        ax2.plot(x, y, color)
+        ax2.set_ylabel(yLabel, color = color)
+        ax2.axis([min(x), max(x), min(y) * 0.95, max(y) * 1.05])
+        for tick in ax2.yaxis.get_major_ticks(): tick.label.set_color(color)
+

@@ -18,11 +18,11 @@ def main():
                               default = "", 
                               help = "Show track on map for date (YYYY-MM-DD)")
     cmdOptParser.add_argument("-e", action = "store", type = int, dest = "elevWindow", 
-                              default = 5, help = "Window size for smoothing elevations")
+                              default = 2, help = "Window size for smoothing elevations")
     cmdOptParser.add_argument("-r", action = "store", type = int, dest = "hrWindow", 
-                              default = 10, help = "Window size for smoothing heart rates")
+                              default = 20, help = "Window size for smoothing heart rates")
     cmdOptParser.add_argument("-c", action = "store", type = int, dest = "paceWindow", 
-                              default = 10, help = "Window size for smoothing paces")
+                              default = 20, help = "Window size for smoothing paces")
     cmdOptParser.add_argument("-p", action = "store", type = str, dest = "printTracks", 
                               default = "", 
                               help = "Print track for date (YYYY-MM-DD-HHMMSS), " +\
@@ -63,26 +63,25 @@ def main():
                                                track.getElevChange(options.elevWindow))
         mapTracks = MapTracks(track, "Map of " + title, color = "red", width = 800, height = 600, 
                               showTerrain = options.showTerrain)
-#        mapTracks.show_all()
+        mapTracks.show_all()
         # Now here we plot elev profile, pace profile, hr profile, comparison to other similar
         # runs, etc
-        plotElev = PlotTracks(track.trackpoints.dists, track.trackpoints.getElevs(),
-                              "Distance (miles)", "Elevation (ft)",
-                              "Elevation for " + title, color = "red", width = 700, height = 300, 
-                              smoothingWindow = options.elevWindow)
-        plotElev.addSecond(track.trackpoints.dists, track.trackpoints.hrs, "Heart Rate (bpm)",
-                           smoothingWindow = options.hrWindow)
-        plotElev.show_all()
-        plotHrs = PlotTracks(track.trackpoints.dists, track.trackpoints.hrs, 
-                             "Distance (miles)", "Heart Rate (bpm)",
-                             "Heart rate for " + title, color = "red", width = 700, height = 300,
-                             smoothingWindow = options.hrWindow)
-#        plotHrs.show_all()
-        plotPace = PlotTracks(track.trackpoints.dists, track.trackpoints.getPaces(),
-                              "Distance (miles)", "Pace (min/mile)",
-                              "Pace for " + title, color = "red", width = 700, height = 300,
-                              smoothingWindow = options.paceWindow)
-#        plotPace.show_all()
+        plotElevHrs = PlotTracks(track.trackpoints.dists, track.trackpoints.getElevs(),
+                                 "Distance (miles)", "Elevation (ft)",
+                                 "Elevation and heart rate for " + title, color = "red", 
+                                 width = 700, height = 300, 
+                                 smoothingWindow = options.elevWindow)
+        plotElevHrs.addSecond(track.trackpoints.dists, track.trackpoints.hrs, "Heart Rate (bpm)",
+                              "green", smoothingWindow = options.hrWindow)
+        plotElevHrs.show_all()
+        plotElevPace = PlotTracks(track.trackpoints.dists, track.trackpoints.getElevs(),
+                                  "Distance (miles)", "Elevation (ft)",
+                                  "Elevation and pace for " + title, color = "red", 
+                                  width = 700, height = 300, 
+                                  smoothingWindow = options.elevWindow)
+        plotElevPace.addSecond(track.trackpoints.dists, track.trackpoints.getPaces(), 
+                               "Pace (mile / min)", "green", smoothingWindow = options.paceWindow)
+        plotElevPace.show_all()
 
         gtk.main()
 
