@@ -66,30 +66,25 @@ def main():
         mapTracks = MapTracks(track, "Map of " + title, color = "red", width = 800, height = 600, 
                               showTerrain = options.showTerrain)
         mapTracks.show_all()
-        # Now here we plot elev profile, pace profile, hr profile, comparison to other similar
-        # runs, etc
-        plotElevHrs = PlotXY(track.trackpoints.dists, track.trackpoints.getElevs(),
-                                 "Distance (miles)", "Elevation (ft)",
-                                 "Elevation and heart rate for " + title, color = "red", 
-                                 width = 700, height = 300, 
-                                 smoothingWindow = options.elevWindow)
-        plotElevHrs.addSecond(track.trackpoints.dists, track.trackpoints.hrs, "Heart Rate (bpm)",
-                              "green", smoothingWindow = options.hrWindow)
-        plotElevHrs.show_all()
-        plotElevPace = PlotXY(track.trackpoints.dists, track.trackpoints.getElevs(),
-                                  "Distance (miles)", "Elevation (ft)",
-                                  "Elevation and pace for " + title, color = "red", 
-                                  width = 700, height = 300, 
-                                  smoothingWindow = options.elevWindow)
-        plotElevPace.addSecond(track.trackpoints.dists, track.trackpoints.getPaces(), 
-                               "Pace (mile / min)", "green", smoothingWindow = options.paceWindow)
-        plotElevPace.show_all()
+        plotElevs = PlotXY(track.trackpoints.dists, track.trackpoints.getElevs(),
+                           "Distance (miles)", "Elevation (ft)",
+                           "Elevation and heart rate for " + title, color = "red", 
+                           width = 700, height = 500, 
+                           smoothingWindow = options.elevWindow)
+        plotElevs.addAnother(track.trackpoints.dists, track.trackpoints.hrs, "Heart Rate (bpm)",
+                             "green", smoothingWindow = options.hrWindow)
+        plotElevs.addAnother(track.trackpoints.dists, track.trackpoints.getPaces(), 
+                             "Pace (mile / min)", "blue", smoothingWindow = options.paceWindow)
+        plotElevs.show_all()
         gtk.main()
     if options.monthlyStats:
-        (months, dists, paces) = tracks.getMonthlyStats()
-        plotMonthly = PlotXY(months, dists, "Date", "Distance (miles)",
-                             "Monthly distance and pace", color = "red", width = 700, height = 300)
-        plotMonthly.addSecond(months, paces, "Pace (mile / min)", "green")
+        (months, dists, paces, hrs, durations) = tracks.getMonthlyStats()
+        plotMonthly = PlotXY(months, dists, "", "Distance (miles)",
+                             "Monthly distance and pace", color = "red", width = 700, height = 500)
+        plotMonthly.addAnother(months, paces, "Pace (mile / min)", "green")
+        heartBeats = []
+        for i in range(0, len(durations)): heartBeats.append(durations[i] * hrs[i] / 1000.0)
+        plotMonthly.addAnother(months, heartBeats, "heart beats (000's)", "blue")
         plotMonthly.show_all()
         gtk.main()
         

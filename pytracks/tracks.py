@@ -111,9 +111,13 @@ class Tracks:
         months = []
         dists = []
         paces = []
+        hrs = []
+        durations = []
         i = 0
         dist = 0
         duration = 0
+        hr = 0
+        numHrs = 0
         for m in self:
             monthStr = m.startTime.strftime("%Y-%m")
             if i == 0: months.append(monthStr)
@@ -121,18 +125,24 @@ class Tracks:
                 months.append(monthStr)
                 dists.append(dist)
                 paces.append(duration)
+                hrs.append(hr / numHrs)
+                durations.append(duration)
                 dist = 0
                 duration = 0
+                hr = 0
+                numHrs = 0
             else:
                 if m.dist > 0:
                     dist += m.dist
                     duration += m.duration
+                if m.avHR > 0:
+                    hr += m.avHR
+                    numHrs += 1
             i += 1
         for i in range(0, len(paces)): 
             if dists[i] > 0: paces[i] /= dists[i]
             else: paces[i] = 10
-        return (months, dists, paces)
-#        return (range(0, len(months) - 1), dists, paces)
+        return (months, dists, paces, hrs, durations)
 
         
 
