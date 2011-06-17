@@ -1,8 +1,8 @@
 #!/usr/bin/python -u 
 
-import argparse, string, os, sys
-import gtk, datetime
-import pytracks
+import argparse
+import sys
+import gtk
 from pytracks.tracks import Tracks
 from pytracks.track import Track
 from pytracks.trackpoints import Trackpoints

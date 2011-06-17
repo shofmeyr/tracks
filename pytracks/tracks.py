@@ -113,36 +113,46 @@ class Tracks:
         paces = []
         hrs = []
         durations = []
-        i = 0
         dist = 0
         duration = 0
-        hr = 0
-        numHrs = 0
-        for m in self:
-            monthStr = m.startTime.strftime("%Y-%m")
-            if dateStr != monthStr[:len(dateStr)]: continue
-            if i == 0: months.append(monthStr)
-            elif months[-1] != monthStr: 
-                months.append(monthStr)
+        hbeats = 0
+        hrDuration = 0
+        i = 0
+        currMonthStr = None
+        for track in self:
+            monthStr = track.startTime.strftime("%Y-%m")
+            if not monthStr.startswith(dateStr): continue
+            if currMonthStr is None: currMonthStr = monthStr
+            if currMonthStr != monthStr: 
+                months.append(currMonthStr)
                 dists.append(dist)
                 paces.append(duration)
-                hrs.append(hr / numHrs)
+                if hrDuration > 0: hrs.append(hbeats / hrDuration)
+                else: hrs.append(0)
                 durations.append(duration)
                 dist = 0
                 duration = 0
-                hr = 0
-                numHrs = 0
-            else:
-                if m.dist > 0:
-                    dist += m.dist
-                    duration += m.duration
-                if m.avHR > 0:
-                    hr += m.avHR
-                    numHrs += 1
+                hbeats = 0
+                hrDuration = 0
+                currMonthStr = monthStr
+            dist += track.dist
+            duration += track.duration
+            if track.avHR > 0:
+                hbeats += (track.avHR * track.duration)
+                hrDuration += track.duration
             i += 1
+        else:   # make sure we get the last month
+            months.append(currMonthStr)
+            dists.append(dist)
+            paces.append(duration)
+            if hrDuration > 0: hrs.append(hbeats / hrDuration)
+            else: hrs.append(0)
+            durations.append(duration)
+        print len(months), len(paces)
         for i in range(0, len(paces)): 
             if dists[i] > 0: paces[i] /= dists[i]
-            else: paces[i] = 10
+            else: paces[i] = 0
+            print months[i], dists[i]
         return (months, dists, paces, hrs, durations)
 
     def getDailyStats(self, dateStr):
@@ -153,7 +163,7 @@ class Tracks:
         durations = []
         for d in self:
             dayStr = d.startTime.strftime("%Y-%m-%d")
-            if dateStr != dayStr[:len(dateStr)]: continue
+            if not dayStr.startswith(dateStr): continue
             days.append(dayStr)
             dists.append(d.dist)
             paces.append(d.duration)
