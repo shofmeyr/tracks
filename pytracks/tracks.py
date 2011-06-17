@@ -155,12 +155,12 @@ class Tracks:
             if hr_duration > 0: hrs.append(heart_beats / hr_duration)
             else: hrs.append(0)
             durations.append(duration)
-        print "%9s" % "months", "%5s" % "time", "%5s" % "dist", "%5s" % "pace"
+        print "%-9s" % "months", "%5s" % "time", "%5s" % "dist", "%5s" % "pace"
         for i in range(0, len(paces)): 
             if dists[i] > 0: paces[i] /= dists[i]
             else: paces[i] = 0
             if paces[i] > 25: paces[i] = 0
-            print "%9s" % months[i], "%5.1f" % (durations[i] / 60), "%5.0f" % dists[i], "%3.2f" % paces[i]
+            print "%-9s" % months[i], "%5.1f" % (durations[i] / 60), "%5.0f" % dists[i], "%5.1f" % paces[i]
         return (months, dists, paces, hrs, durations)
 
     def get_daily_stats(self, date_str):
