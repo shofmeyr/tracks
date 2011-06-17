@@ -107,7 +107,7 @@ class Tracks:
         self.index += 1
         return self.data[self.sortedKeys[self.index]]
 
-    def getMonthlyStats(self):
+    def getMonthlyStats(self, dateStr):
         months = []
         dists = []
         paces = []
@@ -120,6 +120,7 @@ class Tracks:
         numHrs = 0
         for m in self:
             monthStr = m.startTime.strftime("%Y-%m")
+            if dateStr != monthStr[:len(dateStr)]: continue
             if i == 0: months.append(monthStr)
             elif months[-1] != monthStr: 
                 months.append(monthStr)
@@ -143,6 +144,25 @@ class Tracks:
             if dists[i] > 0: paces[i] /= dists[i]
             else: paces[i] = 10
         return (months, dists, paces, hrs, durations)
+
+    def getDailyStats(self, dateStr):
+        days = []
+        dists = []
+        paces = []
+        hrs = []
+        durations = []
+        for d in self:
+            dayStr = d.startTime.strftime("%Y-%m-%d")
+            if dateStr != dayStr[:len(dateStr)]: continue
+            days.append(dayStr)
+            dists.append(d.dist)
+            paces.append(d.duration)
+            durations.append(d.duration)
+            hrs.append(d.avHR)
+        for i in range(0, len(paces)): 
+            if dists[i] > 0: paces[i] /= dists[i]
+            else: paces[i] = 10
+        return (days, dists, paces, hrs, durations)
 
         
 

@@ -34,7 +34,9 @@ class PlotXY(gtk.Window):
         self.add(vbox)
         # plot this with string values on the x-axis 
         if type(x[0]) == str: 
-            dates = [matplotlib.dates.date2num(datetime.datetime.strptime(d, "%Y-%m")) for d in x]
+            if len(x[0]) == 7: fmt = "%Y-%m"
+            else: fmt = "%Y-%m-%d"
+            dates = [matplotlib.dates.date2num(datetime.datetime.strptime(d, fmt)) for d in x]
             self.ax.plot_date(dates, y, color = color, ls = '-')
             self.fig.autofmt_xdate()
         else: 
@@ -61,7 +63,9 @@ class PlotXY(gtk.Window):
             x = x[:len(y)]
         ax2 = self.ax.twinx()
         if type(x[0]) == str:
-            dates = [matplotlib.dates.date2num(datetime.datetime.strptime(d, "%Y-%m")) for d in x]
+            if len(x[0]) == 7: fmt = "%Y-%m"
+            else: fmt = "%Y-%m-%d"
+            dates = [matplotlib.dates.date2num(datetime.datetime.strptime(d, fmt)) for d in x]
             ax2.plot_date(dates, y, color = color, ls = '-')
         else: 
             ax2.plot(x, y, color)

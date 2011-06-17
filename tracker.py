@@ -37,8 +37,12 @@ def main():
     cmdOptParser.add_argument("-z", action = "store", type = str, dest = "tz", 
                               default = "US/Pacific", 
                               help = "Set time zone for xml conversion")
-    cmdOptParser.add_argument("-n", action = "store_true", dest = "monthlyStats", 
-                              default = False, help = "Plot monthly stats")
+    cmdOptParser.add_argument("-n", action = "store", type = str, dest = "monthlyStats", 
+                              default = "", 
+                              help = "Plot monthly stats for substring of YYYY-MM")
+    cmdOptParser.add_argument("-d", action = "store", type = str, dest = "dailyStats", 
+                              default = "", 
+                              help = "Plot daily stats for substring YYYY-MM-DD")
     cmdOptParser.add_argument("fnames", metavar='N', type = str, nargs = '*',
                               help="a list of xml files containing TCX data")
     options = cmdOptParser.parse_args()
@@ -77,8 +81,8 @@ def main():
                              "Pace (mile / min)", "blue", smoothingWindow = options.paceWindow)
         plotElevs.show_all()
         gtk.main()
-    if options.monthlyStats:
-        (months, dists, paces, hrs, durations) = tracks.getMonthlyStats()
+    if options.monthlyStats != "":
+        (months, dists, paces, hrs, durations) = tracks.getMonthlyStats(options.monthlyStats)
         plotMonthly = PlotXY(months, dists, "", "Distance (miles)",
                              "Monthly distance and pace", color = "red", width = 700, height = 500)
         plotMonthly.addAnother(months, paces, "Pace (mile / min)", "green")
@@ -86,6 +90,16 @@ def main():
         for i in range(0, len(durations)): heartBeats.append(durations[i] * hrs[i] / 1000.0)
         plotMonthly.addAnother(months, heartBeats, "heart beats (000's)", "blue")
         plotMonthly.show_all()
+        gtk.main()
+    if options.dailyStats != "":
+        (days, dists, paces, hrs, durations) = tracks.getDailyStats(options.dailyStats)
+        plotDaily = PlotXY(days, dists, "", "Distance (miles)",
+                           "Daily distance and pace", color = "red", width = 700, height = 500)
+        plotDaily.addAnother(days, paces, "Pace (mile / min)", "green")
+        heartBeats = []
+        for i in range(0, len(durations)): heartBeats.append(durations[i] * hrs[i] / 1000.0)
+        plotDaily.addAnother(days, heartBeats, "heart beats (000's)", "blue")
+        plotDaily.show_all()
         gtk.main()
         
 
