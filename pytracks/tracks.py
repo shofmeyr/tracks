@@ -172,6 +172,7 @@ class Tracks:
         for i in range(0, len(paces)): 
             if dists[i] > 0: paces[i] /= dists[i]
             else: paces[i] = 10
+        self.write(sys.stdout, dateStr)
         return (days, dists, paces, hrs, durations)
 
         

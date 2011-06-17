@@ -25,10 +25,6 @@ def main():
                               default = 20, help = "Window size for smoothing heart rates")
     cmdOptParser.add_argument("-c", action = "store", type = int, dest = "paceWindow", 
                               default = 20, help = "Window size for smoothing paces")
-    cmdOptParser.add_argument("-p", action = "store", type = str, dest = "printTracks", 
-                              default = "", 
-                              help = "Print tracks for dates of form (YYYY-MM-DD-HHMMSS) or " +\
-                                  "a substritng of that, e.g. 2011-04")
     cmdOptParser.add_argument("-s", action = "store", type = str, dest = "printSimilar", 
                               default = "", 
                               help = "Print all tracks similar to date (YYYY-MM-DD-HHMMSS)")
@@ -43,7 +39,7 @@ def main():
     cmdOptParser.add_argument("-d", action = "store", type = str, dest = "dailyStats", 
                               default = "", 
                               help = "Plot daily stats for substring YYYY-MM-DD")
-    cmdOptParser.add_argument("-l", action = "store", type = str, dest = "fieldsToPlot", 
+    cmdOptParser.add_argument("-p", action = "store", type = str, dest = "fieldsToPlot", 
                               default = "dist", 
                               help = "The fields to plot, a comma separated list of up to three of " +\
                                   "dist,time,avhr,maxhr,avpace,maxpace,hbeats,elev,elevrate")
@@ -59,7 +55,6 @@ def main():
         print>>sys.stderr, "No tracks found"
         sys.exit(0)
     tracks.save(options.tracksFname)
-    if options.printTracks != "": tracks.write(sys.stdout, options.printTracks)
     if options.plotMap != "": 
         try:
             track = tracks[options.plotMap]
