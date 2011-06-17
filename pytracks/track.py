@@ -1,78 +1,73 @@
-import string, os, sys
+import sys
 import datetime
 from trackpoints import Trackpoints
 
 class Track:
-    def __init__(self, startTime, duration, dist, maxPace, maxHR, avHR, trackpoints, comment,
-                 knownElev = 0, knownDist = 0):
-        self.startTime = startTime
+    def __init__(self, start_time, duration, dist, max_pace, max_hr, av_hr, trackpoints, comment,
+                 known_elev=0, known_dist=0):
+        self.start_time = start_time
         self.dist = dist
         self.duration = duration
-        self.maxPace = maxPace
-        self.maxHR = maxHR
-        self.avHR = avHR
+        self.max_pace = max_pace
+        self.max_hr = max_hr
+        self.av_hr = av_hr
         self.trackpoints = trackpoints
         self.comment = comment
-        self.knownElev = knownElev
-        self.knownDist = knownDist
+        self.known_elev = known_elev
+        self.known_dist = known_dist
 
     def __len__(self):
         return len(self.trackpoints)
 
-#    def __getitem__(self, key):
-#        return self.trackpoints[key]
-
-#    def __setitem__(self, key, value):
-#        self.trackpoints[key] = value
-
     @classmethod
-    def fromXMLFile(cls, fname, tz = None):
+    def from_xml_file(cls, fname, tz=None):
         from xmltree import XMLTree
         # load the xml file into a tree
-        tree = XMLTree(fname, namespace = 
-                       {"t":"http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"}, 
-                       root = "t:Activities/t:Activity/")
-        utcStartTime = tree.findAll("t:Id", isFloat = False)[0]
-        comment = tree.findAll("t:Comment", isFloat = False)
+        tree = XMLTree(fname, 
+                       namespace={"t":"http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"}, 
+                       root="t:Activities/t:Activity/")
+        utc_start_time = tree.find_all("t:Id", is_float=False)[0]
+        comment = tree.find_all("t:Comment", is_float=False)
         if len(comment) > 0: comment = comment[0]
         else: comment = ""
-        knownElev = tree.findAll("t:KnownElevationMeters")
-        if len(knownElev) > 0: knownElev = knownElev[0]
-        else: knownElev = 0
-        knownDist = tree.findAll("t:KnownDistanceMeters")
-        if len(knownDist) > 0: knownDist = knownDist[0]
-        else: knownDist = 0
+        known_elev = tree.find_all("t:KnownElevationMeters")
+        if len(known_elev) > 0: known_elev = known_elev[0]
+        else: known_elev = 0
+        known_dist = tree.find_all("t:KnownDistanceMeters")
+        if len(known_dist) > 0: known_dist = known_dist[0]
+        else: known_dist = 0
 
         tree.root += "t:Lap/"
-        durations = tree.findAll("t:TotalTimeSeconds")
+        durations = tree.find_all("t:TotalTimeSeconds")
         duration = sum(durations) / 60.0
         # drop point if the tracktime is too small
         if duration <= 5: 
             print>>sys.stderr, "Dropping", fname, "time is < 5 mins"
-            return None
+            return (None, None)
         try:
-            maxPace = max(tree.findAll("t:MaximumSpeed"))
-        except:
-            maxPace = 0
-        if maxPace > 0: maxPace = 60.0 / (maxPace * Trackpoints.METERS_PER_MILE / 1000.0)
-        dist = sum(tree.findAll("t:DistanceMeters")) / Trackpoints.METERS_PER_MILE
+            max_pace = max(tree.find_all("t:MaximumSpeed"))
+# FIXME: figure out exact exception that gets thrown and catch just that            
+        except ValueError as e: 
+            max_pace = 0
+        if max_pace > 0: max_pace = 60.0 / (max_pace * Trackpoints.METERS_PER_MILE / 1000.0)
+        dist = sum(tree.find_all("t:DistanceMeters")) / Trackpoints.METERS_PER_MILE
         # drop point if the dist is measured, but small
         if dist > 0 and dist < 1.0: 
             print>>sys.stderr, "Dropping", fname, "distance is > 0 and < 1.0"
             return None
-        if dist == 0: dist = knownDist / Trackpoints.METERS_PER_MILE
-        maxHRs = tree.findAll("t:MaximumHeartRateBpm/t:Value")
-        if len(maxHRs) > 0: maxHR = max(maxHRs)
-        else: maxHR = 0
-        avHRs = tree.findAll("t:AverageHeartRateBpm/t:Value")
-        avHR = sum([avHRs[i] * durations[i] / 60 for i in range(0, len(avHRs))]) / duration
+        if dist == 0: dist = known_dist / Trackpoints.METERS_PER_MILE
+        max_hrs = tree.find_all("t:MaximumHeartRateBpm/t:Value")
+        if len(max_hrs) > 0: max_hr = max(max_hrs)
+        else: max_hr = 0
+        av_hrs = tree.find_all("t:AverageHeartRateBpm/t:Value")
+        av_hr = sum([av_hrs[i] * durations[i] / 60 for i in range(0, len(av_hrs))]) / duration
         # drop all points that have low heart rates
-        if avHR < 80 and avHR > 0: 
+        if av_hr < 80 and av_hr > 0: 
             print>>sys.stderr, "Dropping", fname, "av HR is < 80 and > 0"
             return None
         # extract trackpoints from xml
         trackpoints = Trackpoints()
-        trackpoints.loadFromXML(tree, fname)
+        trackpoints.load_from_xml(tree, fname)
         # FIXME: add an input option to add a comment
         # now write the modified tree back to the file
         f = open(fname, "w")
@@ -81,87 +76,87 @@ class Track:
         # time is UTC, try to convert it here
         lng = None
         if len(trackpoints) > 0: lng =  trackpoints.lngs[0]
-        startTime = Track.getLocalTime(utcStartTime, lng, tz)
-        return (cls(startTime = startTime, duration = duration, dist = dist, 
-                    maxPace = maxPace, maxHR = maxHR, avHR = avHR, trackpoints = trackpoints, 
-                    comment = comment, knownElev = knownElev, knownDist = knownDist), tree)
+        start_time = Track.get_local_time(utc_start_time, lng, tz)
+        return (cls(start_time=start_time, duration=duration, dist=dist, 
+                    max_pace=max_pace, max_hr=max_hr, av_hr=av_hr, trackpoints=trackpoints, 
+                    comment=comment, known_elev=known_elev, known_dist=known_dist), tree)
 
     @classmethod
-    def getLocalTime(cls, utcTimeStr, lng, tz):
+    def get_local_time(cls, utc_time_str, lng, tz):
         import pytz
         # FIXME: the time is given as UTC. What is needed is a way to convert the time to the 
         # correct one for the geographic location, as given by the gps coordinates. We use 
         # something very simple here which gives an approximation of the actual time. A better way 
         # to do this is use a timezone service.
         # This can always be corrected later.
-        utcTime = datetime.datetime.strptime(utcTimeStr, "%Y-%m-%dT%H:%M:%SZ")
-#        print "utcTime", utcTime
-        utcTime = utcTime.replace(tzinfo=pytz.utc)
-#        print "UTC replaced", utcTime
-        if tz != None and tz != "": localTime = utcTime.astimezone(pytz.timezone(tz))
-        elif lng != None: localTime = utcTime + datetime.timedelta(hours = int(round(lng / 15.0)))
-        else: localTime = utcTime
-#        print "Local time", str(localTime)
-        return localTime
+        utc_time = datetime.datetime.strptime(utc_time_str, "%Y-%m-%dT%H:%M:%SZ")
+#        print "utc_time", utc_time
+        utc_time = utc_time.replace(tzinfo=pytz.utc)
+#        print "UTC replaced", utc_time
+        if tz is not None and tz != "": local_time = utc_time.astimezone(pytz.timezone(tz))
+        elif lng is not None: local_time = utc_time + datetime.timedelta(hours = int(round(lng / 15.0)))
+        else: local_time = utc_time
+#        print "Local time", str(local_time)
+        return local_time
 
-    def write(self, outFile, elevWindow, timeStr = None):
+    def write(self, out_file, elev_window, time_str=None):
         elev = 0
-        elevRate = 0
-        avPace = 0
+        elev_rate = 0
+        av_pace = 0
         efficiency = 0
-        elev = self.getElevChange(elevWindow)
+        elev = self.get_elev_change(elev_window)
         if self.dist > 0:
-            avPace = self.duration / self.dist
-            elevRate = elev / self.dist
-        if self.avHR > 0 and self.duration > 0:
-            efficiency = self.dist * Trackpoints.METERS_PER_MILE / (self.avHR * self.duration)
+            av_pace = self.duration / self.dist
+            elev_rate = elev / self.dist
+        if self.av_hr > 0 and self.duration > 0:
+            efficiency = self.dist * Trackpoints.METERS_PER_MILE / (self.av_hr * self.duration)
 
-        if timeStr == None: timeStr = self.startTime.strftime("%Y-%m-%d %H:%M:%S")
-        print >> outFile, \
-            "%-20s" % timeStr,\
+        if time_str is None: time_str = self.start_time.strftime("%Y-%m-%d %H:%M:%S")
+        print >> out_file, \
+            "%-20s" % time_str,\
             "%6.2f" % self.dist,\
             "%7.1f" % self.duration,\
-            "%5.2f" % self.maxPace,\
-            "%5.2f" % avPace,\
-            "%5.0f" % self.maxHR,\
-            "%5.0f" % self.avHR,\
+            "%5.2f" % self.max_pace,\
+            "%5.2f" % av_pace,\
+            "%5.0f" % self.max_hr,\
+            "%5.0f" % self.av_hr,\
             "%6.0f" % elev,\
-            "%6.0f" % (self.knownElev * Trackpoints.FEET_PER_METER),\
-            "%5.0f" % elevRate,\
+            "%6.0f" % (self.known_elev * Trackpoints.FEET_PER_METER),\
+            "%5.0f" % elev_rate,\
             "%5.2f" % efficiency,\
             " %s " % self.comment
 
     @classmethod
-    def writeHeader(cls, outFile):
-        print >> outFile, "#%-19s" % "Date & time",\
+    def write_header(cls, out_file):
+        print >> out_file, "#%-19s" % "Date & time",\
             "%6s" % "dist",\
             "%7s" % "rtime",\
-            "%5s" % "mxPc",\
-            "%5s" % "avPc",\
-            "%5s" % "mxHR",\
-            "%5s" % "avHR",\
+            "%5s" % "mxpc",\
+            "%5s" % "avpc",\
+            "%5s" % "mxhr",\
+            "%5s" % "avhr",\
             "%6s" % "elev",\
-            "%6s" % "kElev",\
-            "%5s" % "eRate",\
+            "%6s" % "kelev",\
+            "%5s" % "erate",\
             "%5s" % "eff",\
             " %s " % "comment"
 
-    def getDate(self):
-        return self.startTime.strftime("%Y-%m-%d")
+    def get_date(self):
+        return self.start_time.strftime("%Y-%m-%d")
 
-    def getStartTimeAsStr(self):
-        return self.startTime.strftime("%Y-%m-%d-%H%M%S")
+    def get_start_time_as_str(self):
+        return self.start_time.strftime("%Y-%m-%d-%H%M%S")
 
-    def getElevChange(self, smoothingWindow):
-        elevChange = 0
-        if self.trackpoints != None: elevChange = self.trackpoints.getElevChange(smoothingWindow)
-        if elevChange == 0: return self.knownElev * Trackpoints.FEET_PER_METER
-        return elevChange
+    def get_elev_change(self, smoothing_window):
+        elev_change = 0
+        if self.trackpoints != None: elev_change = self.trackpoints.get_elev_change(smoothing_window)
+        if elev_change == 0: return self.known_elev * Trackpoints.FEET_PER_METER
+        return elev_change
         
-    def getMidPointRange(self, t):
+    def get_mid_point_range(self, t):
         if t == "lats": x = self.trackpoints.lats
         else: x = self.trackpoints.lngs
-        minX = min(x)
-        maxX = max(x)
-        return (minX + (maxX - minX) / 2.0, maxX - minX)
+        min_x = min(x)
+        max_x = max(x)
+        return (min_x + (max_x - min_x) / 2.0, max_x - min_x)
 

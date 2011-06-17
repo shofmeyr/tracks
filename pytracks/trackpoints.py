@@ -1,5 +1,9 @@
-import numpy, sys, simplejson, urllib, os
-from datetime import datetime
+import numpy
+import sys
+import simplejson
+import urllib
+import os
+import datetime
 
 class Trackpoints:
     METERS_PER_MILE = 1609.344
@@ -10,102 +14,103 @@ class Trackpoints:
         self.lats = []
         self.lngs = []
         self.dists = []
-        self.gpsElevs = []
-        self.mapElevs = []
+        self.gps_elevs = []
+        self.map_elevs = []
         self.hrs = []
         self.length = 0
 
     def __len__(self):
         return self.length
 
-    def getElevChange(self, smoothWindow):
+    def get_elev_change(self, smooth_window):
         # smooth the elevations
-        smoothedElevs = []
-        for i in range(smoothWindow, len(self) - smoothWindow): 
-            smoothedElevs.append(numpy.average(self.mapElevs[i - smoothWindow:i + smoothWindow]))
+        if smooth_window == 0: smoothed_elevs = self.map_elevs
+        else:
+            smoothed_elevs = []
+            for i in range(smooth_window, len(self) - smooth_window): 
+                smoothed_elevs.append(numpy.average(self.map_elevs[i - smooth_window:i + smooth_window]))
         # compute elevation change
-        totChange = 0
-        for i in range(0, len(smoothedElevs) - 1):
-            change = smoothedElevs[i + 1] - smoothedElevs[i]
+        tot_change = 0
+        for i in range(0, len(smoothed_elevs) - 1):
+            change = smoothed_elevs[i + 1] - smoothed_elevs[i]
             if change < 0: change = 0
-            totChange += change
-        totChange *= Trackpoints.FEET_PER_METER
-        return totChange
+            tot_change += change
+        tot_change *= Trackpoints.FEET_PER_METER
+        return tot_change
 
-    def getMinMaxElevs(self):
-        minElev = min(self.mapElevs)
-        maxElev = max(self.mapElevs)
-        return (minElev * Trackpoints.FEET_PER_METER, maxElev * Trackpoints.FEET_PER_METER)
+    def get_min_max_elevs(self):
+        min_elev = min(self.map_elevs)
+        max_elev = max(self.map_elevs)
+        return (min_elev * Trackpoints.FEET_PER_METER, max_elev * Trackpoints.FEET_PER_METER)
 
-    def getElevs(self):
-        return [e * Trackpoints.FEET_PER_METER for e in self.mapElevs]
+    def get_elevs(self):
+        return [e * Trackpoints.FEET_PER_METER for e in self.map_elevs]
 
-    def getPaces(self):
-        totTime = 0
+    def get_paces(self):
         paces = []
-        firstI = 0
+        first_i = 0
         pace = 0
         for i in range(0, min(len(self.times), len(self.dists))):
-            distDiff = self.dists[i] - self.dists[firstI]
-            if distDiff < 0.05: 
+            dist_diff = self.dists[i] - self.dists[first_i]
+            if dist_diff < 0.05: 
                 paces.append(pace)
                 continue
-            t1 = datetime.strptime(self.times[firstI], "%Y-%m-%dT%H:%M:%SZ") 
-            t2 = datetime.strptime(self.times[i], "%Y-%m-%dT%H:%M:%SZ")
+            t1 = datetime.datetime.strptime(self.times[first_i], "%Y-%m-%dT%H:%M:%SZ") 
+            t2 = datetime.datetime.strptime(self.times[i], "%Y-%m-%dT%H:%M:%SZ")
             td = t2 - t1
-            totMins = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6 / 60.0
-            pace = totMins / distDiff
+            tot_mins = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6 / 60.0
+            pace = tot_mins / dist_diff
             if pace < 4: pace = 4
             if pace > 25: pace = 25
             paces.append(pace)
-            firstI = i
+            first_i = i
         return paces
 
-    def loadFromXML(self, tree, fname):
+    def load_from_xml(self, tree, fname):
         root = "t:Track/t:Trackpoint/"
-        self.times = tree.findAll(root + "t:Time", False)
-        self.lats = tree.findAll(root + "t:Position/t:LatitudeDegrees")
-        self.lngs = tree.findAll(root + "t:Position/t:LongitudeDegrees")
+        self.times = tree.find_all(root + "t:Time", False)
+        self.lats = tree.find_all(root + "t:Position/t:LatitudeDegrees")
+        self.lngs = tree.find_all(root + "t:Position/t:LongitudeDegrees")
         self.dists = [d / Trackpoints.METERS_PER_MILE 
-                      for d in tree.findAll(root + "t:DistanceMeters")]
-        self.gpsElevs = tree.findAll(root + "t:AltitudeMeters")
-        self.hrs = tree.findAll(root + "t:HeartRateBpm/t:Value")
-        self.mapElevs = tree.findAll(root + "t:MapAltitudeMeters")
+                      for d in tree.find_all(root + "t:DistanceMeters")]
+        self.gps_elevs = tree.find_all(root + "t:AltitudeMeters")
+        self.hrs = tree.find_all(root + "t:HeartRateBpm/t:Value")
+        self.map_elevs = tree.find_all(root + "t:MapAltitudeMeters")
         if not (len(self.times) >= len(self.lats) == len(self.lngs) == len(self.dists) == 
-                len(self.gpsElevs) == len(self.hrs)): 
+                len(self.gps_elevs) == len(self.hrs)): 
             print>>sys.stderr, "Missing points in xml file", fname, ":",\
                 "times", len(self.times), "lats", len(self.lats), "lngs",\
                 len(self.lngs), "dists", len(self.dists),\
-                "altitudes", len(self.gpsElevs), "hrs", len(self.hrs)
+                "altitudes", len(self.gps_elevs), "hrs", len(self.hrs)
         self.length = min([len(self.times), len(self.lats), len(self.lngs), len(self.dists), 
-                           len(self.gpsElevs), len(self.hrs)])
-        if len(self.mapElevs) == 0 and len(self.gpsElevs) > 0:
+                           len(self.gps_elevs), len(self.hrs)])
+        if len(self.map_elevs) == 0 and len(self.gps_elevs) > 0:
             # no previous elevations, fetch from google
             if not os.path.exists(fname + ".elev"): 
-                self.mapElevs = Trackpoints.getGoogleElevs(lats, lngs)
-            else: mapElevs = Trackpoints.readElevsFile(fname + ".elev")
+                self.map_elevs = Trackpoints._get_google_elevs(lats, lngs)
+            else: map_elevs = Trackpoints._read_elevs_file(fname + ".elev")
             # add the elevs to the xmltree
-            print>>sys.stderr, "Adding", len(self.mapElevs), "map elevations to", fname
-            tree.addElems("t:Track/t:Trackpoint", "MapAltitudeMeters", 
-                          self.mapElevs, "AltitudeMeters")
+            print>>sys.stderr, "Adding", len(self.map_elevs), "map elevations to", fname
+            tree.add_elems("t:Track/t:Trackpoint", "MapAltitudeMeters", 
+                           self.map_elevs, "AltitudeMeters")
 
     @classmethod
-    def readElevsFile(cls, elevFname):
-        f = open(elevFname, "r")
+    def _read_elevs_file(cls, elev_fname):
+        f = open(elev_fname, "r")
         elevs = []
         for line in f.readlines(): 
             tokens = line.lstrip().rstrip().split()
             lat = float(tokens[0])
             lng = float(tokens[1])
-            mapElev = float(tokens[4])
-            elevs.append(mapElev)
+            map_elev = float(tokens[4])
+            elevs.append(map_elev)
         f.close()
         return elevs
 
-    def write(self, outFile):
+    def write(self, out_file):
         for i in range(0, len(self)):
-            print>>outFile, self.lats[i], self.lngs[i], self.dists[i], self.gpsElevs[i], \
-                self.mapElevs[i], self.hrs[i]
+            print>>out_file, self.lats[i], self.lngs[i], self.dists[i], self.gps_elevs[i], \
+                self.map_elevs[i], self.hrs[i]
 
     # this is taken from a google eg at 
     # http://gmaps-samples.googlecode.com/svn/trunk/elevation/python/ElevationChartCreator.py
@@ -114,11 +119,10 @@ class Trackpoints:
     # is 90 
     # The usage limits constrain us to 2500 request per day or 25000 locations
     @classmethod
-    def getGoogleElevs(cls, lats, lngs):
+    def _get_google_elevs(cls, lats, lngs):
         if len(lats) == 0: return []
         print>>sys.stdout, "Fetching elevations for", len(lats), "points from google"
         ELEV_BASE_URL = 'http://maps.google.com/maps/api/elevation/json'
-        baseUrlLen = len(ELEV_BASE_URL) + len("?locations=") + len("&sensor=false")
         path = ""
         elevs = []
         for i in range(0, len(lats)):
