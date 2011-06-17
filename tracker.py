@@ -43,6 +43,10 @@ def main():
     cmdOptParser.add_argument("-d", action = "store", type = str, dest = "dailyStats", 
                               default = "", 
                               help = "Plot daily stats for substring YYYY-MM-DD")
+    cmdOptParser.add_argument("-l", action = "store", type = str, dest = "fieldsToPlot", 
+                              default = "dist", 
+                              help = "The fields to plot, a comma separated list of up to three of " +\
+                                  "dist,time,avhr,maxhr,avpace,maxpace,hbeats,elev,elevrate")
     cmdOptParser.add_argument("fnames", metavar='N', type = str, nargs = '*',
                               help="a list of xml files containing TCX data")
     options = cmdOptParser.parse_args()
