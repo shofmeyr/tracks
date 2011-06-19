@@ -74,14 +74,12 @@ def main():
         map_tracks = MapTracks(track, "Map of " + title, color="red", width=800, height=600, 
                                show_terrain=options.show_terrain)
         map_tracks.show_all()
-        plot_elevs = PlotXY(track.trackpoints.dists, track.trackpoints.get_elevs(),
-                            "Distance (miles)", "Elevation (ft)",
-                            "Elevation and heart rate for " + title, 
-                            "red", 700, 500, options.elev_window)
-        plot_elevs.add_another(track.trackpoints.dists, track.trackpoints.hrs, "Heart Rate (bpm)",
-                               "green", options.hr_window)
-        plot_elevs.add_another(track.trackpoints.dists, track.trackpoints.get_paces(), 
-                               "Pace (mile / min)", "blue", options.pace_window)
+        
+        plot_elevs = PlotXY(track.trackpoints.dists, "Distance (miles)", "Elevation and heart rate for " + title, 
+                            700, 500)
+        plot_elevs.add_series(track.trackpoints.get_elevs(), "Elevation (ft)", "red", options.elev_window)
+        plot_elevs.add_series(track.trackpoints.hrs, "Heart Rate (bpm)", "green", options.hr_window)
+        plot_elevs.add_series(track.trackpoints.get_paces(), "Pace (mile / min)", "blue", options.pace_window)
         plot_elevs.show_all()
         gtk.main()
 
@@ -95,10 +93,15 @@ def main():
             return
     labels = {"dist": "Distance (miles)", "time": "Duration (hrs)", "mxpc": "Maximum pace (minm/mile)", 
               "avpc": "Average pace (mins/mile)", "mxhr": "Maximum heart rate (bpm)", 
-              "avhr": "Average heart rate (bpm)", "elev": "Elevation gain (1000's ft)", 
+              "avhr": "Average heart rate (bpm)", "elev": "Elevation gain (ft)", 
               "erate": "Rate of elevation gain (ft/mile)"}
     if options.monthly_stats != "":
         months = tracks.get_months(options.monthly_stats)
+        write_header = True
+        for month in months:
+            tracks.write(sys.stdout, month, options.elev_window, only_total=True, write_header=write_header)
+            write_header = False
+        tracks.write(sys.stdout, options.monthly_stats, options.elev_window, only_total=True, write_header=False)
         plot_monthly = PlotXY(months, "", "Monthly stats for " + options.monthly_stats, 700, 500)
         colors = ["red", "green", "blue"]
         for i in range(0, len(fields)):
@@ -111,13 +114,16 @@ def main():
         plot_monthly.show_all()
         gtk.main()
     if options.daily_stats != "":
-        (days, dists, paces, hrs, durations) = tracks.get_daily_stats(options.daily_stats, fields)
-        plot_daily = PlotXY(days, dists, "", "Distance (miles)",
-                           "Daily distance and pace", color = "red", width = 700, height = 500)
-        plot_daily.add_another(days, paces, "Pace (mile / min)", "green")
-        heart_beats = []
-        for i in range(0, len(durations)): heart_beats.append(durations[i] * hrs[i] / 1000.0)
-        plot_daily.add_another(days, heart_beats, "heart beats (000's)", "blue")
+        days = tracks.get_days(options.daily_stats)
+        tracks.write(sys.stdout, options.daily_stats, options.elev_window)
+        plot_daily = PlotXY(days, "", "Daily stats for " + options.daily_stats, width = 700, height = 500)
+        colors = ["red", "green", "blue"]
+        for i in range(0, len(fields)):
+            stat = tracks.get_daily_stat(options.daily_stats, fields[i], options.elev_window)
+            if stat == None: 
+                print stat, "not found"
+                return None
+            plot_daily.add_series(stat, labels[fields[i]], colors[i])
         plot_daily.show_all()
         gtk.main()
         

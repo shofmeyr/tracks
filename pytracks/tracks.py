@@ -82,8 +82,8 @@ class Tracks:
         for track in self: elev_rates.append(track.elev_rate)
         return elev_rates
     
-    def write(self, out_file, name = "all", elev_window=2):
-        Track.write_header(out_file)
+    def write(self, out_file, name = "all", elev_window=2, only_total=False, write_header=True):
+        if write_header: Track.write_header(out_file)
         track_tot = Track(start_time=None, duration=0, dist=0, max_pace=0, max_hr=0,
                          av_hr=0, trackpoints=None, comment="", known_elev=0)
         num_tracks_for_hr = 0.0
@@ -97,7 +97,7 @@ class Tracks:
                 track_tot.av_hr += track.av_hr
                 if track.av_hr > 0: num_tracks_for_hr += 1
                 track_tot.known_elev += (track.get_elev_change(elev_window) / Trackpoints.FEET_PER_METER)
-                track.write(out_file, elev_window)
+                if not only_total: track.write(out_file, elev_window)
         # now print summary
         track_tot.av_hr /= num_tracks_for_hr
         track_tot.write(out_file, elev_window, name)
@@ -110,6 +110,14 @@ class Tracks:
         if self.index == len(self.sorted_keys) - 1: raise StopIteration
         self.index += 1
         return self.data[self.sorted_keys[self.index]]
+
+    def get_days(self, date_str):
+        days = []
+        for track in self:
+            day_str = track.start_time.strftime("%Y-%m-%d")
+            if not day_str.startswith(date_str): continue
+            days.append(day_str)
+        return days
 
     def get_months(self, date_str):
         months = []
@@ -150,25 +158,13 @@ class Tracks:
             else: stats.append(0)
         return stats
 
-    def get_daily_stats(self, date_str, fields):
-        days = []
-        dists = []
-        paces = []
-        hrs = []
-        durations = []
-        for d in self:
-            day_str = d.start_time.strftime("%Y-%m-%d")
+    def get_daily_stat(self, date_str, field, elev_window):
+        stats = []
+        for track in self:
+            day_str = track.start_time.strftime("%Y-%m-%d")
             if not day_str.startswith(date_str): continue
-            days.append(day_str)
-            dists.append(d.dist)
-            paces.append(d.duration)
-            durations.append(d.duration)
-            hrs.append(d.av_hr)
-        for i in range(0, len(paces)): 
-            if dists[i] > 0: paces[i] /= dists[i]
-            else: paces[i] = 0
-        self.write(sys.stdout, date_str)
-        return (days, dists, paces, hrs, durations)
+            stats.append(track.get_stat(field, elev_window))
+        return stats
 
         
 

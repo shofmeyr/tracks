@@ -106,7 +106,7 @@ class Track:
         elif field == "avpc": return self.get_av_pace()
         elif field == "mxhr": return self.max_hr
         elif field == "avhr": return self.av_hr
-        elif field == "elev": return self.get_elev_change(elev_window) / 1000.0
+        elif field == "elev": return self.get_elev_change(elev_window)
         elif field == "erate": return self.get_elev_rate(elev_window)
 
     def get_av_pace(self):
@@ -124,7 +124,7 @@ class Track:
         av_pace = self.get_av_pace()
         efficiency = 0
         elev = self.get_elev_change(elev_window)
-        elev_rate = self.get_elev_rate(self, elev_window)
+        elev_rate = self.get_elev_rate(elev_window)
         if self.av_hr > 0 and self.duration > 0:
             efficiency = self.dist * Trackpoints.METERS_PER_MILE / (self.av_hr * self.duration)
 
