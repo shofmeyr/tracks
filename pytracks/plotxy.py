@@ -7,60 +7,59 @@ from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanva
 from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
 
 class PlotXY(gtk.Window):
-    def __init__(self, x, y, xLabel, yLabel, title, color, width, height, smoothing_window=0):
+    def __init__(self, x, xLabel, title, width, height):
         gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
         self.connect('destroy', lambda x: gtk.main_quit())
         self.set_default_size(width, height)
         self.fig = Figure()
         self.ax = self.fig.add_subplot(111)
-        PlotXY._plot_axes(x, y, self.ax, color, smoothing_window, 0)
-        if type(x[0]) == str: self.fig.autofmt_xdate()
         self.offset = 0
         self.set_title(title)
-#        self.ax.legend(loc = "lower right", prop = font_manager.FontProperties(size = "x-small"))
         self.ax.get_axes().set_xlabel(xLabel)
-        self.ax.get_axes().set_ylabel(yLabel, color = color)
         self.ax.get_axes().grid()
-        for tl in self.ax.get_yticklabels(): tl.set_color(color)
+        if isinstance(x[0],str): self.fig.autofmt_xdate()
         canvas = FigureCanvas(self.fig)  
         vbox = gtk.VBox()
         vbox.pack_start(canvas)
         toolbar = NavigationToolbar(canvas, self)
         vbox.pack_start(toolbar, False, False)
         self.add(vbox)
+        self.x = x
 
-    def add_another(self, x, y, yLabel, color, smoothing_window=0):
-        self.offset += 1
-        ax2 = self.ax.twinx()
-        PlotXY._plot_axes(x, y, ax2, color, smoothing_window, self.offset)
-        self.fig.subplots_adjust(right = 0.8)
-        ax2.spines["right"].set_position(("axes", 1 + (self.offset - 1.0) * 0.15))
-        PlotXY._make_patch_spines_invisible(ax2)
-        PlotXY._make_spine_invisible(ax2, "right")
+    def add_series(self, y, yLabel, color, smoothing_window=0):
+        if self.offset > 0:
+            ax2 = self.ax.twinx()
+            self.fig.subplots_adjust(right = 0.8)
+            ax2.spines["right"].set_position(("axes", 1 + (self.offset - 1.0) * 0.15))
+            PlotXY._make_patch_spines_invisible(ax2)
+            PlotXY._make_spine_invisible(ax2, "right")
+        else:
+            ax2 = self.ax
+        self._plot_axes(y, ax2, color, smoothing_window, self.offset)
         ax2.set_ylabel(yLabel, color = color)
         ax2.get_axes().grid()
         for tl in ax2.get_yticklabels(): tl.set_color(color)
+        self.offset += 1
 
-    @classmethod
-    def _plot_axes(cls, x, y, ax, color, smoothing_window, offset):
-        if len(x) != len(y): 
-            print "Warning", len(x), "x values in plot but", len(y), "y values, truncating"
-            if len(x) < len(y): y = y[:len(x)]
-            elif len(y) < len(x): x = x[:len(y)]
+    def _plot_axes(self, y, ax, color, smoothing_window, offset):
+        if len(self.x) != len(y): 
+            print "Warning", len(self.x), "x values in plot but", len(y), "y values, truncating"
+            if len(self.x) < len(y): y = y[:len(self.x)]
+            elif len(y) < len(self.x): self.x = x[:len(y)]
         if smoothing_window > 0:
             smoothed_y = []
             for i in range(smoothing_window, len(y) - smoothing_window): 
                 smoothed_y.append(numpy.average(y[i - smoothing_window:i + smoothing_window]))
             y = smoothed_y
-            x = x[:len(y)]
+            self.x = self.x[:len(y)]
         # plot this with string values on the x-axis 
-        if isinstance(x[0], str):
-            if len(x[0]) == 7: fmt = "%Y-%m"
+        if isinstance(self.x[0], str):
+            if len(self.x[0]) == 7: fmt = "%Y-%m"
             else: fmt = "%Y-%m-%d"
             min_diff = 100000
             prev_date = None
             dates = []
-            for x_i in x:
+            for x_i in self.x:
                 dates.append(matplotlib.dates.date2num(datetime.datetime.strptime(x_i, fmt)))
                 if prev_date is not None:
                     date_diff = dates[-1] - prev_date
@@ -76,8 +75,8 @@ class PlotXY(gtk.Window):
 #            ax.plot_date(dates, y, color=color, ls="-")
             ax.xaxis_date()
         else: 
-            ax.plot(x, y, color=color)
-            ax.axis([min(x), max(x), min(y) * 0.95, max(y) * 1.05])
+            ax.plot(self.x, y, color=color)
+            ax.axis([min(self.x), max(self.x), min(y) * 0.95, max(y) * 1.05])
 
     @classmethod
     def _make_patch_spines_invisible(cls, ax):

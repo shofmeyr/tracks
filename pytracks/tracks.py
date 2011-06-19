@@ -111,59 +111,46 @@ class Tracks:
         self.index += 1
         return self.data[self.sorted_keys[self.index]]
 
-    def get_monthly_stats(self, date_str):
+    def get_months(self, date_str):
         months = []
-        dists = []
-        paces = []
-        hrs = []
-        durations = []
-        dist = 0
-        duration = 0
-        pace_duration = 0
-        heart_beats = 0
-        hr_duration = 0
-        i = 0
+        first = True
+        for track in self:
+            month_str = track.start_time.strftime("%Y-%m")
+            if not month_str.startswith(date_str): continue
+            if first or months[-1] != month_str: months.append(month_str)
+            first = False
+        return months
+
+    def get_monthly_stat(self, date_str, field, elev_window):
+        use_average = {"dist": False, "time": False, "mxpc": True, "avpc": True, 
+                       "mxhr": True, "avhr": True, "elev": False, "erate": True}
+        stats = []
+        stat = 0
+        num_stats = 0
         curr_month_str = None
         for track in self:
             month_str = track.start_time.strftime("%Y-%m")
             if not month_str.startswith(date_str): continue
             if curr_month_str is None: curr_month_str = month_str
             if curr_month_str != month_str: 
-                months.append(curr_month_str)
-                dists.append(dist)
-                paces.append(pace_duration)
-                if hr_duration > 0: hrs.append(heart_beats / hr_duration)
-                else: hrs.append(0)
-                durations.append(duration)
-                dist = 0
-                duration = 0
-                pace_duration = 0
-                heart_beats = 0
-                hr_duration = 0
+                if num_stats > 0: 
+                    if use_average[field]: stats.append(stat / num_stats)
+                    else: stats.append(stat)
+                else: stats.append(0)
+                stat = 0
+                num_stats = 0
                 curr_month_str = month_str
-            dist += track.dist
-            duration += track.duration
-            if track.dist > 0: pace_duration += track.duration
-            if track.av_hr > 0:
-                heart_beats += (track.av_hr * track.duration)
-                hr_duration += track.duration
-            i += 1
+            s = track.get_stat(field, elev_window)
+            stat += s
+            if s > 0: num_stats += 1
         else:   # make sure we get the last month
-            months.append(curr_month_str)
-            dists.append(dist)
-            paces.append(pace_duration)
-            if hr_duration > 0: hrs.append(heart_beats / hr_duration)
-            else: hrs.append(0)
-            durations.append(duration)
-        print "%-9s" % "months", "%5s" % "time", "%5s" % "dist", "%5s" % "pace"
-        for i in range(0, len(paces)): 
-            if dists[i] > 0: paces[i] /= dists[i]
-            else: paces[i] = 0
-            if paces[i] > 25: paces[i] = 0
-            print "%-9s" % months[i], "%5.1f" % (durations[i] / 60), "%5.0f" % dists[i], "%5.1f" % paces[i]
-        return (months, dists, paces, hrs, durations)
+            if num_stats > 0:
+                if use_average[field]: stats.append(stat / num_stats)
+                else: stats.append(stat)
+            else: stats.append(0)
+        return stats
 
-    def get_daily_stats(self, date_str):
+    def get_daily_stats(self, date_str, fields):
         days = []
         dists = []
         paces = []

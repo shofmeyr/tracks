@@ -34,16 +34,20 @@ def main():
     cmd_opt_parser.add_argument("-d", action="store", type=str, dest="daily_stats", 
                               default="", 
                               help="Plot daily stats for substring YYYY-MM-DD")
+    FIELDS = ["dist", "time", "mxpc", "avpc", "mxhr", "avhr", "elev", "erate"]
+    field_str = ""
+    for field in FIELDS: field_str += field + ","
+    cmd_opt_parser.add_argument("-p", action="store", type=str, dest="fields_to_plot", 
+                                default="dist", 
+                                help="The fields to plot for daily or monthly." + \
+                                    "a comma separated list of up to three of " + \
+                                    field_str)
     # cmd_opt_parser.add_argument("-i", action="store", type=str, dest="plot_identical", 
     #                           default="", 
     #                           help="Plot all tracks identical to date (YYYY-MM-DD-HHMMSS)")
     # cmd_opt_parser.add_argument("-s", action="store", type=str, dest="plot_similar", 
     #                           default="", 
     #                           help="Plot all tracks similar to date (YYYY-MM-DD-HHMMSS)")
-    # cmd_opt_parser.add_argument("-p", action="store", type=str, dest="fieldsToPlot", 
-    #                           default="dist", 
-    #                           help="The fields to plot, a comma separated list of up to three of " +\
-    #                               "dist,time,avhr,maxhr,avpace,maxpace,hbeats,elev,elevrate")
     cmd_opt_parser.add_argument("fnames", metavar='N', type=str, nargs='*',
                               help="a list of xml files containing TCX data")
     options = cmd_opt_parser.parse_args()
@@ -80,18 +84,34 @@ def main():
                                "Pace (mile / min)", "blue", options.pace_window)
         plot_elevs.show_all()
         gtk.main()
+
+    fields = options.fields_to_plot.split(",")
+    if len(fields) > 3: 
+        print  "Too many fields, max of 3"
+        return
+    for field in fields:
+        if field not in FIELDS:
+            print field, "is an invalid field, must be one of", FIELDS
+            return
+    labels = {"dist": "Distance (miles)", "time": "Duration (hrs)", "mxpc": "Maximum pace (minm/mile)", 
+              "avpc": "Average pace (mins/mile)", "mxhr": "Maximum heart rate (bpm)", 
+              "avhr": "Average heart rate (bpm)", "elev": "Elevation gain (1000's ft)", 
+              "erate": "Rate of elevation gain (ft/mile)"}
     if options.monthly_stats != "":
-        (months, dists, paces, hrs, durations) = tracks.get_monthly_stats(options.monthly_stats)
-        plot_monthly = PlotXY(months, dists, "", "Distance (miles)",
-                             "Monthly distance and pace", "red", 700, 500)
-        plot_monthly.add_another(months, paces, "Pace (mile / min)", "green")
-        heart_beats = []
-        for i in range(0, len(durations)): heart_beats.append(durations[i] * hrs[i] / 1000.0)
-        plot_monthly.add_another(months, heart_beats, "heart beats (000's)", "blue")
+        months = tracks.get_months(options.monthly_stats)
+        plot_monthly = PlotXY(months, "", "Monthly stats for " + options.monthly_stats, 700, 500)
+        colors = ["red", "green", "blue"]
+        for i in range(0, len(fields)):
+            stat = tracks.get_monthly_stat(options.monthly_stats, fields[i], options.elev_window)
+            if stat == None: 
+                print stat, "not found"
+                return None
+            if fields[i] == "time": stat = [s / 60.0 for s in stat]
+            plot_monthly.add_series(stat, labels[fields[i]], colors[i])
         plot_monthly.show_all()
         gtk.main()
     if options.daily_stats != "":
-        (days, dists, paces, hrs, durations) = tracks.get_daily_stats(options.daily_stats)
+        (days, dists, paces, hrs, durations) = tracks.get_daily_stats(options.daily_stats, fields)
         plot_daily = PlotXY(days, dists, "", "Distance (miles)",
                            "Daily distance and pace", color = "red", width = 700, height = 500)
         plot_daily.add_another(days, paces, "Pace (mile / min)", "green")

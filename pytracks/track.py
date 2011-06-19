@@ -46,7 +46,6 @@ class Track:
             return (None, None)
         try:
             max_pace = max(tree.find_all("t:MaximumSpeed"))
-# FIXME: figure out exact exception that gets thrown and catch just that            
         except ValueError as e: 
             max_pace = 0
         if max_pace > 0: max_pace = 60.0 / (max_pace * Trackpoints.METERS_PER_MILE / 1000.0)
@@ -99,15 +98,33 @@ class Track:
 #        print "Local time", str(local_time)
         return local_time
 
+    def get_stat(self, field, elev_window=0):
+        #    FIELDS = ["dist", "time", "mxpc", "avpc", "mxhr", "avhr", "elev", "erate"]
+        if field == "dist": return self.dist
+        elif field == "time": return self.duration
+        elif field == "mxpc": return self.max_pace
+        elif field == "avpc": return self.get_av_pace()
+        elif field == "mxhr": return self.max_hr
+        elif field == "avhr": return self.av_hr
+        elif field == "elev": return self.get_elev_change(elev_window) / 1000.0
+        elif field == "erate": return self.get_elev_rate(elev_window)
+
+    def get_av_pace(self):
+        if self.dist > 0: return self.duration / self.dist
+        return 0
+        
+    def get_elev_rate(self, elev_window):
+        elev = self.get_elev_change(elev_window)
+        if self.dist > 0: return elev / self.dist
+        return 0
+
     def write(self, out_file, elev_window, time_str=None):
         elev = 0
         elev_rate = 0
-        av_pace = 0
+        av_pace = self.get_av_pace()
         efficiency = 0
         elev = self.get_elev_change(elev_window)
-        if self.dist > 0:
-            av_pace = self.duration / self.dist
-            elev_rate = elev / self.dist
+        elev_rate = self.get_elev_rate(self, elev_window)
         if self.av_hr > 0 and self.duration > 0:
             efficiency = self.dist * Trackpoints.METERS_PER_MILE / (self.av_hr * self.duration)
 
