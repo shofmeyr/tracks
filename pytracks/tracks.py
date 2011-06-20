@@ -3,6 +3,7 @@
 import sys
 import pickle
 import os
+import numpy
 from track import Track
 from trackpoints import Trackpoints
 
@@ -82,9 +83,11 @@ class Tracks:
         for track in self: elev_rates.append(track.elev_rate)
         return elev_rates
     
-    def write(self, out_file, name = "all", elev_window=2, only_total=False, write_header=True):
-        if write_header: Track.write_header(out_file)
-        track_tot = Track(start_time=None, duration=0, dist=0, max_pace=0, max_hr=0,
+    def write_header(self, out_file):
+        Track.write_header(out_file)
+        
+    def write(self, out_file, name = "all", elev_window=2, only_total=False):
+        track_tot = Track(start_time=None, duration=0, dist=0, max_pace=100, max_hr=0,
                          av_hr=0, trackpoints=None, comment="", known_elev=0)
         num_tracks_for_hr = 0.0
         for track in self:
@@ -92,13 +95,15 @@ class Tracks:
                 if track_tot.start_time is None: track_tot.start_time = track.start_time
                 track_tot.duration += track.duration
                 track_tot.dist += track.dist
-                if track.max_pace > track_tot.max_pace: track_tot.max_pace = track.max_pace
+                if track.max_pace > 0 and track.max_pace < track_tot.max_pace: 
+                    track_tot.max_pace = track.max_pace
                 if track.max_hr > track_tot.max_hr and track.max_hr < 190: track_tot.max_hr = track.max_hr
                 track_tot.av_hr += track.av_hr
                 if track.av_hr > 0: num_tracks_for_hr += 1
                 track_tot.known_elev += (track.get_elev_change(elev_window) / Trackpoints.FEET_PER_METER)
                 if not only_total: track.write(out_file, elev_window)
         # now print summary
+        if track_tot.max_pace == 100: track_to.max_pace = 0
         track_tot.av_hr /= num_tracks_for_hr
         track_tot.write(out_file, elev_window, name)
 
@@ -129,34 +134,23 @@ class Tracks:
             first = False
         return months
 
-    def get_monthly_stat(self, date_str, field, elev_window):
-        use_average = {"dist": False, "time": False, "mxpc": True, "avpc": True, 
-                       "mxhr": True, "avhr": True, "elev": False, "erate": True}
-        stats = []
-        stat = 0
-        num_stats = 0
-        curr_month_str = None
-        for track in self:
-            month_str = track.start_time.strftime("%Y-%m")
-            if not month_str.startswith(date_str): continue
-            if curr_month_str is None: curr_month_str = month_str
-            if curr_month_str != month_str: 
-                if num_stats > 0: 
-                    if use_average[field]: stats.append(stat / num_stats)
-                    else: stats.append(stat)
-                else: stats.append(0)
-                stat = 0
-                num_stats = 0
-                curr_month_str = month_str
-            s = track.get_stat(field, elev_window)
-            stat += s
-            if s > 0: num_stats += 1
-        else:   # make sure we get the last month
-            if num_stats > 0:
-                if use_average[field]: stats.append(stat / num_stats)
-                else: stats.append(stat)
-            else: stats.append(0)
-        return stats
+    def get_monthly_stat(self, months, field, elev_window):
+        monthly_stats = []
+        for month in months:
+            daily_stats = []
+            for track in self:
+                month_str = track.start_time.strftime("%Y-%m")
+                if not month_str.startswith(month): continue
+                stat = track.get_stat(field, elev_window)
+                if stat > 0: daily_stats.append(stat)
+            if len(daily_stats) == 0: monthly_stats.append(self, 0)
+            elif field == "mxpc": monthly_stats.append(min(daily_stats))
+            elif field == "mxhr": monthly_stats.append(max(daily_stats))
+            elif field == "avpc": monthly_stats.append(numpy.average(daily_stats))
+            elif field == "avhr": monthly_stats.append(numpy.average(daily_stats))
+            elif field == "erate": monthly_stats.append(numpy.average(daily_stats))
+            else: monthly_stats.append(sum(daily_stats))
+        return monthly_stats
 
     def get_daily_stat(self, date_str, field, elev_window):
         stats = []

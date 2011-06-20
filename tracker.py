@@ -75,7 +75,8 @@ def main():
                                show_terrain=options.show_terrain)
         map_tracks.show_all()
         
-        plot_elevs = PlotXY(track.trackpoints.dists, "Distance (miles)", "Elevation and heart rate for " + title, 
+        plot_elevs = PlotXY(track.trackpoints.dists, "Distance (miles)", 
+                            "Elevation and heart rate for " + title, 
                             700, 500)
         plot_elevs.add_series(track.trackpoints.get_elevs(), "Elevation (ft)", "red", options.elev_window)
         plot_elevs.add_series(track.trackpoints.hrs, "Heart Rate (bpm)", "green", options.hr_window)
@@ -97,15 +98,15 @@ def main():
               "erate": "Rate of elevation gain (ft/mile)"}
     if options.monthly_stats != "":
         months = tracks.get_months(options.monthly_stats)
-        write_header = True
+        tracks.write_header(sys.stdout)
         for month in months:
-            tracks.write(sys.stdout, month, options.elev_window, only_total=True, write_header=write_header)
-            write_header = False
-        tracks.write(sys.stdout, options.monthly_stats, options.elev_window, only_total=True, write_header=False)
+            tracks.write(sys.stdout, month, options.elev_window, only_total=True)
+        # write the final sum
+        tracks.write(sys.stdout, options.monthly_stats, options.elev_window, only_total=True)
         plot_monthly = PlotXY(months, "", "Monthly stats for " + options.monthly_stats, 700, 500)
         colors = ["red", "green", "blue"]
         for i in range(0, len(fields)):
-            stat = tracks.get_monthly_stat(options.monthly_stats, fields[i], options.elev_window)
+            stat = tracks.get_monthly_stat(months, fields[i], options.elev_window)
             if stat == None: 
                 print stat, "not found"
                 return None
@@ -115,6 +116,7 @@ def main():
         gtk.main()
     if options.daily_stats != "":
         days = tracks.get_days(options.daily_stats)
+        tracks.write_header(sys.stdout)
         tracks.write(sys.stdout, options.daily_stats, options.elev_window)
         plot_daily = PlotXY(days, "", "Daily stats for " + options.daily_stats, width = 700, height = 500)
         colors = ["red", "green", "blue"]
