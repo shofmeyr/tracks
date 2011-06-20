@@ -1,6 +1,5 @@
 * TODO plot avhr, eff, avpace for all tracks with similar elev gain and dist with date on x axis
   have a param to define similar, eg 20% similar elev gain, and 20%
   similar dist. 
-* TODO take the same info as printed for a month, year, etc and plot
-  have option to select three fields, comma separated, and then plot those three
-  things on three y axes with the date on the x
+* TODO better averages
+

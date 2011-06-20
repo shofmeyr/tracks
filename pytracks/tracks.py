@@ -103,8 +103,8 @@ class Tracks:
                 track_tot.known_elev += (track.get_elev_change(elev_window) / Trackpoints.FEET_PER_METER)
                 if not only_total: track.write(out_file, elev_window)
         # now print summary
-        if track_tot.max_pace == 100: track_to.max_pace = 0
-        track_tot.av_hr /= num_tracks_for_hr
+        if track_tot.max_pace == 100: track_tot.max_pace = 0
+        if num_tracks_for_hr > 0: track_tot.av_hr /= num_tracks_for_hr
         track_tot.write(out_file, elev_window, name)
 
     def __iter__(self):
@@ -143,7 +143,7 @@ class Tracks:
                 if not month_str.startswith(month): continue
                 stat = track.get_stat(field, elev_window)
                 if stat > 0: daily_stats.append(stat)
-            if len(daily_stats) == 0: monthly_stats.append(self, 0)
+            if len(daily_stats) == 0: monthly_stats.append(0)
             elif field == "mxpc": monthly_stats.append(min(daily_stats))
             elif field == "mxhr": monthly_stats.append(max(daily_stats))
             elif field == "avpc": monthly_stats.append(numpy.average(daily_stats))
@@ -152,12 +152,13 @@ class Tracks:
             else: monthly_stats.append(sum(daily_stats))
         return monthly_stats
 
-    def get_daily_stat(self, date_str, field, elev_window):
+    def get_daily_stat(self, days, field, elev_window):
         stats = []
-        for track in self:
-            day_str = track.start_time.strftime("%Y-%m-%d")
-            if not day_str.startswith(date_str): continue
-            stats.append(track.get_stat(field, elev_window))
+        for day in days:
+            for track in self:
+                day_str = track.start_time.strftime("%Y-%m-%d")
+                if not day.startswith(day_str): continue
+                stats.append(track.get_stat(field, elev_window))
         return stats
 
         

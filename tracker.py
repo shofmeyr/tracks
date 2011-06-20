@@ -7,6 +7,28 @@ from pytracks.tracks import Tracks
 from pytracks.maptracks import MapTracks
 from pytracks.plotxy import PlotXY
 
+
+def plot_bar(x, title, fields, data_func, elev_window=0):
+    LABELS = {"dist": "Distance (miles)", "time": "Duration (mins)", "mxpc": "Maximum pace (mins/mile)", 
+              "avpc": "Average pace (mins/mile)", "mxhr": "Maximum heart rate (bpm)", 
+              "avhr": "Average heart rate (bpm)", "elev": "Elevation gain (ft)", 
+              "erate": "Rate of elevation gain (ft/mile)"}
+    FIELD_MAX = {"dist": 0, "time": 0, "mxpc": 20.0, "avpc": 20.0, "mxhr": 200, "avhr": 200,
+                 "elev": 0, "erate": 0}
+    plot = PlotXY(x, "", title, 700, 500, num_series=len(fields))
+    colors = ["red", "green", "blue"]
+    for i in range(0, len(fields)):
+        stat = data_func(x, fields[i], elev_window)
+        if stat == None: 
+            print stat, "not found"
+            return None
+        if max(stat) == 0:
+            print "No values found for", fields[i], "skipping"
+        else:
+            plot.add_series(stat, LABELS[fields[i]], colors[i], max_y=FIELD_MAX[fields[i]])
+    plot.show_all()
+    gtk.main()
+
 def main():
     # get the command line options
     cmd_opt_parser = argparse.ArgumentParser(description="Analyze Garmin GPS data",
@@ -78,9 +100,12 @@ def main():
         plot_elevs = PlotXY(track.trackpoints.dists, "Distance (miles)", 
                             "Elevation and heart rate for " + title, 
                             700, 500)
-        plot_elevs.add_series(track.trackpoints.get_elevs(), "Elevation (ft)", "red", options.elev_window)
-        plot_elevs.add_series(track.trackpoints.hrs, "Heart Rate (bpm)", "green", options.hr_window)
-        plot_elevs.add_series(track.trackpoints.get_paces(), "Pace (mile / min)", "blue", options.pace_window)
+        plot_elevs.add_series(track.trackpoints.get_elevs(), "Elevation (ft)", "red", 
+                              options.elev_window)
+        plot_elevs.add_series(track.trackpoints.hrs, "Heart Rate (bpm)", "green", 
+                              options.hr_window)
+        plot_elevs.add_series(track.trackpoints.get_paces(), "Pace (mile / min)", "blue", 
+                              options.pace_window)
         plot_elevs.show_all()
         gtk.main()
 
@@ -92,10 +117,6 @@ def main():
         if field not in FIELDS:
             print field, "is an invalid field, must be one of", FIELDS
             return
-    labels = {"dist": "Distance (miles)", "time": "Duration (hrs)", "mxpc": "Maximum pace (minm/mile)", 
-              "avpc": "Average pace (mins/mile)", "mxhr": "Maximum heart rate (bpm)", 
-              "avhr": "Average heart rate (bpm)", "elev": "Elevation gain (ft)", 
-              "erate": "Rate of elevation gain (ft/mile)"}
     if options.monthly_stats != "":
         months = tracks.get_months(options.monthly_stats)
         tracks.write_header(sys.stdout)
@@ -103,31 +124,13 @@ def main():
             tracks.write(sys.stdout, month, options.elev_window, only_total=True)
         # write the final sum
         tracks.write(sys.stdout, options.monthly_stats, options.elev_window, only_total=True)
-        plot_monthly = PlotXY(months, "", "Monthly stats for " + options.monthly_stats, 700, 500)
-        colors = ["red", "green", "blue"]
-        for i in range(0, len(fields)):
-            stat = tracks.get_monthly_stat(months, fields[i], options.elev_window)
-            if stat == None: 
-                print stat, "not found"
-                return None
-            if fields[i] == "time": stat = [s / 60.0 for s in stat]
-            plot_monthly.add_series(stat, labels[fields[i]], colors[i])
-        plot_monthly.show_all()
-        gtk.main()
+        plot_bar(months, "Monthly stats for " + options.monthly_stats, fields, tracks.get_monthly_stat,
+                 options.elev_window)
     if options.daily_stats != "":
         days = tracks.get_days(options.daily_stats)
         tracks.write_header(sys.stdout)
         tracks.write(sys.stdout, options.daily_stats, options.elev_window)
-        plot_daily = PlotXY(days, "", "Daily stats for " + options.daily_stats, width = 700, height = 500)
-        colors = ["red", "green", "blue"]
-        for i in range(0, len(fields)):
-            stat = tracks.get_daily_stat(options.daily_stats, fields[i], options.elev_window)
-            if stat == None: 
-                print stat, "not found"
-                return None
-            plot_daily.add_series(stat, labels[fields[i]], colors[i])
-        plot_daily.show_all()
-        gtk.main()
-        
+        plot_bar(days, "Daily stats for " + options.daily_stats, fields, tracks.get_daily_stat,
+                 options.elev_window)
 
 if __name__ == "__main__": main()
