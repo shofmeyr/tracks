@@ -75,6 +75,7 @@ void printactivity(activity_t *pactivity) {
   printf("Activity %d:\n", pactivity->activitynum);
   printf(" Laps %u-%u\n", pactivity->startlap, pactivity->stoplap);
   printf(" Sport type %d\n", pactivity->sporttype);
+  fflush(stdout);
 }
 
 
@@ -131,6 +132,7 @@ void printlap(lap_t *plap) {
 
   printf(" dist: %f\n", plap->dist);
   printf(" max_speed: %f\n", plap->max_speed);
+  fflush(stdout);
 }
 
 typedef struct {
@@ -201,6 +203,7 @@ void printtrackpoint(trackpoint_t *ptrackpoint) {
   printf(" cad: %d\n", ptrackpoint->cad);
   printf(" u1: %d\n", ptrackpoint->u1);
   printf(" u2: %d\n", ptrackpoint->u2);
+  fflush(stdout);
 }
 
 
@@ -384,6 +387,7 @@ void print_duration(int secs) {
   }
 
   printf("%s%d seconds", sep, secs);
+  fflush(stdout);
 }
 
 void write_tcx_header(FILE *tcxfile) {
@@ -485,6 +489,7 @@ void write_trackpoint(FILE *tcxfile, activity_t *pact, lap_t *plap,
 
 void write_output_files() {
   printf("Writing %d output files.\n", nactivities);
+  fflush(stdout);
   int activity = 0;
   float total_secs = 0;
   for (activity = 0; activity < nactivities ; activity++) {
@@ -500,6 +505,7 @@ void write_output_files() {
              localtime(&lapbuf[pact->startlap].tv_lap));
     // open file and start with header of xml file
     printf("Writing output file %s for activity %d: ", tbuf, activity);
+    fflush(stdout);
     tcxfile = fopen(tbuf, "wt");
     write_tcx_header(tcxfile);
 
@@ -634,12 +640,14 @@ void write_output_files() {
     //    printf("  Activity %u: ", activity);
     print_duration(activity_secs);
     printf("\n");
+    fflush(stdout);
   }
 
 
   printf("Downloaded %d activities; ", nactivities);
   print_duration(total_secs);
   printf(" of data.\n");
+  fflush(stdout);
 }
 
 
@@ -695,6 +703,7 @@ void generic_decode(ushort bloblen, ushort pkttype, ushort pktlen,
       else
         printf(".");
     printf("\n");
+    fflush(stdout);
     exit(1);
   }
 }
@@ -736,6 +745,7 @@ void version_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   default:
     generic_decode(bloblen, pkttype, pktlen, dsize, data);
   }
+  fflush(stdout);
 }
 
 void name_decode(ushort bloblen, ushort pkttype, ushort pktlen,
@@ -754,6 +764,7 @@ void name_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     memset(devname, 0, sizeof devname);
     memcpy(devname, data+doff, dsize);
     printf("Devname %s\n", devname);
+    fflush(stdout);
     break;
   default:
     generic_decode(bloblen, pkttype, pktlen, dsize, data);
@@ -775,6 +786,7 @@ void unit_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   case 38:
     unitid = antuint(data, doff);
     printf("Unit ID %u\n", unitid);
+    fflush(stdout);
     break;
   default:
     generic_decode(bloblen, pkttype, pktlen, dsize, data);
@@ -803,6 +815,7 @@ void position_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   default:
     generic_decode(bloblen, pkttype, pktlen, dsize, data);
   }
+  fflush(stdout);
 }
 
 void time_decode(ushort bloblen, ushort pkttype, ushort pktlen,
@@ -824,6 +837,7 @@ void time_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   default:
     generic_decode(bloblen, pkttype, pktlen, dsize, data);
   }
+  fflush(stdout);
 }
 
 void software_decode(ushort bloblen, ushort pkttype, ushort pktlen,
@@ -846,6 +860,7 @@ void software_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   default:
     generic_decode(bloblen, pkttype, pktlen, dsize, data);
   }
+  fflush(stdout);
 }
 
 void unknown_decode(ushort bloblen, ushort pkttype, ushort pktlen,
@@ -874,6 +889,7 @@ void unknown_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   default:
     generic_decode(bloblen, pkttype, pktlen, dsize, data);
   }
+  fflush(stdout);
 }
 
 void laps_decode(ushort bloblen, ushort pkttype, ushort pktlen,
@@ -904,6 +920,7 @@ void laps_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     }
     if (nlaps == found_laps) {
       printf("All laps received (%d).\n", found_laps);
+      fflush(stdout);
 
       // only allow completion if we get packet type 12 and have all the laps.
       if (nacksent > nlastcompletedcmd) {
@@ -914,15 +931,18 @@ void laps_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     else {
       printf("Not all laps received; only got %d/%d. Will retry.\n",
              found_laps, nlaps);
+      fflush(stdout);
     }
     break;
   case 27:
     nlaps = antshort(data, doff);
     printf("Expecting %u laps\n", nlaps);
+    fflush(stdout);
     break;
   case 149:
     printf("Found lap %u [%.0f%%]\n", 
 	   antshort(data, doff), 100.0 * (double)antshort(data, doff) / nlaps);
+    fflush(stdout);
     lap = antshort(data, doff);
     if (lap < 0) {
       printf("Bad lap specified %d.\n", lap);
@@ -962,6 +982,7 @@ void activities_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     if (nactivities == current_activity_index) {
       printf("All activities received (%d complete, %d summarized).\n", 
 	     current_activity_index - nsummarized_activities, nsummarized_activities);
+      fflush(stdout);
       // only allow completion if we get packet type 12.
       if (nacksent > nlastcompletedcmd) {
         dprintf("completed command %d %d\n", nacksent, nlastcompletedcmd);
@@ -970,6 +991,7 @@ void activities_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     } else {
       printf("Not all activities received; got %d/%d (%d summarized). Will retry.\n",
              current_activity_index, nactivities, nsummarized_activities);
+      fflush(stdout);
     }
     break;
   case 27:
@@ -977,6 +999,7 @@ void activities_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     current_activity_index = 0;
     nsummarized_activities = 0;
     printf("Expecting %u activities\n", nactivities);
+    fflush(stdout);
     break;
   case 990:
     activity = antshort(data, doff);
@@ -990,6 +1013,7 @@ void activities_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     } else printf("Found activity %u  [%.0f%%] ", 
 		  activity, 100.0 * (double)activity / nactivities);
     printf("lap %u-%u sport %u\n", antshort(data, doff+2), antshort(data, doff+4), data[doff+6]);
+    fflush(stdout);
     if (activity >= MAXACTIVITIES) {
       printf("Not enough space for %d activities\n", activity);
       exit(1);
@@ -1024,6 +1048,7 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
       found_trackpoints += ntrackpoints[i];
       printf("Found %d [%.0f%%] trackpoints for activity %d\n", 
 	     ntrackpoints[i], 100.0 * (double) found_trackpoints / ntotal_trackpoints,  i);
+      fflush(stdout);
     }
 
     // this check fails sometimes-- I think it's due to inconsistencies in
@@ -1031,6 +1056,7 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     if (ntotal_trackpoints == (found_trackpoints +
                                (nactivities - nsummarized_activities))) {
       printf("All trackpoints received (%d).\n", found_trackpoints);
+      fflush(stdout);
 
       // only allow completion if we get packet type 12 and have all
       // trackpoints.
@@ -1042,6 +1068,7 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
       printf("Not all trackpoints received; got %d/%d (%d activities, %d summarized). "
 	     "Will retry.\n", 
 	     found_trackpoints, ntotal_trackpoints, nactivities, nsummarized_activities);
+      fflush(stdout);
     }
     break;
   // trackpoints are given as a run of trackpoints per activity; they'll
@@ -1057,6 +1084,7 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   case 27:
     ntotal_trackpoints = antshort(data, doff);
     printf("Expecting %u trackpoints\n", ntotal_trackpoints - (nactivities - nsummarized_activities));
+    fflush(stdout);
     int i = 0;
     for (i = 0 ; i < MAXACTIVITIES ; i++) {
       ntrackpoints[i] = 0;
@@ -1074,7 +1102,8 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
       // we should probably clean up this memory at some point.
       ntrackpoints[current_trackpoint_activity]++;
       trackpointbuf[current_trackpoint_activity] =
-        (trackpoint_t *)realloc(trackpointbuf[current_trackpoint_activity], sizeof(trackpoint_t) * ntrackpoints[current_trackpoint_activity]);
+        (trackpoint_t *)realloc(trackpointbuf[current_trackpoint_activity], 
+				sizeof(trackpoint_t) * ntrackpoints[current_trackpoint_activity]);
 
       if (!trackpointbuf[current_trackpoint_activity]) {
         printf("Unable to allocate trackpoint buffer.\n");
@@ -1220,6 +1249,7 @@ chevent(uchar chan, uchar event)
       if (!pairing && !myauth1) {
         int nr;
         printf("reading auth data from %s\n", authfile);
+	fflush(stdout);
         authfd = open(authfile, O_RDONLY);
         if (authfd < 0) {
           perror(authfile);
