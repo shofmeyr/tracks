@@ -143,18 +143,36 @@ class Tracks:
     def get_monthly_stat(self, months, field, elev_window):
         monthly_stats = []
         for month in months:
+            monthly_dist = 0.0
+            monthly_duration = 0.0
             daily_stats = []
             for track in self:
                 month_str = track.start_time.strftime("%Y-%m")
                 if not month_str.startswith(month): continue
-                stat = track.get_stat(field, elev_window)
-                if stat > 0: daily_stats.append(stat)
-            if len(daily_stats) == 0: monthly_stats.append(0)
+                if field == "avpc":
+                    if track.dist > 0: 
+                        monthly_dist += track.dist
+                        monthly_duration += track.duration
+                elif field == "avhr":
+                    if track.av_hr > 0:
+                        monthly_duration += track.duration
+                        daily_stats.append(track.duration * track.av_hr)
+                elif field == "erate":
+                    elev = track.get_elev_change(elev_window)
+                    if elev > 0: 
+                        daily_stats.append(elev)
+                        monthly_dist += track.dist
+                else:
+                    stat = track.get_stat(field, elev_window)
+                    if stat > 0: daily_stats.append(stat)
+            if field == "avpc": 
+                if monthly_dist > 0: monthly_stats.append(monthly_duration / monthly_dist)
+                else: monthly_stats.append(0)
+            elif field == "erate": monthly_stats.append(sum(daily_stats) / monthly_dist)
+            elif len(daily_stats) == 0: monthly_stats.append(0)
+            elif field == "avhr": monthly_stats.append(sum(daily_stats) / monthly_duration)
             elif field == "mxpc": monthly_stats.append(min(daily_stats))
             elif field == "mxhr": monthly_stats.append(max(daily_stats))
-            elif field == "avpc": monthly_stats.append(numpy.average(daily_stats))
-            elif field == "avhr": monthly_stats.append(numpy.average(daily_stats))
-            elif field == "erate": monthly_stats.append(numpy.average(daily_stats))
             else: monthly_stats.append(sum(daily_stats))
         return monthly_stats
 
