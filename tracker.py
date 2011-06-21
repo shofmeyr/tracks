@@ -3,6 +3,7 @@
 import argparse
 import sys
 import gtk
+import pytz
 from pytracks.tracks import Tracks
 from pytracks.maptracks import MapTracks
 from pytracks.plotxy import PlotXY
@@ -35,8 +36,7 @@ def main():
                               default="tracks.pck", 
                               help="Name of tracks file containing pickle data")
     cmd_opt_parser.add_argument("-m", action="store", type=str, dest="plot_map", 
-                              default="", 
-                              help="Show track on map for date (YYYY-MM-DD)")
+                              default="", help="Show track on map for date (YYYY-MM-DD)")
     cmd_opt_parser.add_argument("-e", action="store", type=int, dest="elev_window", 
                               default=2, help="Window size for smoothing elevations")
     cmd_opt_parser.add_argument("-r", action="store", type=int, dest="hr_window", 
@@ -46,21 +46,20 @@ def main():
     cmd_opt_parser.add_argument("-t", action="store_true", dest="show_terrain", 
                               default=False, help="Show terrain on map instead of aerial photo")
     cmd_opt_parser.add_argument("-z", action="store", type=str, dest="tz", 
-                              default="US/Pacific", 
-                              help="Set time zone for xml conversion")
+                              default="US/Pacific", help="Set time zone for xml conversion")
     cmd_opt_parser.add_argument("-n", action="store", type=str, dest="monthly_stats", 
-                              default="", 
-                              help="Plot monthly stats for substring of YYYY-MM")
+                              default="", help="Plot monthly stats for substring of YYYY-MM")
     cmd_opt_parser.add_argument("-d", action="store", type=str, dest="daily_stats", 
-                              default="", 
-                              help="Plot daily stats for substring YYYY-MM-DD")
+                              default="", help="Plot daily stats for substring YYYY-MM-DD")
     FIELDS = ["dist", "time", "mxpc", "avpc", "mxhr", "avhr", "elev", "erate"]
     field_str = ""
-    for field in FIELDS: field_str += field + ","
+    for field in FIELDS: 
+        field_str += field
+        if field != FIELDS[-1]:  field_str += ", "
     cmd_opt_parser.add_argument("-p", action="store", type=str, dest="fields_to_plot", 
                                 default="dist", 
-                                help="The fields to plot for daily or monthly." + \
-                                    "a comma separated list of up to three of " + \
+                                help="The fields to plot for daily or monthly. " + \
+                                    "A comma separated list of up to three of " + \
                                     field_str)
     # cmd_opt_parser.add_argument("-i", action="store", type=str, dest="plot_identical", 
     #                           default="", 
@@ -71,7 +70,17 @@ def main():
     cmd_opt_parser.add_argument("fnames", metavar='N', type=str, nargs='*',
                               help="a list of xml files containing TCX data")
     options = cmd_opt_parser.parse_args()
-
+    if options.tz != "auto" and options.tz not in pytz.common_timezones:
+        print "Timezone not found. Are you looking for one of the following?"
+        num_tzs = 0
+        for tz in pytz.common_timezones:
+            if tz.startswith(options.tz): 
+                print tz
+                num_tzs += 1
+        if num_tzs == 0: 
+            for tz in pytz.common_timezones: print tz
+            
+        sys.exit(0)
     tracks = Tracks()
     tracks.load(options.tracks_fname)
     # now update with any new data
@@ -86,11 +95,11 @@ def main():
         except:
             print "Cannot find track for", options.plot_map
             sys.exit(0)
-        if len(track) == 0: 
-            print "Track", options.plot_map, "has no trackpoints"
-            sys.exit(0)
-        tracks.write_header(sys.stdout)
+        track.write_header(sys.stdout)
         track.write(sys.stdout, options.elev_window)
+        if len(track) == 0: 
+            print "Track", options.plot_map, "has no trackpoints to map"
+            sys.exit(0)
         title = "Track %s, %.1f m, %.0f ft" % (options.plot_map, track.dist, 
                                                track.get_elev_change(options.elev_window))
         map_tracks = MapTracks(track, "Map of " + title, color="red", width=800, height=600, 

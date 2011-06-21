@@ -1,0 +1,75 @@
+tracker is sofware for analyzing and displaying Garmin .tcx files.
+
+If you have a device that uses the Garmin ANT stick, you can obtain the data by
+running gant from the subdirectory gant. Look at the README in there for more
+information. The gant downloading is a little flaky. If your watch fails to
+download the latest tracks, you'll have to select Force->Send, which will then
+send all the tracks stored on the device, which will take quite some time. Also,
+the downloads can be a bit temperamental, so be patient. It is best to have the
+watch charging when you are downloading - that seems to work more reliably. Note
+that some of the tracks downloaded will be summarized, as indicated in the file
+name. These are older tracks for which the watch has dropped the
+trackpoints. Don't replace your previous unsummarized files with summarized
+ones: you will lose all your trackpoints and there is no way of getting them
+back.
+
+Once you have all the .tcx files, you can run tracker.py to analyze them.
+
+For options, run:
+
+tracker.py -h 
+
+Usually, the first thing to do is to update the tracker database from the xml
+files, i.e.
+
+tracker.py data/*.tcx
+
+The data will be stored in a file (tracks.pck by default) and that will be used
+in future. It is just used to speed things up, you can always delete it and
+simply rescan the .tcx files.
+
+Within the .tcx files, tracker can read a few additional fields that don't exist
+in the Garmin spec. These should be placed at the same level as the <Id> field,
+i.e. just below <Activity>. The fields are:
+
+1. add comments with <Comment>text</Comment>. The text can be anything. New
+lines are respected and all comments will be printed out as formatted when
+printing tracks.
+   
+2. add time zone with <TimeZone>time_zone</TimeZone>. There is also the option
+to specify the timezone on the command line, with the -z switch. If you pass it
+-z auto, then tracker tries to infer the timezone from the lat and lng of the
+first trackpoint. If there are no trackpoints, then it just uses UTC,
+i.e. GMT. The timezone inference is crude and won't take into account such
+things as daylight savings or accurate country/state boundaries. More work is
+needed on the auto option. In general, the inference is seldom more than an hour
+out. 
+
+3. add known distance and elevation with
+<KnownElevationMeters>known_elev</KnownElevationMeters>, and
+<KnownDistanceMeters>known_dist</KnownDistanceMeters>. Use these if you know the
+actual distance or elevation for the track. This is particularly useful for
+summarized runs for which you don't have the trackpoints to calculate the
+elevation. These values are only used if there are no GPS distances or
+elevations. 
+
+In addition to these fields, tracker will also add a field <MapAltitudeMeters>
+to every trackpoint on the first scan and write it into the .tcx file. tracker
+obtains this information by submitting a request to Google for elevations
+corresponding to lat,lng coords and is more accurate than using the GPS
+elevations.
+
+For example, to load a new track (say 2011-06-20-174608) in timezone US/Pacific,
+and map it on Google, run
+
+tracker.py -m 2011-06-20-174608 -z US/Pacific data/2011-06-20-174608.tcx
+
+For most analysis, tracker will both plot data and list data as text
+output. For plots of daily information, it doesn't yet handle multiple runs on
+one day properly. 
+
+Please feel free to play around and let me know of any fixes/feedback.
+
+
+
+

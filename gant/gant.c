@@ -501,8 +501,11 @@ void write_output_files() {
     float activity_secs = 0;
 
     // use first lap starttime as filename
-    strftime(tbuf, sizeof tbuf, "%Y-%m-%d-%H%M%S.tcx",
+    strftime(tbuf, sizeof tbuf, "%Y-%m-%d-%H%M%S",
              localtime(&lapbuf[pact->startlap].tv_lap));
+    // if this is a summarized run, modify the file name
+    if (pact->activitynum == -1) strcat(tbuf, "-summarized");
+    strcat(tbuf, ".tcx");
     // open file and start with header of xml file
     printf("Writing output file %s for activity %d: ", tbuf, activity);
     fflush(stdout);
@@ -1030,8 +1033,7 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
                     int dsize, uchar *data) {
   int doff = 20;
   int i = 0;
-  //int j = 0;
-  int found_trackpoints = 0;
+  static int found_trackpoints = 0;
   dprintf("trackpoints decode %d %d %d %d\n", bloblen, pkttype, pktlen, dsize);
   switch (pkttype) {
   case 12:
@@ -1043,14 +1045,11 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     // don't know what to do with the code here
     // antshort(data, doff);
 
+    found_trackpoints = 0;
     // make sure we got all the trackpoints.
     for (i = 0 ; i < nactivities ; i++) {
       found_trackpoints += ntrackpoints[i];
-      printf("Found %d [%.0f%%] trackpoints for activity %d\n", 
-	     ntrackpoints[i], 100.0 * (double) found_trackpoints / ntotal_trackpoints,  i);
-      fflush(stdout);
     }
-
     // this check fails sometimes-- I think it's due to inconsistencies in
     // the watch metadata from running out of battery while it's recording.
     if (ntotal_trackpoints == (found_trackpoints +
@@ -1074,6 +1073,15 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
   // trackpoints are given as a run of trackpoints per activity; they'll
   // give us a 99 to switch activities.
   case 99:
+    if (current_trackpoint_activity > -1) {
+      //      printf("found %d, total %d trackpoints\n", found_trackpoints, ntotal_trackpoints);
+      printf("Found %d [%.0f%%] trackpoints for activity %d\n", 
+	     ntrackpoints[current_trackpoint_activity], 
+	     (100.0 * (double) found_trackpoints) / (double) ntotal_trackpoints,  
+	     current_trackpoint_activity);
+      fflush(stdout);
+      found_trackpoints += ntrackpoints[current_trackpoint_activity];
+    }
     dprintf("%d trackindex %u\n", pkttype, antshort(data, doff));
     dprintf("%d shorts?", pkttype);
     for (i = 0; i < pktlen; i += 2)
@@ -1110,9 +1118,9 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
         exit(1);
       }
 
-      trackpoint_t *ptrackpoint = &trackpointbuf[current_trackpoint_activity][ntrackpoints[current_trackpoint_activity]-1];
+      trackpoint_t *ptrackpoint = &trackpointbuf[current_trackpoint_activity]
+	[ntrackpoints[current_trackpoint_activity]-1];
       decodetrackpoint(ptrackpoint, &data[doff+i]);
-
     }
     break;
   default:

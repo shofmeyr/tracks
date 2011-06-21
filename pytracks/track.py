@@ -20,7 +20,7 @@ class Track:
         return len(self.trackpoints)
 
     @classmethod
-    def from_xml_file(cls, fname, tz=None):
+    def from_xml_file(cls, fname, tz):
         from xmltree import XMLTree
         # load the xml file into a tree
         tree = XMLTree(fname, 
@@ -36,7 +36,8 @@ class Track:
         known_dist = tree.find_all("t:KnownDistanceMeters")
         if len(known_dist) > 0: known_dist = known_dist[0]
         else: known_dist = 0
-
+        time_zone = tree.find_all("t:TimeZone", is_float=False)
+        if len(time_zone) > 0: tz = time_zone[0]
         tree.root += "t:Lap/"
         durations = tree.find_all("t:TotalTimeSeconds")
         duration = sum(durations) / 60.0
@@ -92,8 +93,9 @@ class Track:
 #        print "utc_time", utc_time
         utc_time = utc_time.replace(tzinfo=pytz.utc)
 #        print "UTC replaced", utc_time
-        if tz is not None and tz != "": local_time = utc_time.astimezone(pytz.timezone(tz))
-        elif lng is not None: local_time = utc_time + datetime.timedelta(hours = int(round(lng / 15.0)))
+        if tz != "auto": local_time = utc_time.astimezone(pytz.timezone(tz))
+        elif lng is not None: 
+            local_time = utc_time + datetime.timedelta(hours = int(round(lng / 15.0)))
         else: local_time = utc_time
 #        print "Local time", str(local_time)
         return local_time

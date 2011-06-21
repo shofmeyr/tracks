@@ -52,7 +52,7 @@ class Tracks:
         print>>sys.stderr, "Saved data for", len(self.data), \
             "tracks, from", self.sorted_keys[0], "to", self.sorted_keys[-1]
 
-    def update_from_xml(self, fnames, tz=None):
+    def update_from_xml(self, fnames, tz):
         if len(fnames) == 0: return
         tot_time = 0.0
         tot_dist = 0.0
