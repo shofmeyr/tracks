@@ -127,8 +127,7 @@ def main():
                  options.elev_window)
     if options.daily_stats != "":
         days = tracks.get_days(options.daily_stats)
-        tracks.write_header(sys.stdout)
-        tracks.write(sys.stdout, options.daily_stats, options.elev_window)
+        tracks.write_days(sys.stdout, options.daily_stats, options.elev_window)
         plot_bar(days, "Daily stats for " + options.daily_stats, fields, tracks.get_daily_stat,
                  options.elev_window)
 

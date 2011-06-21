@@ -83,10 +83,8 @@ class Tracks:
         for track in self: elev_rates.append(track.elev_rate)
         return elev_rates
     
-    def write_header(self, out_file):
+    def write_days(self, out_file, name, elev_window):
         Track.write_header(out_file)
-        
-    def write(self, out_file, name, elev_window):
         for track in self:
             if track.get_start_time_as_str().startswith(name): track.write(out_file, elev_window)
 
