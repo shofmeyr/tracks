@@ -43,7 +43,7 @@ class PlotXY(gtk.Window):
             for i in range(smoothing_window, len(y) - smoothing_window): 
                 smoothed_y.append(numpy.average(y[i - smoothing_window:i + smoothing_window]))
             y = smoothed_y
-            self.x = self.x[:len(y)]
+#            self.x = self.x[:len(y)]
         if self.offset > 0:
             ax2 = self.ax.twinx()
             self.fig.subplots_adjust(right = 0.8)
@@ -76,8 +76,9 @@ class PlotXY(gtk.Window):
             if max_y == 0: max_y = max(y) * 1.05
             ax2.set_ylim(0, max_y)
         else: 
-            ax2.plot(self.x, y, color=color)
-            ax2.set_ylim(min(y) * 0.95, max(y) * 1.05)
+            # x may need to be truncated because of smoothing
+            ax2.plot(self.x[:len(y)], y, color=color)
+            ax2.axis([0, max(self.x), min(y) * 0.95, max(y) * 1.05])
         ax2.set_ylabel(y_label, color = color)
         ax2.get_axes().grid()
         for tl in ax2.get_yticklabels(): tl.set_color(color)

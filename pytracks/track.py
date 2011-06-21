@@ -53,7 +53,7 @@ class Track:
         # drop point if the dist is measured, but small
         if dist > 0 and dist < 1.0: 
             print>>sys.stderr, "Dropping", fname, "distance is > 0 and < 1.0"
-            return None
+            return [None, None]
         if dist == 0: dist = known_dist / Trackpoints.METERS_PER_MILE
         max_hrs = tree.find_all("t:MaximumHeartRateBpm/t:Value")
         if len(max_hrs) > 0: max_hr = max(max_hrs)
@@ -63,7 +63,7 @@ class Track:
         # drop all points that have low heart rates
         if av_hr < 80 and av_hr > 0: 
             print>>sys.stderr, "Dropping", fname, "av HR is < 80 and > 0"
-            return None
+            return [None, None]
         # extract trackpoints from xml
         trackpoints = Trackpoints()
         trackpoints.load_from_xml(tree, fname)

@@ -91,6 +91,8 @@ def main():
         if len(track) == 0: 
             print "Track", options.plot_map, "has no trackpoints"
             sys.exit(0)
+        tracks.write_header(sys.stdout)
+        track.write(sys.stdout, options.elev_window)
         title = "Track %s, %.1f m, %.0f ft" % (options.plot_map, track.dist, 
                                                track.get_elev_change(options.elev_window))
         map_tracks = MapTracks(track, "Map of " + title, color="red", width=800, height=600, 

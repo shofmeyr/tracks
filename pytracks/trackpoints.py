@@ -87,7 +87,7 @@ class Trackpoints:
         if len(self.map_elevs) == 0 and len(self.gps_elevs) > 0:
             # no previous elevations, fetch from google
             if not os.path.exists(fname + ".elev"): 
-                self.map_elevs = Trackpoints._get_google_elevs(lats, lngs)
+                self.map_elevs = Trackpoints._get_google_elevs(self.lats, self.lngs)
             else: map_elevs = Trackpoints._read_elevs_file(fname + ".elev")
             # add the elevs to the xmltree
             print>>sys.stderr, "Adding", len(self.map_elevs), "map elevations to", fname
