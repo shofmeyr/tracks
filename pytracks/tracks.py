@@ -90,14 +90,14 @@ class Tracks:
 
     def write_months(self, out_file, months, elev_window):
         print >> out_file, "#%-12s" % "Month",\
-            "%6s" % "dist",\
-            "%7s" % "rtime",\
+            "%6s" % "miles",\
+            "%7s" % "hours",\
             "%6s" % "mxpc",\
             "%6s" % "avpc",\
             "%5s" % "mxhr",\
             "%5s" % "avhr",\
-            "%7s" % "elev",\
-            "%6s" % "erate"
+            "%7s" % "totft",\
+            "%6s" % "ft/m"
         stats = {}
         for field in ["avpc", "mxpc", "avhr", "mxhr", "elev", "erate", "dist", "time"]:
             stats[field] = self.get_monthly_stat(months, field, elev_window)
@@ -168,11 +168,16 @@ class Tracks:
             if field == "avpc": 
                 if monthly_dist > 0: monthly_stats.append(monthly_duration / monthly_dist)
                 else: monthly_stats.append(0)
-            elif field == "erate": monthly_stats.append(sum(daily_stats) / monthly_dist)
+            elif field == "erate": 
+                if monthly_dist > 0: monthly_stats.append(sum(daily_stats) / monthly_dist)
+                else: monthly_stats.append(0)
             elif len(daily_stats) == 0: monthly_stats.append(0)
-            elif field == "avhr": monthly_stats.append(sum(daily_stats) / monthly_duration)
+            elif field == "avhr": 
+                if monthly_duration > 0: monthly_stats.append(sum(daily_stats) / monthly_duration)
+                else: monthly_stats.append(0)
             elif field == "mxpc": monthly_stats.append(min(daily_stats))
             elif field == "mxhr": monthly_stats.append(max(daily_stats))
+            elif field == "time": monthly_stats.append(sum(daily_stats) / 60.0)
             else: monthly_stats.append(sum(daily_stats))
         return monthly_stats
 

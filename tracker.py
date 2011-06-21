@@ -8,11 +8,11 @@ from pytracks.maptracks import MapTracks
 from pytracks.plotxy import PlotXY
 
 
-def plot_bar(x, title, fields, data_func, elev_window=0):
-    LABELS = {"dist": "Distance (miles)", "time": "Duration (mins)", "mxpc": "Maximum pace (mins/mile)", 
-              "avpc": "Average pace (mins/mile)", "mxhr": "Maximum heart rate (bpm)", 
-              "avhr": "Average heart rate (bpm)", "elev": "Elevation gain (ft)", 
-              "erate": "Rate of elevation gain (ft/mile)"}
+def plot_bar(x, title, fields, data_func, duration_unit, elev_window=0):
+    LABELS = {"dist": "Distance (miles)", "time": "Duration (" + duration_unit +")", 
+              "mxpc": "Maximum pace (mins/mile)", "avpc": "Average pace (mins/mile)", 
+              "mxhr": "Maximum heart rate (bpm)", "avhr": "Average heart rate (bpm)", 
+              "elev": "Elevation gain (ft)", "erate": "Rate of elevation gain (ft/mile)"}
     FIELD_MAX = {"dist": 0, "time": 0, "mxpc": 20.0, "avpc": 20.0, "mxhr": 200, "avhr": 200,
                  "elev": 0, "erate": 0}
     plot = PlotXY(x, "", title, 700, 500, num_series=len(fields))
@@ -22,10 +22,8 @@ def plot_bar(x, title, fields, data_func, elev_window=0):
         if stat == None: 
             print stat, "not found"
             return None
-        if max(stat) == 0:
-            print "No values found for", fields[i], "skipping"
-        else:
-            plot.add_series(stat, LABELS[fields[i]], colors[i], max_y=FIELD_MAX[fields[i]])
+        if max(stat) == 0: print "No values found for", fields[i], "skipping"
+        else: plot.add_series(stat, LABELS[fields[i]], colors[i], max_y=FIELD_MAX[fields[i]])
     plot.show_all()
     gtk.main()
 
@@ -124,11 +122,11 @@ def main():
         tracks.get_daily_stat
         tracks.write_months(sys.stdout, months, options.elev_window)
         plot_bar(months, "Monthly stats for " + options.monthly_stats, fields, tracks.get_monthly_stat,
-                 options.elev_window)
+                 "hours", options.elev_window)
     if options.daily_stats != "":
         days = tracks.get_days(options.daily_stats)
         tracks.write_days(sys.stdout, options.daily_stats, options.elev_window)
         plot_bar(days, "Daily stats for " + options.daily_stats, fields, tracks.get_daily_stat,
-                 options.elev_window)
+                 "mins", options.elev_window)
 
 if __name__ == "__main__": main()

@@ -146,8 +146,8 @@ class Track:
     @classmethod
     def write_header(cls, out_file):
         print >> out_file, "#%-19s" % "Date & time",\
-            "%6s" % "dist",\
-            "%7s" % "rtime",\
+            "%6s" % "miles",\
+            "%7s" % "mins",\
             "%5s" % "mxpc",\
             "%5s" % "avpc",\
             "%5s" % "mxhr",\
