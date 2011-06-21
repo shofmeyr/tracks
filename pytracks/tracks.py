@@ -86,26 +86,34 @@ class Tracks:
     def write_header(self, out_file):
         Track.write_header(out_file)
         
-    def write(self, out_file, name = "all", elev_window=2, only_total=False):
-        track_tot = Track(start_time=None, duration=0, dist=0, max_pace=100, max_hr=0,
-                         av_hr=0, trackpoints=None, comment="", known_elev=0)
-        num_tracks_for_hr = 0.0
+    def write(self, out_file, name, elev_window):
         for track in self:
-            if track.get_start_time_as_str().startswith(name):
-                if track_tot.start_time is None: track_tot.start_time = track.start_time
-                track_tot.duration += track.duration
-                track_tot.dist += track.dist
-                if track.max_pace > 0 and track.max_pace < track_tot.max_pace: 
-                    track_tot.max_pace = track.max_pace
-                if track.max_hr > track_tot.max_hr and track.max_hr < 190: track_tot.max_hr = track.max_hr
-                track_tot.av_hr += track.av_hr
-                if track.av_hr > 0: num_tracks_for_hr += 1
-                track_tot.known_elev += (track.get_elev_change(elev_window) / Trackpoints.FEET_PER_METER)
-                if not only_total: track.write(out_file, elev_window)
-        # now print summary
-        if track_tot.max_pace == 100: track_tot.max_pace = 0
-        if num_tracks_for_hr > 0: track_tot.av_hr /= num_tracks_for_hr
-        track_tot.write(out_file, elev_window, name)
+            if track.get_start_time_as_str().startswith(name): track.write(out_file, elev_window)
+
+    def write_months(self, out_file, months, elev_window):
+        print >> out_file, "#%-12s" % "Month",\
+            "%6s" % "dist",\
+            "%7s" % "rtime",\
+            "%6s" % "mxpc",\
+            "%6s" % "avpc",\
+            "%5s" % "mxhr",\
+            "%5s" % "avhr",\
+            "%7s" % "elev",\
+            "%6s" % "erate"
+        stats = {}
+        for field in ["avpc", "mxpc", "avhr", "mxhr", "elev", "erate", "dist", "time"]:
+            stats[field] = self.get_monthly_stat(months, field, elev_window)
+        for i in range(0, len(months)):
+            print >> out_file, \
+                "%-13s" % months[i],\
+                "%6.2f" % stats["dist"][i],\
+                "%7.1f" % stats["time"][i],\
+                "%6.2f" % stats["mxpc"][i],\
+                "%6.2f" % stats["avpc"][i],\
+                "%5.0f" % stats["mxhr"][i],\
+                "%5.0f" % stats["avhr"][i],\
+                "%7.0f" % stats["elev"][i],\
+                "%6.0f" % stats["erate"][i]
 
     def __iter__(self):
         self.index = 0

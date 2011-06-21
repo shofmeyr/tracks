@@ -121,11 +121,8 @@ def main():
             return
     if options.monthly_stats != "":
         months = tracks.get_months(options.monthly_stats)
-        tracks.write_header(sys.stdout)
-        for month in months:
-            tracks.write(sys.stdout, month, options.elev_window, only_total=True)
-        # write the final sum
-        tracks.write(sys.stdout, options.monthly_stats, options.elev_window, only_total=True)
+        tracks.get_daily_stat
+        tracks.write_months(sys.stdout, months, options.elev_window)
         plot_bar(months, "Monthly stats for " + options.monthly_stats, fields, tracks.get_monthly_stat,
                  options.elev_window)
     if options.daily_stats != "":
