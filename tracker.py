@@ -7,7 +7,7 @@ import pytz
 from pytracks.tracks import Tracks
 from pytracks.maptracks import MapTracks
 from pytracks.plotxy import PlotXY
-
+from pytracks.googleearth import GoogleEarth
 
 def plot_bar(x, title, fields, data_func, duration_unit, elev_window=0):
     LABELS = {"dist": "Distance (miles)", "time": "Duration (" + duration_unit +")", 
@@ -51,6 +51,8 @@ def main():
                               default="", help="Plot monthly stats for substring of YYYY-MM")
     cmd_opt_parser.add_argument("-d", action="store", type=str, dest="daily_stats", 
                               default="", help="Plot daily stats for substring YYYY-MM-DD")
+    cmd_opt_parser.add_argument("-k", action="store", type=str, dest="google_earth", 
+                              default="", help="Show track on Google Earth for date (YYYY-MM-DD)")
     FIELDS = ["dist", "time", "mxpc", "avpc", "mxhr", "avhr", "elev", "erate"]
     field_str = ""
     for field in FIELDS: 
@@ -89,22 +91,27 @@ def main():
         print>>sys.stderr, "No tracks found"
         sys.exit(0)
     tracks.save(options.tracks_fname)
-    if options.plot_map != "": 
+    track_name = options.plot_map
+    if track_name == "": track_name = options.google_earth
+    if track_name != "":
         try:
-            track = tracks[options.plot_map]
+            track = tracks[track_name]
         except:
-            print "Cannot find track for", options.plot_map
+            print "Cannot find track for", track_name
             sys.exit(0)
         track.write_header(sys.stdout)
         track.write(sys.stdout, options.elev_window)
         if len(track) == 0: 
-            print "Track", options.plot_map, "has no trackpoints to map"
+            print "Track", track_name, "has no trackpoints to map"
             sys.exit(0)
-        title = "Track %s, %.1f m, %.0f ft" % (options.plot_map, track.dist, 
+        title = "Track %s, %.1f m, %.0f ft" % (track_name, track.dist, 
                                                track.get_elev_change(options.elev_window))
-        map_tracks = MapTracks(track, "Map of " + title, color="red", width=800, height=600, 
-                               show_terrain=options.show_terrain)
-        map_tracks.show_all()
+        if options.plot_map != "":
+            map_tracks = MapTracks(track, "Map of " + title, color="red", width=800, height=600, 
+                                   show_terrain=options.show_terrain)
+            map_tracks.show_all()
+        else:
+            GoogleEarth.show_in_google_earth(track)
         
         plot_elevs = PlotXY(track.trackpoints.dists, "Distance (miles)", 
                             "Elevation and heart rate for " + title, 
