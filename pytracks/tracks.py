@@ -118,9 +118,10 @@ class Tracks:
         return self
 
     def next(self):
-        if self.index == len(self.sorted_keys) - 1: raise StopIteration
+        if self.index == len(self.sorted_keys): raise StopIteration
+        val = self.data[self.sorted_keys[self.index]]
         self.index += 1
-        return self.data[self.sorted_keys[self.index]]
+        return val
 
     def get_days(self, date_str):
         days = []

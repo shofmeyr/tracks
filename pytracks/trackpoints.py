@@ -134,7 +134,7 @@ class Trackpoints:
     @classmethod
     def _get_google_elevs(cls, lats, lngs):
         if len(lats) == 0: return []
-        print>>sys.stdout, "Fetching elevations for", len(lats), "points from google"
+        print>>sys.stderr, "Fetching elevations for", len(lats), "points from google"
         ELEV_BASE_URL = 'http://maps.google.com/maps/api/elevation/json'
         path = ""
         elevs = []
