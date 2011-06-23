@@ -1,0 +1,12 @@
+use the multilinks addon to firefox to save each page of activities links to the clipboard. Put them all in one file. Then iterate through the file with a script and call 
+
+firefox http://connect.garmin.com/proxy/activity-service-1.0/tcx/activity/id?full=true
+
+where id is the activity number.
+
+Set firefox to not open a new tab on every call with
+
+about:config
+then set browser.link.open_newwindow to 1
+
+Once you have a list of actitivty numbers, use the downloadlinks.py script.

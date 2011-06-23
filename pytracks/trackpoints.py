@@ -24,11 +24,15 @@ class Trackpoints:
 
     def get_elev_change(self, smooth_window):
         # smooth the elevations
-        if smooth_window == 0: smoothed_elevs = self.map_elevs
+        if smooth_window == 0: 
+            if len(self.map_elevs) > 0: smoothed_elevs = self.map_elevs
+            else: smoothed_elevs = self.gps_elevs
         else:
             smoothed_elevs = []
             for i in range(smooth_window, len(self) - smooth_window): 
-                smoothed_elevs.append(numpy.average(self.map_elevs[i - smooth_window:i + smooth_window]))
+                if len(self.map_elevs) > 0: elevs = self.map_elevs
+                else: elevs = self.gps_elevs
+                smoothed_elevs.append(numpy.average(elevs[i - smooth_window:i + smooth_window]))
         # compute elevation change
         tot_change = 0
         for i in range(0, len(smoothed_elevs) - 1):
@@ -39,12 +43,16 @@ class Trackpoints:
         return tot_change
 
     def get_min_max_elevs(self):
-        min_elev = min(self.map_elevs)
-        max_elev = max(self.map_elevs)
+        if len(self.map_elevs) > 0: elevs = self.map_elevs
+        else: elevs = self.gps_elevs
+        min_elev = min(elevs)
+        max_elev = max(elevs)
         return (min_elev * Trackpoints.FEET_PER_METER, max_elev * Trackpoints.FEET_PER_METER)
 
     def get_elevs(self):
-        return [e * Trackpoints.FEET_PER_METER for e in self.map_elevs]
+        if len(self.map_elevs) > 0: elevs = self.map_elevs
+        else: elevs = self.gps_elevs
+        return [e * Trackpoints.FEET_PER_METER for e in elevs]
 
     def get_paces(self):
         paces = []
@@ -55,8 +63,12 @@ class Trackpoints:
             if dist_diff < 0.05: 
                 paces.append(pace)
                 continue
-            t1 = datetime.datetime.strptime(self.times[first_i], "%Y-%m-%dT%H:%M:%SZ") 
-            t2 = datetime.datetime.strptime(self.times[i], "%Y-%m-%dT%H:%M:%SZ")
+            try:
+                t1 = datetime.datetime.strptime(self.times[first_i], "%Y-%m-%dT%H:%M:%SZ") 
+                t2 = datetime.datetime.strptime(self.times[i], "%Y-%m-%dT%H:%M:%SZ")
+            except ValueError:
+                t1 = datetime.datetime.strptime(self.times[first_i], "%Y-%m-%dT%H:%M:%S.000Z") 
+                t2 = datetime.datetime.strptime(self.times[i], "%Y-%m-%dT%H:%M:%S.000Z")
             td = t2 - t1
             tot_mins = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6 / 60.0
             pace = tot_mins / dist_diff
@@ -88,11 +100,12 @@ class Trackpoints:
             # no previous elevations, fetch from google
             if not os.path.exists(fname + ".elev"): 
                 self.map_elevs = Trackpoints._get_google_elevs(self.lats, self.lngs)
-            else: map_elevs = Trackpoints._read_elevs_file(fname + ".elev")
-            # add the elevs to the xmltree
-            print>>sys.stderr, "Adding", len(self.map_elevs), "map elevations to", fname
-            tree.add_elems("t:Track/t:Trackpoint", "MapAltitudeMeters", 
-                           self.map_elevs, "AltitudeMeters")
+#            else: map_elevs = Trackpoints._read_elevs_file(fname + ".elev")
+            if len(self.map_elevs) > 0:
+                # add the elevs to the xmltree
+                print>>sys.stderr, "Adding", len(self.map_elevs), "map elevations to", fname
+                tree.add_elems("t:Track/t:Trackpoint", "MapAltitudeMeters", 
+                               self.map_elevs, "AltitudeMeters")
 
     @classmethod
     def _read_elevs_file(cls, elev_fname):

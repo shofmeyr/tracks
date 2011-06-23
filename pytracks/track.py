@@ -47,7 +47,7 @@ class Track:
             return (None, None)
         try:
             max_pace = max(tree.find_all("t:MaximumSpeed"))
-        except ValueError as e: 
+        except ValueError:
             max_pace = 0
         if max_pace > 0: max_pace = 60.0 / (max_pace * Trackpoints.METERS_PER_MILE / 1000.0)
         dist = sum(tree.find_all("t:DistanceMeters")) / Trackpoints.METERS_PER_MILE
@@ -89,7 +89,10 @@ class Track:
         # something very simple here which gives an approximation of the actual time. A better way 
         # to do this is use a timezone service.
         # This can always be corrected later.
-        utc_time = datetime.datetime.strptime(utc_time_str, "%Y-%m-%dT%H:%M:%SZ")
+        try:
+            utc_time = datetime.datetime.strptime(utc_time_str, "%Y-%m-%dT%H:%M:%SZ")
+        except ValueError as e: 
+            utc_time = datetime.datetime.strptime(utc_time_str, "%Y-%m-%dT%H:%M:%S.000Z")
 #        print "utc_time", utc_time
         utc_time = utc_time.replace(tzinfo=pytz.utc)
 #        print "UTC replaced", utc_time
