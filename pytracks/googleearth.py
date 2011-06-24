@@ -10,7 +10,7 @@ class GoogleEarth:
         (center_lng, lng_range) = track.get_mid_point_range("lngs")
         max_alt = max(track.trackpoints.gps_elevs) + 1000
         min_hr = 120.0
-        max_hr = 190.0
+        max_hr = 180.0
         num_hr_colors = 20
         fname = "/tmp/" + track.get_start_time_as_str() + ".kml"
         f = open(fname, "w+")
@@ -28,8 +28,16 @@ class GoogleEarth:
         print>>f, "          <tilt>33</tilt>"
         print>>f, "        </Camera>"
         print>>f, "    </gx:FlyTo>"
+        print>>f, "    <ScreenOverlay id=\"khScreenOverlay756\">"
+        print>>f, "      <Icon><href>hr-legend.png</href></Icon>"
+        print>>f, "      <overlayXY x=\"0\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>"
+        print>>f, "      <screenXY x=\"0\" y=\"30\" xunits=\"pixels\" yunits=\"pixels\"/>"
+        print>>f, "      <size x=\"60\" y=\"220\" xunits=\"pixels\" yunits=\"pixels\"/>"
+        print>>f, "    </ScreenOverlay>"
+        
         for i in range(0, num_hr_colors):
             color_hr = float(i) * (max_hr - min_hr) / float(num_hr_colors) + min_hr
+            print i, color_hr, GoogleEarth.data_point_to_color(color_hr, min_hr, max_hr)
             print>>f, "    <Style id=\"color" + str(i) + "\">"
             print>>f, "      <LineStyle>"
             print>>f, "        <color>ff" + GoogleEarth.data_point_to_color(color_hr, min_hr, max_hr) + "</color>"
@@ -41,7 +49,7 @@ class GoogleEarth:
             av_hr = numpy.average(track.trackpoints.hrs[i:i+5])
             color_num = int(float(num_hr_colors) * (av_hr - min_hr) / (max_hr - min_hr)) 
             if color_num < 0: color_num = 0
-            if color_num > num_hr_colors: color_num = num_hr_colors
+            if color_num >= num_hr_colors: color_num = num_hr_colors - 1
             print>>f, "    <Placemark>"
             print>>f, "      <name>Absolute Extruded</name>"
             print>>f, "      <styleUrl>#color" + str(color_num) + "</styleUrl>"
@@ -61,12 +69,14 @@ class GoogleEarth:
         os.spawnlp(os.P_NOWAIT, "google-earth", "google-earth", fname)
 
     @classmethod
-    def data_point_to_color2(cls, val, min_val, max_val):
+    def data_point_to_color(cls, val, min_val, max_val):
         GAMMA = 0.8
         INTENSITY_MAX = 255.0
         num_spectrum_colors = 5
         num_bits = 255
-        spectrum_color = float(num_spectrum_colors) * (float(val) - min_val) / (max_val - min_val)
+        if val >= max_val: val = max_val
+        if val <= min_val: val = min_val
+        spectrum_color = float(num_spectrum_colors) * (float(val) - min_val) / (max_val - min_val) + 0.25
         if spectrum_color < 1: rgb = (1.0 - spectrum_color, 0, 1)
         elif spectrum_color < 2: rgb = (0, spectrum_color - 1.0, 1)
         elif spectrum_color < 3: rgb = (0, 1, 3.0 - spectrum_color)
@@ -81,15 +91,15 @@ class GoogleEarth:
                 if x != 0: x = round(INTENSITY_MAX * ((x * factor) ** GAMMA))
             except ValueError as e:
                 print e
-                print rgb, factor, wave_len
+                print rgb, factor, val
                 x = 0
             color += "%02x" % x
-        # for some reason google expects the colors as BGR, so we reverse the string here
+       # for some reason google expects the colors as BGR, so we reverse the string here
         return color[::-1]
 
 
     @classmethod
-    def data_point_to_color(cls, val, min_val, max_val):
+    def data_point_to_color2(cls, val, min_val, max_val):
         MIN_VISIBLE_WAVE_LEN = 380.0
         MAX_VISIBLE_WAVE_LEN = 780.0
         GAMMA = 0.8
