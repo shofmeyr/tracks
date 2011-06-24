@@ -1,6 +1,7 @@
 import sys
 import os
 import numpy
+import shutil
 from track import Track
 
 class GoogleEarth:
@@ -37,7 +38,7 @@ class GoogleEarth:
         
         for i in range(0, num_hr_colors):
             color_hr = float(i) * (max_hr - min_hr) / float(num_hr_colors) + min_hr
-            print i, color_hr, GoogleEarth.data_point_to_color(color_hr, min_hr, max_hr)
+#            print i, color_hr, GoogleEarth.data_point_to_color(color_hr, min_hr, max_hr)
             print>>f, "    <Style id=\"color" + str(i) + "\">"
             print>>f, "      <LineStyle>"
             print>>f, "        <color>ff" + GoogleEarth.data_point_to_color(color_hr, min_hr, max_hr) + "</color>"
@@ -66,6 +67,7 @@ class GoogleEarth:
         print>>f, "  </Document>"
         print>>f, "</kml>"
         f.close()
+        shutil.copy("hr-legend.png", "/tmp/hr-legend.png")
         os.spawnlp(os.P_NOWAIT, "google-earth", "google-earth", fname)
 
     @classmethod
