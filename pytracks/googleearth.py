@@ -36,6 +36,7 @@ class GoogleEarth:
         print>>f, "      <size x=\"60\" y=\"220\" xunits=\"pixels\" yunits=\"pixels\"/>"
         print>>f, "    </ScreenOverlay>"
         
+#        for i in range(120, 180, 5): print i, GoogleEarth.data_point_to_color(i, min_hr, max_hr)
         for i in range(0, num_hr_colors):
             color_hr = float(i) * (max_hr - min_hr) / float(num_hr_colors) + min_hr
 #            print i, color_hr, GoogleEarth.data_point_to_color(color_hr, min_hr, max_hr)
@@ -85,10 +86,10 @@ class GoogleEarth:
         elif spectrum_color < 4: rgb = (spectrum_color - 3.0, 1, 0)
         else: rgb = (1, 5.0 - spectrum_color, 0)
 
-        if spectrum_color < 1.5: factor = 0.5 + (spectrum_color / 3.0)
+        if spectrum_color < 1: factor = 0.5 + (spectrum_color / 2.0)
         else: factor = 1.0
         color = ""
-        for x in rgb: 
+        for x in rgb[::-1]: 
             try:
                 if x != 0: x = round(INTENSITY_MAX * ((x * factor) ** GAMMA))
             except ValueError as e:
@@ -97,7 +98,7 @@ class GoogleEarth:
                 x = 0
             color += "%02x" % x
        # for some reason google expects the colors as BGR, so we reverse the string here
-        return color[::-1]
+        return color
 
 
     @classmethod

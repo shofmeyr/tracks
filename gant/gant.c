@@ -60,6 +60,8 @@ typedef struct {
 
 activity_t activitybuf[MAXACTIVITIES];
 int nactivities;
+int first_activity_num = -1;
+int first_lap_num = -1;
 int nsummarized_activities = 0;
 
 void decodeactivity(activity_t *pactivity, int activitynum, uchar *data) {
@@ -507,7 +509,7 @@ void write_output_files() {
     if (pact->activitynum == -1) strcat(tbuf, "-summarized");
     strcat(tbuf, ".tcx");
     // open file and start with header of xml file
-    printf("Writing output file %s for activity %d: ", tbuf, activity);
+    printf("Writing output file %s for activity %d: ", tbuf, pact->activitynum);
     fflush(stdout);
     tcxfile = fopen(tbuf, "wt");
     write_tcx_header(tcxfile);
@@ -591,28 +593,6 @@ void write_output_files() {
         }
       }
 
-      /*
-        if (dbg) printf("i %u tv %d tv_lap %d tv_previous %d\n", i, tv, tv_lap, tv_previous);
-        if (tv_previous == tv_lap) {
-          i -= 24;
-          tv = tv_previous;
-        }
-        track_pause = 0;
-      // track pause only if following trackpoint is aswell 'timemarker' with utopic distance
-      if (track_pause && ptrackpoint->dist > (float)40000000) {
-        fprintf(tcxfile, "        </Track>\n");
-        fprintf(tcxfile, "        <Track>\n");
-
-      // maybe if we recieve utopic position and distance this tells pause in the run (stop and go) if not begin or end of lap
-      if (ptrackpoint->dist > (float)40000000 && track_pause == 0) {
-        track_pause = 1;
-        if (dbg) printf("track pause (stop and go)\n");
-      } else {
-        track_pause = 0;
-      }
-      }
-      */
-      
       if (pact->activitynum != -1) {
 	fprintf(tcxfile, "        <Track>\n");
 	int ntps = 0;
@@ -623,8 +603,6 @@ void write_output_files() {
 	  ntps++;
 	  write_trackpoint(tcxfile, pact, plap, ptrackpoint);
 	}
-	//	printf("Writing %d trackpoints for lap %d of activity %d\n", 
-	//	       ntps, lap, pact->activitynum);
 	// repeat the last trackpoint in the next lap if it's the same second as
 	// this one.
 	if ((trackpoint > 0) && (lap < pact->stoplap) &&
@@ -943,22 +921,19 @@ void laps_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     fflush(stdout);
     break;
   case 149:
-    printf("Found lap %u [%.0f%%]\n", 
-	   antshort(data, doff), 100.0 * (double)antshort(data, doff) / nlaps);
-    fflush(stdout);
     lap = antshort(data, doff);
     if (lap < 0) {
       printf("Bad lap specified %d.\n", lap);
       exit(1);
-    }
-    else if (lap < MAXLAPS) {
+    } else if (lap < MAXLAPS) {
       decodelap(&lapbuf[lap], lap, data+doff);
-    }
-    else {
+    } else {
       printf("Not enough laps.");
       exit(1);
     }
-
+    if (first_lap_num == -1) first_lap_num = lap;
+    printf("Found lap %u [%.0f%%]\n", lap, 100.0 * (double)(lap - first_lap_num + 1) / nlaps);
+    fflush(stdout);
     break;
   default:
     generic_decode(bloblen, pkttype, pktlen, dsize, data);
@@ -1013,8 +988,12 @@ void activities_decode(ushort bloblen, ushort pkttype, ushort pktlen,
 	     nsummarized_activities, 100.0 * (double)nsummarized_activities / nactivities);
       // we are assuming that summarized activities are at the start of the input
       nsummarized_activities++;
-    } else printf("Found activity %u  [%.0f%%] ", 
-		  activity, 100.0 * (double)activity / nactivities);
+      first_activity_num = 0;
+    } else {
+      if (first_activity_num == -1) first_activity_num = activity;
+      printf("Found activity %u  [%.0f%%] ", 
+	     activity, 100.0 * (double)(activity - first_activity_num + 1) / nactivities);
+    }
     printf("lap %u-%u sport %u\n", antshort(data, doff+2), antshort(data, doff+4), data[doff+6]);
     fflush(stdout);
     if (activity >= MAXACTIVITIES) {
@@ -1030,7 +1009,7 @@ void activities_decode(ushort bloblen, ushort pkttype, ushort pktlen,
 
 
 void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
-                    int dsize, uchar *data) {
+			int dsize, uchar *data) {
   int doff = 20;
   int i = 0;
   static int found_trackpoints = 0;
@@ -1047,16 +1026,14 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
 
     found_trackpoints = 0;
     // make sure we got all the trackpoints.
-    for (i = 0 ; i < nactivities ; i++) {
+    for (i = 0 ; i < MAXACTIVITIES ; i++) {
       found_trackpoints += ntrackpoints[i];
     }
     // this check fails sometimes-- I think it's due to inconsistencies in
     // the watch metadata from running out of battery while it's recording.
-    if (ntotal_trackpoints == (found_trackpoints +
-                               (nactivities - nsummarized_activities))) {
+    if (ntotal_trackpoints == found_trackpoints + nactivities - nsummarized_activities) {
       printf("All trackpoints received (%d).\n", found_trackpoints);
       fflush(stdout);
-
       // only allow completion if we get packet type 12 and have all
       // trackpoints.
       if (nacksent > nlastcompletedcmd) {
@@ -1064,24 +1041,15 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
         nlastcompletedcmd = nacksent;
       }
     } else {
-      printf("Not all trackpoints received; got %d/%d (%d activities, %d summarized). "
-	     "Will retry.\n", 
-	     found_trackpoints, ntotal_trackpoints, nactivities, nsummarized_activities);
+      printf("Not all trackpoints received; got %d/%d (%d activities, %d summarized). Will retry.\n", 
+	     found_trackpoints, (ntotal_trackpoints - nactivities - nsummarized_activities), 
+	     nactivities, nsummarized_activities);
       fflush(stdout);
     }
     break;
   // trackpoints are given as a run of trackpoints per activity; they'll
   // give us a 99 to switch activities.
   case 99:
-    if (current_trackpoint_activity > -1) {
-      //      printf("found %d, total %d trackpoints\n", found_trackpoints, ntotal_trackpoints);
-      printf("Found %d [%.0f%%] trackpoints for activity %d\n", 
-	     ntrackpoints[current_trackpoint_activity], 
-	     (100.0 * (double) found_trackpoints) / (double) ntotal_trackpoints,  
-	     current_trackpoint_activity);
-      fflush(stdout);
-      found_trackpoints += ntrackpoints[current_trackpoint_activity];
-    }
     dprintf("%d trackindex %u\n", pkttype, antshort(data, doff));
     dprintf("%d shorts?", pkttype);
     for (i = 0; i < pktlen; i += 2)
@@ -1091,7 +1059,7 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     break;
   case 27:
     ntotal_trackpoints = antshort(data, doff);
-    printf("Expecting %u trackpoints\n", ntotal_trackpoints - (nactivities - nsummarized_activities));
+    printf("Expecting %u trackpoints\n", ntotal_trackpoints - nactivities);
     fflush(stdout);
     int i = 0;
     for (i = 0 ; i < MAXACTIVITIES ; i++) {
@@ -1106,21 +1074,29 @@ void trackpoints_decode(ushort bloblen, ushort pkttype, ushort pktlen,
     for (i = 0; i < 4 && i < pktlen; i += 4)
       dprintf(" %u", antuint(data, doff+i));
     dprintf("\n");
+    int nt = 0;
     for (i = 4; i < pktlen; i += 24) {
+      nt++;
       // we should probably clean up this memory at some point.
       ntrackpoints[current_trackpoint_activity]++;
+      found_trackpoints++;
       trackpointbuf[current_trackpoint_activity] =
         (trackpoint_t *)realloc(trackpointbuf[current_trackpoint_activity], 
 				sizeof(trackpoint_t) * ntrackpoints[current_trackpoint_activity]);
-
       if (!trackpointbuf[current_trackpoint_activity]) {
         printf("Unable to allocate trackpoint buffer.\n");
         exit(1);
       }
-
       trackpoint_t *ptrackpoint = &trackpointbuf[current_trackpoint_activity]
 	[ntrackpoints[current_trackpoint_activity]-1];
       decodetrackpoint(ptrackpoint, &data[doff+i]);
+    }
+    if (current_trackpoint_activity > -1) {
+      printf("Found %d [%.0f%%] trackpoints for activity %d\n", 
+	     ntrackpoints[current_trackpoint_activity], 
+	     (100.0 * (double) found_trackpoints) / (double)(ntotal_trackpoints - nactivities),  
+	     current_trackpoint_activity);
+      fflush(stdout);
     }
     break;
   default:
