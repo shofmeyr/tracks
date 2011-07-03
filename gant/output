@@ -1,0 +1,1955 @@
+channel open, waiting for broadcast
+reading auth data from auth405
+GPSver: GPS GSC3LT Software Version 2.10
+Devname green
+Unit ID 3439781637
+Position ?  3519172369 1071981673 2067302587 3221295574
+time: 07-03-2011 07:44:16
+Device name Forerunner 405
+Expecting 330 activities
+Found summarized activity 0 [0%] lap 0-5 sport 0
+Found summarized activity 1 [0%] lap 6-11 sport 0
+Found summarized activity 2 [1%] lap 12-20 sport 0
+Found summarized activity 3 [1%] lap 21-28 sport 0
+Found summarized activity 4 [1%] lap 29-36 sport 0
+Found summarized activity 5 [2%] lap 37-45 sport 0
+Found summarized activity 6 [2%] lap 46-51 sport 0
+Found summarized activity 7 [2%] lap 52-53 sport 0
+Found summarized activity 8 [2%] lap 54-61 sport 0
+Found summarized activity 9 [3%] lap 62-67 sport 0
+Found summarized activity 10 [3%] lap 68-73 sport 0
+Found summarized activity 11 [3%] lap 74-78 sport 0
+Found summarized activity 12 [4%] lap 79-84 sport 0
+Found summarized activity 13 [4%] lap 85-92 sport 0
+Found summarized activity 14 [4%] lap 93-99 sport 0
+Found summarized activity 15 [5%] lap 100-103 sport 0
+Found summarized activity 16 [5%] lap 104-108 sport 0
+Found summarized activity 17 [5%] lap 109-111 sport 0
+Found summarized activity 18 [5%] lap 112-118 sport 0
+Found summarized activity 19 [6%] lap 119-126 sport 0
+Found summarized activity 20 [6%] lap 127-127 sport 0
+Found summarized activity 21 [6%] lap 128-133 sport 0
+Found summarized activity 22 [7%] lap 134-154 sport 0
+Found summarized activity 23 [7%] lap 155-160 sport 0
+Found summarized activity 24 [7%] lap 161-166 sport 0
+Found summarized activity 25 [8%] lap 167-174 sport 0
+Found summarized activity 26 [8%] lap 175-185 sport 0
+Found summarized activity 27 [8%] lap 186-187 sport 0
+Found summarized activity 28 [8%] lap 188-197 sport 0
+Found summarized activity 29 [9%] lap 198-203 sport 0
+Found summarized activity 30 [9%] lap 204-211 sport 0
+Found summarized activity 31 [9%] lap 212-217 sport 0
+Found summarized activity 32 [10%] lap 218-224 sport 0
+Found summarized activity 33 [10%] lap 225-228 sport 0
+Found summarized activity 34 [10%] lap 229-234 sport 0
+Found summarized activity 35 [11%] lap 235-239 sport 0
+Found summarized activity 36 [11%] lap 240-246 sport 0
+Found summarized activity 37 [11%] lap 247-253 sport 0
+Found summarized activity 38 [12%] lap 254-254 sport 0
+Found summarized activity 39 [12%] lap 255-261 sport 0
+Found summarized activity 40 [12%] lap 262-267 sport 0
+Found summarized activity 41 [12%] lap 268-275 sport 0
+Found summarized activity 42 [13%] lap 276-284 sport 0
+Found summarized activity 43 [13%] lap 285-290 sport 0
+Found summarized activity 44 [13%] lap 291-296 sport 0
+Found summarized activity 45 [14%] lap 297-303 sport 0
+Found summarized activity 46 [14%] lap 304-312 sport 0
+Found summarized activity 47 [14%] lap 313-323 sport 0
+Found summarized activity 48 [15%] lap 324-326 sport 0
+Found summarized activity 49 [15%] lap 327-333 sport 0
+Found summarized activity 50 [15%] lap 334-341 sport 0
+Found summarized activity 51 [15%] lap 342-347 sport 0
+Found summarized activity 52 [16%] lap 348-356 sport 0
+Found summarized activity 53 [16%] lap 357-362 sport 0
+Found summarized activity 54 [16%] lap 363-368 sport 0
+Found summarized activity 55 [17%] lap 369-373 sport 0
+Found summarized activity 56 [17%] lap 374-380 sport 0
+Found summarized activity 57 [17%] lap 381-398 sport 0
+Found summarized activity 58 [18%] lap 399-409 sport 0
+Found summarized activity 59 [18%] lap 410-416 sport 0
+Found summarized activity 60 [18%] lap 417-421 sport 0
+Found summarized activity 61 [18%] lap 422-422 sport 0
+Found summarized activity 62 [19%] lap 423-432 sport 0
+Found summarized activity 63 [19%] lap 433-441 sport 0
+Found summarized activity 64 [19%] lap 442-444 sport 0
+Found summarized activity 65 [20%] lap 445-445 sport 0
+Found summarized activity 66 [20%] lap 446-449 sport 0
+Found summarized activity 67 [20%] lap 450-454 sport 0
+Found summarized activity 68 [21%] lap 455-459 sport 0
+Found summarized activity 69 [21%] lap 460-463 sport 0
+Found summarized activity 70 [21%] lap 464-468 sport 0
+Found summarized activity 71 [22%] lap 469-473 sport 0
+Found summarized activity 72 [22%] lap 474-479 sport 0
+Found summarized activity 73 [22%] lap 480-483 sport 0
+Found summarized activity 74 [22%] lap 484-485 sport 0
+Found summarized activity 75 [23%] lap 486-489 sport 0
+Found summarized activity 76 [23%] lap 490-493 sport 0
+Found summarized activity 77 [23%] lap 494-498 sport 0
+Found summarized activity 78 [24%] lap 499-503 sport 0
+Found summarized activity 79 [24%] lap 504-508 sport 0
+Found summarized activity 80 [24%] lap 509-514 sport 0
+Found summarized activity 81 [25%] lap 515-519 sport 0
+Found summarized activity 82 [25%] lap 520-525 sport 0
+Found summarized activity 83 [25%] lap 526-532 sport 0
+Found summarized activity 84 [25%] lap 533-537 sport 0
+Found summarized activity 85 [26%] lap 538-542 sport 0
+Found summarized activity 86 [26%] lap 543-547 sport 0
+Found summarized activity 87 [26%] lap 548-554 sport 0
+Found summarized activity 88 [27%] lap 555-559 sport 0
+Found summarized activity 89 [27%] lap 560-564 sport 0
+Found summarized activity 90 [27%] lap 565-565 sport 0
+Found summarized activity 91 [28%] lap 566-566 sport 0
+Found summarized activity 92 [28%] lap 567-567 sport 0
+Found summarized activity 93 [28%] lap 568-568 sport 0
+Found summarized activity 94 [28%] lap 569-569 sport 0
+Found summarized activity 95 [29%] lap 570-571 sport 0
+Found summarized activity 96 [29%] lap 572-573 sport 0
+Found summarized activity 97 [29%] lap 574-574 sport 0
+Found summarized activity 98 [30%] lap 575-575 sport 0
+Found summarized activity 99 [30%] lap 576-576 sport 0
+Found summarized activity 100 [30%] lap 577-577 sport 0
+Found summarized activity 101 [31%] lap 578-578 sport 0
+Found summarized activity 102 [31%] lap 579-579 sport 0
+Found summarized activity 103 [31%] lap 580-580 sport 0
+Found summarized activity 104 [32%] lap 581-581 sport 0
+Found summarized activity 105 [32%] lap 582-582 sport 0
+Found summarized activity 106 [32%] lap 583-583 sport 0
+Found summarized activity 107 [32%] lap 584-584 sport 0
+Found summarized activity 108 [33%] lap 585-585 sport 0
+Found summarized activity 109 [33%] lap 586-586 sport 0
+Found summarized activity 110 [33%] lap 587-587 sport 0
+Found summarized activity 111 [34%] lap 588-588 sport 0
+Found summarized activity 112 [34%] lap 589-589 sport 0
+Found summarized activity 113 [34%] lap 590-590 sport 0
+Found summarized activity 114 [35%] lap 591-591 sport 0
+Found summarized activity 115 [35%] lap 592-595 sport 0
+Found summarized activity 116 [35%] lap 596-596 sport 0
+Found summarized activity 117 [35%] lap 597-597 sport 0
+Found summarized activity 118 [36%] lap 598-598 sport 0
+Found summarized activity 119 [36%] lap 599-601 sport 0
+Found summarized activity 120 [36%] lap 602-602 sport 0
+Found summarized activity 121 [37%] lap 603-604 sport 0
+Found summarized activity 122 [37%] lap 605-606 sport 0
+Found summarized activity 123 [37%] lap 607-607 sport 0
+Found summarized activity 124 [38%] lap 608-608 sport 0
+Found summarized activity 125 [38%] lap 609-609 sport 0
+Found summarized activity 126 [38%] lap 610-610 sport 0
+Found summarized activity 127 [38%] lap 611-613 sport 0
+Found summarized activity 128 [39%] lap 614-614 sport 0
+Found summarized activity 129 [39%] lap 615-615 sport 0
+Found summarized activity 130 [39%] lap 616-616 sport 0
+Found summarized activity 131 [40%] lap 617-617 sport 0
+Found summarized activity 132 [40%] lap 618-619 sport 0
+Found summarized activity 133 [40%] lap 620-620 sport 0
+Found summarized activity 134 [41%] lap 621-621 sport 0
+Found summarized activity 135 [41%] lap 622-623 sport 0
+Found summarized activity 136 [41%] lap 624-624 sport 0
+Found summarized activity 137 [42%] lap 625-627 sport 0
+Found summarized activity 138 [42%] lap 628-629 sport 0
+Found summarized activity 139 [42%] lap 630-631 sport 0
+Found summarized activity 140 [42%] lap 632-633 sport 0
+Found summarized activity 141 [43%] lap 634-635 sport 0
+Found summarized activity 142 [43%] lap 636-636 sport 0
+Found summarized activity 143 [43%] lap 637-638 sport 0
+Found summarized activity 144 [44%] lap 639-640 sport 0
+Found summarized activity 145 [44%] lap 641-644 sport 0
+Found summarized activity 146 [44%] lap 645-646 sport 0
+Found summarized activity 147 [45%] lap 647-649 sport 0
+Found summarized activity 148 [45%] lap 650-651 sport 0
+Found summarized activity 149 [45%] lap 652-653 sport 0
+Found summarized activity 150 [45%] lap 654-655 sport 0
+Found summarized activity 151 [46%] lap 656-657 sport 0
+Found summarized activity 152 [46%] lap 658-659 sport 0
+Found summarized activity 153 [46%] lap 660-660 sport 0
+Found summarized activity 154 [47%] lap 661-662 sport 0
+Found summarized activity 155 [47%] lap 663-663 sport 0
+Found summarized activity 156 [47%] lap 664-665 sport 0
+Found summarized activity 157 [48%] lap 666-666 sport 0
+Found summarized activity 158 [48%] lap 667-667 sport 0
+Found summarized activity 159 [48%] lap 668-668 sport 0
+Found summarized activity 160 [48%] lap 669-669 sport 0
+Found summarized activity 161 [49%] lap 670-670 sport 0
+Found summarized activity 162 [49%] lap 671-672 sport 0
+Found summarized activity 163 [49%] lap 673-673 sport 0
+Found summarized activity 164 [50%] lap 674-675 sport 0
+Found summarized activity 165 [50%] lap 676-676 sport 0
+Found summarized activity 166 [50%] lap 677-677 sport 0
+Found summarized activity 167 [51%] lap 678-678 sport 0
+Found summarized activity 168 [51%] lap 679-680 sport 0
+Found summarized activity 169 [51%] lap 681-682 sport 0
+Found summarized activity 170 [52%] lap 683-684 sport 0
+Found summarized activity 171 [52%] lap 685-685 sport 0
+Found summarized activity 172 [52%] lap 686-687 sport 0
+Found summarized activity 173 [52%] lap 688-690 sport 0
+Found summarized activity 174 [53%] lap 691-691 sport 0
+Found summarized activity 175 [53%] lap 692-692 sport 0
+Found summarized activity 176 [53%] lap 693-693 sport 0
+Found summarized activity 177 [54%] lap 694-694 sport 0
+Found summarized activity 178 [54%] lap 695-695 sport 0
+Found summarized activity 179 [54%] lap 696-697 sport 0
+Found summarized activity 180 [55%] lap 698-700 sport 0
+Found summarized activity 181 [55%] lap 701-701 sport 0
+Found summarized activity 182 [55%] lap 702-702 sport 0
+Found summarized activity 183 [55%] lap 703-704 sport 0
+Found summarized activity 184 [56%] lap 705-705 sport 0
+Found summarized activity 185 [56%] lap 706-706 sport 0
+Found summarized activity 186 [56%] lap 707-707 sport 0
+Found summarized activity 187 [57%] lap 708-708 sport 0
+Found summarized activity 188 [57%] lap 709-709 sport 0
+Found summarized activity 189 [57%] lap 710-710 sport 0
+Found summarized activity 190 [58%] lap 711-711 sport 0
+Found summarized activity 191 [58%] lap 712-713 sport 0
+Found summarized activity 192 [58%] lap 714-715 sport 0
+Found summarized activity 193 [58%] lap 716-716 sport 0
+Found summarized activity 194 [59%] lap 717-717 sport 0
+Found summarized activity 195 [59%] lap 718-718 sport 0
+Found summarized activity 196 [59%] lap 719-719 sport 0
+Found summarized activity 197 [60%] lap 720-722 sport 0
+Found summarized activity 198 [60%] lap 723-723 sport 0
+Found summarized activity 199 [60%] lap 724-725 sport 0
+Found summarized activity 200 [61%] lap 726-727 sport 0
+Found summarized activity 201 [61%] lap 728-730 sport 0
+Found summarized activity 202 [61%] lap 731-734 sport 0
+Found summarized activity 203 [62%] lap 735-736 sport 0
+Found summarized activity 204 [62%] lap 737-737 sport 0
+Found summarized activity 205 [62%] lap 738-739 sport 0
+Found summarized activity 206 [62%] lap 740-741 sport 0
+Found summarized activity 207 [63%] lap 742-744 sport 0
+Found summarized activity 208 [63%] lap 745-745 sport 0
+Found summarized activity 209 [63%] lap 746-747 sport 0
+Found summarized activity 210 [64%] lap 748-749 sport 0
+Found summarized activity 211 [64%] lap 750-751 sport 0
+Found summarized activity 212 [64%] lap 752-753 sport 0
+Found summarized activity 213 [65%] lap 754-754 sport 0
+Found summarized activity 214 [65%] lap 755-758 sport 0
+Found summarized activity 215 [65%] lap 759-759 sport 0
+Found summarized activity 216 [65%] lap 760-761 sport 0
+Found summarized activity 217 [66%] lap 762-762 sport 0
+Found summarized activity 218 [66%] lap 763-763 sport 0
+Found summarized activity 219 [66%] lap 764-767 sport 0
+Found summarized activity 220 [67%] lap 768-770 sport 0
+Found summarized activity 221 [67%] lap 771-772 sport 0
+Found summarized activity 222 [67%] lap 773-776 sport 0
+Found summarized activity 223 [68%] lap 777-779 sport 0
+Found summarized activity 224 [68%] lap 780-780 sport 0
+Found summarized activity 225 [68%] lap 781-781 sport 0
+Found summarized activity 226 [68%] lap 782-782 sport 0
+Found summarized activity 227 [69%] lap 783-784 sport 0
+Found summarized activity 228 [69%] lap 785-786 sport 0
+Found summarized activity 229 [69%] lap 787-787 sport 0
+Found summarized activity 230 [70%] lap 788-789 sport 0
+Found summarized activity 231 [70%] lap 790-790 sport 0
+Found summarized activity 232 [70%] lap 791-794 sport 0
+Found summarized activity 233 [71%] lap 795-796 sport 0
+Found summarized activity 234 [71%] lap 797-797 sport 0
+Found summarized activity 235 [71%] lap 798-799 sport 0
+Found summarized activity 236 [72%] lap 800-801 sport 0
+Found summarized activity 237 [72%] lap 802-803 sport 0
+Found summarized activity 238 [72%] lap 804-805 sport 0
+Found summarized activity 239 [72%] lap 806-806 sport 0
+Found summarized activity 240 [73%] lap 807-808 sport 0
+Found summarized activity 241 [73%] lap 809-810 sport 0
+Found summarized activity 242 [73%] lap 811-812 sport 0
+Found summarized activity 243 [74%] lap 813-813 sport 0
+Found summarized activity 244 [74%] lap 814-814 sport 0
+Found summarized activity 245 [74%] lap 815-817 sport 0
+Found summarized activity 246 [75%] lap 818-819 sport 0
+Found summarized activity 247 [75%] lap 820-822 sport 0
+Found summarized activity 248 [75%] lap 823-824 sport 0
+Found summarized activity 249 [75%] lap 825-826 sport 0
+Found summarized activity 250 [76%] lap 827-828 sport 0
+Found summarized activity 251 [76%] lap 829-829 sport 0
+Found summarized activity 252 [76%] lap 830-831 sport 0
+Found summarized activity 253 [77%] lap 832-834 sport 0
+Found summarized activity 254 [77%] lap 835-836 sport 0
+Found summarized activity 255 [77%] lap 837-837 sport 0
+Found summarized activity 256 [78%] lap 838-838 sport 0
+Found summarized activity 257 [78%] lap 839-841 sport 0
+Found summarized activity 258 [78%] lap 842-842 sport 0
+Found summarized activity 259 [78%] lap 843-844 sport 0
+Found summarized activity 260 [79%] lap 845-845 sport 0
+Found summarized activity 261 [79%] lap 846-846 sport 0
+Found summarized activity 262 [79%] lap 847-848 sport 0
+Found summarized activity 263 [80%] lap 849-849 sport 0
+Found summarized activity 264 [80%] lap 850-850 sport 0
+Found summarized activity 265 [80%] lap 851-851 sport 0
+Found summarized activity 266 [81%] lap 852-853 sport 0
+Found summarized activity 267 [81%] lap 854-856 sport 0
+Found summarized activity 268 [81%] lap 857-857 sport 0
+Found summarized activity 269 [82%] lap 858-858 sport 0
+Found summarized activity 270 [82%] lap 859-859 sport 0
+Found summarized activity 271 [82%] lap 860-860 sport 0
+Found summarized activity 272 [82%] lap 861-862 sport 0
+Found summarized activity 273 [83%] lap 863-863 sport 0
+Found summarized activity 274 [83%] lap 864-864 sport 0
+Found summarized activity 275 [83%] lap 865-865 sport 0
+Found summarized activity 276 [84%] lap 866-866 sport 0
+Found summarized activity 277 [84%] lap 867-867 sport 0
+Found summarized activity 278 [84%] lap 868-869 sport 0
+Found summarized activity 279 [85%] lap 870-871 sport 0
+Found summarized activity 280 [85%] lap 872-873 sport 0
+Found summarized activity 281 [85%] lap 874-874 sport 0
+Found summarized activity 282 [85%] lap 875-876 sport 0
+Found summarized activity 283 [86%] lap 877-877 sport 0
+Found summarized activity 284 [86%] lap 878-879 sport 0
+Found summarized activity 285 [86%] lap 880-881 sport 0
+Found summarized activity 286 [87%] lap 882-882 sport 0
+Found summarized activity 287 [87%] lap 883-883 sport 0
+Found summarized activity 288 [87%] lap 884-884 sport 0
+Found summarized activity 289 [88%] lap 885-886 sport 0
+Found summarized activity 290 [88%] lap 887-887 sport 0
+Found summarized activity 291 [88%] lap 888-888 sport 0
+Found summarized activity 292 [88%] lap 889-889 sport 0
+Found summarized activity 293 [89%] lap 890-891 sport 0
+Found summarized activity 294 [89%] lap 892-894 sport 0
+Found summarized activity 295 [89%] lap 895-895 sport 0
+Found summarized activity 296 [90%] lap 896-896 sport 0
+Found activity 297  [90%] lap 897-898 sport 0
+Found activity 298  [91%] lap 899-899 sport 0
+Found activity 299  [91%] lap 900-901 sport 0
+Found activity 300  [91%] lap 902-903 sport 0
+Found activity 301  [92%] lap 904-905 sport 0
+Found activity 302  [92%] lap 906-908 sport 0
+Found activity 303  [92%] lap 909-910 sport 0
+Found activity 304  [92%] lap 911-913 sport 0
+Found activity 305  [93%] lap 914-914 sport 0
+Found activity 306  [93%] lap 915-915 sport 0
+Found activity 307  [93%] lap 916-917 sport 0
+Found activity 308  [94%] lap 918-919 sport 0
+Found activity 309  [94%] lap 920-920 sport 0
+Found activity 310  [94%] lap 921-922 sport 0
+Found activity 311  [95%] lap 923-924 sport 0
+Found activity 312  [95%] lap 925-925 sport 0
+Found activity 313  [95%] lap 926-928 sport 0
+Found activity 314  [95%] lap 929-930 sport 0
+Found activity 315  [96%] lap 931-933 sport 0
+Found activity 316  [96%] lap 934-935 sport 0
+Found activity 317  [96%] lap 936-936 sport 0
+Found activity 318  [97%] lap 937-938 sport 0
+Found activity 319  [97%] lap 939-940 sport 0
+Found activity 320  [97%] lap 941-942 sport 0
+Found activity 321  [98%] lap 943-943 sport 0
+Found activity 322  [98%] lap 944-944 sport 0
+Found activity 323  [98%] lap 945-945 sport 0
+Found activity 324  [98%] lap 946-946 sport 0
+Found activity 325  [99%] lap 947-947 sport 0
+Found activity 326  [99%] lap 948-948 sport 0
+Found activity 327  [99%] lap 949-949 sport 0
+Found activity 328  [100%] lap 950-950 sport 0
+Found activity 329  [100%] lap 951-952 sport 0
+All activities received (33 complete, 297 summarized).
+Expecting 953 laps
+Found lap 0 [0%]
+Found lap 1 [0%]
+Found lap 2 [0%]
+Found lap 3 [0%]
+Found lap 4 [1%]
+Found lap 5 [1%]
+Found lap 6 [1%]
+Found lap 7 [1%]
+Found lap 8 [1%]
+Found lap 9 [1%]
+Found lap 10 [1%]
+Found lap 11 [1%]
+Found lap 12 [1%]
+Found lap 13 [1%]
+Found lap 14 [2%]
+Found lap 15 [2%]
+Found lap 16 [2%]
+Found lap 17 [2%]
+Found lap 18 [2%]
+Found lap 19 [2%]
+Found lap 20 [2%]
+Found lap 21 [2%]
+Found lap 22 [2%]
+Found lap 23 [3%]
+Found lap 24 [3%]
+Found lap 25 [3%]
+Found lap 26 [3%]
+Found lap 27 [3%]
+Found lap 28 [3%]
+Found lap 29 [3%]
+Found lap 30 [3%]
+Found lap 31 [3%]
+Found lap 32 [3%]
+Found lap 33 [4%]
+Found lap 34 [4%]
+Found lap 35 [4%]
+Found lap 36 [4%]
+Found lap 37 [4%]
+Found lap 38 [4%]
+Found lap 39 [4%]
+Found lap 40 [4%]
+Found lap 41 [4%]
+Found lap 42 [5%]
+Found lap 43 [5%]
+Found lap 44 [5%]
+Found lap 45 [5%]
+Found lap 46 [5%]
+Found lap 47 [5%]
+Found lap 48 [5%]
+Found lap 49 [5%]
+Found lap 50 [5%]
+Found lap 51 [5%]
+Found lap 52 [6%]
+Found lap 53 [6%]
+Found lap 54 [6%]
+Found lap 55 [6%]
+Found lap 56 [6%]
+Found lap 57 [6%]
+Found lap 58 [6%]
+Found lap 59 [6%]
+Found lap 60 [6%]
+Found lap 61 [7%]
+Found lap 62 [7%]
+Found lap 63 [7%]
+Found lap 64 [7%]
+Found lap 65 [7%]
+Found lap 66 [7%]
+Found lap 67 [7%]
+Found lap 68 [7%]
+Found lap 69 [7%]
+Found lap 70 [7%]
+Found lap 71 [8%]
+Found lap 72 [8%]
+Found lap 73 [8%]
+Found lap 74 [8%]
+Found lap 75 [8%]
+Found lap 76 [8%]
+Found lap 77 [8%]
+Found lap 78 [8%]
+Found lap 79 [8%]
+Found lap 80 [8%]
+Found lap 81 [9%]
+Found lap 82 [9%]
+Found lap 83 [9%]
+Found lap 84 [9%]
+Found lap 85 [9%]
+Found lap 86 [9%]
+Found lap 87 [9%]
+Found lap 88 [9%]
+Found lap 89 [9%]
+Found lap 90 [10%]
+Found lap 91 [10%]
+Found lap 92 [10%]
+Found lap 93 [10%]
+Found lap 94 [10%]
+Found lap 95 [10%]
+Found lap 96 [10%]
+Found lap 97 [10%]
+Found lap 98 [10%]
+Found lap 99 [10%]
+Found lap 100 [11%]
+Found lap 101 [11%]
+Found lap 102 [11%]
+Found lap 103 [11%]
+Found lap 104 [11%]
+Found lap 105 [11%]
+Found lap 106 [11%]
+Found lap 107 [11%]
+Found lap 108 [11%]
+Found lap 109 [12%]
+Found lap 110 [12%]
+Found lap 111 [12%]
+Found lap 112 [12%]
+Found lap 113 [12%]
+Found lap 114 [12%]
+Found lap 115 [12%]
+Found lap 116 [12%]
+Found lap 117 [12%]
+Found lap 118 [12%]
+Found lap 119 [13%]
+Found lap 120 [13%]
+Found lap 121 [13%]
+Found lap 122 [13%]
+Found lap 123 [13%]
+Found lap 124 [13%]
+Found lap 125 [13%]
+Found lap 126 [13%]
+Found lap 127 [13%]
+Found lap 128 [14%]
+Found lap 129 [14%]
+Found lap 130 [14%]
+Found lap 131 [14%]
+Found lap 132 [14%]
+Found lap 133 [14%]
+Found lap 134 [14%]
+Found lap 135 [14%]
+Found lap 136 [14%]
+Found lap 137 [14%]
+Found lap 138 [15%]
+Found lap 139 [15%]
+Found lap 140 [15%]
+Found lap 141 [15%]
+Found lap 142 [15%]
+Found lap 143 [15%]
+Found lap 144 [15%]
+Found lap 145 [15%]
+Found lap 146 [15%]
+Found lap 147 [16%]
+Found lap 148 [16%]
+Found lap 149 [16%]
+Found lap 150 [16%]
+Found lap 151 [16%]
+Found lap 152 [16%]
+Found lap 153 [16%]
+Found lap 154 [16%]
+Found lap 155 [16%]
+Found lap 156 [16%]
+Found lap 157 [17%]
+Found lap 158 [17%]
+Found lap 159 [17%]
+Found lap 160 [17%]
+Found lap 161 [17%]
+Found lap 162 [17%]
+Found lap 163 [17%]
+Found lap 164 [17%]
+Found lap 165 [17%]
+Found lap 166 [18%]
+Found lap 167 [18%]
+Found lap 168 [18%]
+Found lap 169 [18%]
+Found lap 170 [18%]
+Found lap 171 [18%]
+Found lap 172 [18%]
+Found lap 173 [18%]
+Found lap 174 [18%]
+Found lap 175 [18%]
+Found lap 176 [19%]
+Found lap 177 [19%]
+Found lap 178 [19%]
+Found lap 179 [19%]
+Found lap 180 [19%]
+Found lap 181 [19%]
+Found lap 182 [19%]
+Found lap 183 [19%]
+Found lap 184 [19%]
+Found lap 185 [20%]
+Found lap 186 [20%]
+Found lap 187 [20%]
+Found lap 188 [20%]
+Found lap 189 [20%]
+Found lap 190 [20%]
+Found lap 191 [20%]
+Found lap 192 [20%]
+Found lap 193 [20%]
+Found lap 194 [20%]
+Found lap 195 [21%]
+Found lap 196 [21%]
+Found lap 197 [21%]
+Found lap 198 [21%]
+Found lap 199 [21%]
+Found lap 200 [21%]
+Found lap 201 [21%]
+Found lap 202 [21%]
+Found lap 203 [21%]
+Found lap 204 [22%]
+Found lap 205 [22%]
+Found lap 206 [22%]
+Found lap 207 [22%]
+Found lap 208 [22%]
+Found lap 209 [22%]
+Found lap 210 [22%]
+Found lap 211 [22%]
+Found lap 212 [22%]
+Found lap 213 [22%]
+Found lap 214 [23%]
+Found lap 215 [23%]
+Found lap 216 [23%]
+Found lap 217 [23%]
+Found lap 218 [23%]
+Found lap 219 [23%]
+Found lap 220 [23%]
+Found lap 221 [23%]
+Found lap 222 [23%]
+Found lap 223 [24%]
+Found lap 224 [24%]
+Found lap 225 [24%]
+Found lap 226 [24%]
+Found lap 227 [24%]
+Found lap 228 [24%]
+Found lap 229 [24%]
+Found lap 230 [24%]
+Found lap 231 [24%]
+Found lap 232 [24%]
+Found lap 233 [25%]
+Found lap 234 [25%]
+Found lap 235 [25%]
+Found lap 236 [25%]
+Found lap 237 [25%]
+Found lap 238 [25%]
+Found lap 239 [25%]
+Found lap 240 [25%]
+Found lap 241 [25%]
+Found lap 242 [25%]
+Found lap 243 [26%]
+Found lap 244 [26%]
+Found lap 245 [26%]
+Found lap 246 [26%]
+Found lap 247 [26%]
+Found lap 248 [26%]
+Found lap 249 [26%]
+Found lap 250 [26%]
+Found lap 251 [26%]
+Found lap 252 [27%]
+Found lap 253 [27%]
+Found lap 254 [27%]
+Found lap 255 [27%]
+Found lap 256 [27%]
+Found lap 257 [27%]
+Found lap 258 [27%]
+Found lap 259 [27%]
+Found lap 260 [27%]
+Found lap 261 [27%]
+Found lap 262 [28%]
+Found lap 263 [28%]
+Found lap 264 [28%]
+Found lap 265 [28%]
+Found lap 266 [28%]
+Found lap 267 [28%]
+Found lap 268 [28%]
+Found lap 269 [28%]
+Found lap 270 [28%]
+Found lap 271 [29%]
+Found lap 272 [29%]
+Found lap 273 [29%]
+Found lap 274 [29%]
+Found lap 275 [29%]
+Found lap 276 [29%]
+Found lap 277 [29%]
+Found lap 278 [29%]
+Found lap 279 [29%]
+Found lap 280 [29%]
+Found lap 281 [30%]
+Found lap 282 [30%]
+Found lap 283 [30%]
+Found lap 284 [30%]
+Found lap 285 [30%]
+Found lap 286 [30%]
+Found lap 287 [30%]
+Found lap 288 [30%]
+Found lap 289 [30%]
+Found lap 290 [31%]
+Found lap 291 [31%]
+Found lap 292 [31%]
+Found lap 293 [31%]
+Found lap 294 [31%]
+Found lap 295 [31%]
+Found lap 296 [31%]
+Found lap 297 [31%]
+Found lap 298 [31%]
+Found lap 299 [31%]
+Found lap 300 [32%]
+Found lap 301 [32%]
+Found lap 302 [32%]
+Found lap 303 [32%]
+Found lap 304 [32%]
+Found lap 305 [32%]
+Found lap 306 [32%]
+Found lap 307 [32%]
+Found lap 308 [32%]
+Found lap 309 [33%]
+Found lap 310 [33%]
+Found lap 311 [33%]
+Found lap 312 [33%]
+Found lap 313 [33%]
+Found lap 314 [33%]
+Found lap 315 [33%]
+Found lap 316 [33%]
+Found lap 317 [33%]
+Found lap 318 [33%]
+Found lap 319 [34%]
+Found lap 320 [34%]
+Found lap 321 [34%]
+Found lap 322 [34%]
+Found lap 323 [34%]
+Found lap 324 [34%]
+Found lap 325 [34%]
+Found lap 326 [34%]
+Found lap 327 [34%]
+Found lap 328 [35%]
+Found lap 329 [35%]
+Found lap 330 [35%]
+Found lap 331 [35%]
+Found lap 332 [35%]
+Found lap 333 [35%]
+Found lap 334 [35%]
+Found lap 335 [35%]
+Found lap 336 [35%]
+Found lap 337 [35%]
+Found lap 338 [36%]
+Found lap 339 [36%]
+Found lap 340 [36%]
+Found lap 341 [36%]
+Found lap 342 [36%]
+Found lap 343 [36%]
+Found lap 344 [36%]
+Found lap 345 [36%]
+Found lap 346 [36%]
+Found lap 347 [37%]
+Found lap 348 [37%]
+Found lap 349 [37%]
+Found lap 350 [37%]
+Found lap 351 [37%]
+Found lap 352 [37%]
+Found lap 353 [37%]
+Found lap 354 [37%]
+Found lap 355 [37%]
+Found lap 356 [37%]
+Found lap 357 [38%]
+Found lap 358 [38%]
+Found lap 359 [38%]
+Found lap 360 [38%]
+Found lap 361 [38%]
+Found lap 362 [38%]
+Found lap 363 [38%]
+Found lap 364 [38%]
+Found lap 365 [38%]
+Found lap 366 [39%]
+Found lap 367 [39%]
+Found lap 368 [39%]
+Found lap 369 [39%]
+Found lap 370 [39%]
+Found lap 371 [39%]
+Found lap 372 [39%]
+Found lap 373 [39%]
+Found lap 374 [39%]
+Found lap 375 [39%]
+Found lap 376 [40%]
+Found lap 377 [40%]
+Found lap 378 [40%]
+Found lap 379 [40%]
+Found lap 380 [40%]
+Found lap 381 [40%]
+Found lap 382 [40%]
+Found lap 383 [40%]
+Found lap 384 [40%]
+Found lap 385 [41%]
+Found lap 386 [41%]
+Found lap 387 [41%]
+Found lap 388 [41%]
+Found lap 389 [41%]
+Found lap 390 [41%]
+Found lap 391 [41%]
+Found lap 392 [41%]
+Found lap 393 [41%]
+Found lap 394 [41%]
+Found lap 395 [42%]
+Found lap 396 [42%]
+Found lap 397 [42%]
+Found lap 398 [42%]
+Found lap 399 [42%]
+Found lap 400 [42%]
+Found lap 401 [42%]
+Found lap 402 [42%]
+Found lap 403 [42%]
+Found lap 404 [42%]
+Found lap 405 [43%]
+Found lap 406 [43%]
+Found lap 407 [43%]
+Found lap 408 [43%]
+Found lap 409 [43%]
+Found lap 410 [43%]
+Found lap 411 [43%]
+Found lap 412 [43%]
+Found lap 413 [43%]
+Found lap 414 [44%]
+Found lap 415 [44%]
+Found lap 416 [44%]
+Found lap 417 [44%]
+Found lap 418 [44%]
+Found lap 419 [44%]
+Found lap 420 [44%]
+Found lap 421 [44%]
+Found lap 422 [44%]
+Found lap 423 [44%]
+Found lap 424 [45%]
+Found lap 425 [45%]
+Found lap 426 [45%]
+Found lap 427 [45%]
+Found lap 428 [45%]
+Found lap 429 [45%]
+Found lap 430 [45%]
+Found lap 431 [45%]
+Found lap 432 [45%]
+Found lap 433 [46%]
+Found lap 434 [46%]
+Found lap 435 [46%]
+Found lap 436 [46%]
+Found lap 437 [46%]
+Found lap 438 [46%]
+Found lap 439 [46%]
+Found lap 440 [46%]
+Found lap 441 [46%]
+Found lap 442 [46%]
+Found lap 443 [47%]
+Found lap 444 [47%]
+Found lap 445 [47%]
+Found lap 446 [47%]
+Found lap 447 [47%]
+Found lap 448 [47%]
+Found lap 449 [47%]
+Found lap 450 [47%]
+Found lap 451 [47%]
+Found lap 452 [48%]
+Found lap 453 [48%]
+Found lap 454 [48%]
+Found lap 455 [48%]
+Found lap 456 [48%]
+Found lap 457 [48%]
+Found lap 458 [48%]
+Found lap 459 [48%]
+Found lap 460 [48%]
+Found lap 461 [48%]
+Found lap 462 [49%]
+Found lap 463 [49%]
+Found lap 464 [49%]
+Found lap 465 [49%]
+Found lap 466 [49%]
+Found lap 467 [49%]
+Found lap 468 [49%]
+Found lap 469 [49%]
+Found lap 470 [49%]
+Found lap 471 [50%]
+Found lap 472 [50%]
+Found lap 473 [50%]
+Found lap 474 [50%]
+Found lap 475 [50%]
+Found lap 476 [50%]
+Found lap 477 [50%]
+Found lap 478 [50%]
+Found lap 479 [50%]
+Found lap 480 [50%]
+Found lap 481 [51%]
+Found lap 482 [51%]
+Found lap 483 [51%]
+Found lap 484 [51%]
+Found lap 485 [51%]
+Found lap 486 [51%]
+Found lap 487 [51%]
+Found lap 488 [51%]
+Found lap 489 [51%]
+Found lap 490 [52%]
+Found lap 491 [52%]
+Found lap 492 [52%]
+Found lap 493 [52%]
+Found lap 494 [52%]
+Found lap 495 [52%]
+Found lap 496 [52%]
+Found lap 497 [52%]
+Found lap 498 [52%]
+Found lap 499 [52%]
+Found lap 500 [53%]
+Found lap 501 [53%]
+Found lap 502 [53%]
+Found lap 503 [53%]
+Found lap 504 [53%]
+Found lap 505 [53%]
+Found lap 506 [53%]
+Found lap 507 [53%]
+Found lap 508 [53%]
+Found lap 509 [54%]
+Found lap 510 [54%]
+Found lap 511 [54%]
+Found lap 512 [54%]
+Found lap 513 [54%]
+Found lap 514 [54%]
+Found lap 515 [54%]
+Found lap 516 [54%]
+Found lap 517 [54%]
+Found lap 518 [54%]
+Found lap 519 [55%]
+Found lap 520 [55%]
+Found lap 521 [55%]
+Found lap 522 [55%]
+Found lap 523 [55%]
+Found lap 524 [55%]
+Found lap 525 [55%]
+Found lap 526 [55%]
+Found lap 527 [55%]
+Found lap 528 [56%]
+Found lap 529 [56%]
+Found lap 530 [56%]
+Found lap 531 [56%]
+Found lap 532 [56%]
+Found lap 533 [56%]
+Found lap 534 [56%]
+Found lap 535 [56%]
+Found lap 536 [56%]
+Found lap 537 [56%]
+Found lap 538 [57%]
+Found lap 539 [57%]
+Found lap 540 [57%]
+Found lap 541 [57%]
+Found lap 542 [57%]
+Found lap 543 [57%]
+Found lap 544 [57%]
+Found lap 545 [57%]
+Found lap 546 [57%]
+Found lap 547 [58%]
+Found lap 548 [58%]
+Found lap 549 [58%]
+Found lap 550 [58%]
+Found lap 551 [58%]
+Found lap 552 [58%]
+Found lap 553 [58%]
+Found lap 554 [58%]
+Found lap 555 [58%]
+Found lap 556 [58%]
+Found lap 557 [59%]
+Found lap 558 [59%]
+Found lap 559 [59%]
+Found lap 560 [59%]
+Found lap 561 [59%]
+Found lap 562 [59%]
+Found lap 563 [59%]
+Found lap 564 [59%]
+Found lap 565 [59%]
+Found lap 566 [59%]
+Found lap 567 [60%]
+Found lap 568 [60%]
+Found lap 569 [60%]
+Found lap 570 [60%]
+Found lap 571 [60%]
+Found lap 572 [60%]
+Found lap 573 [60%]
+Found lap 574 [60%]
+Found lap 575 [60%]
+Found lap 576 [61%]
+Found lap 577 [61%]
+Found lap 578 [61%]
+Found lap 579 [61%]
+Found lap 580 [61%]
+Found lap 581 [61%]
+Found lap 582 [61%]
+Found lap 583 [61%]
+Found lap 584 [61%]
+Found lap 585 [61%]
+Found lap 586 [62%]
+Found lap 587 [62%]
+Found lap 588 [62%]
+Found lap 589 [62%]
+Found lap 590 [62%]
+Found lap 591 [62%]
+Found lap 592 [62%]
+Found lap 593 [62%]
+Found lap 594 [62%]
+Found lap 595 [63%]
+Found lap 596 [63%]
+Found lap 597 [63%]
+Found lap 598 [63%]
+Found lap 599 [63%]
+Found lap 600 [63%]
+Found lap 601 [63%]
+Found lap 602 [63%]
+Found lap 603 [63%]
+Found lap 604 [63%]
+Found lap 605 [64%]
+Found lap 606 [64%]
+Found lap 607 [64%]
+Found lap 608 [64%]
+Found lap 609 [64%]
+Found lap 610 [64%]
+Found lap 611 [64%]
+Found lap 612 [64%]
+Found lap 613 [64%]
+Found lap 614 [65%]
+Found lap 615 [65%]
+Found lap 616 [65%]
+Found lap 617 [65%]
+Found lap 618 [65%]
+Found lap 619 [65%]
+Found lap 620 [65%]
+Found lap 621 [65%]
+Found lap 622 [65%]
+Found lap 623 [65%]
+Found lap 624 [66%]
+Found lap 625 [66%]
+Found lap 626 [66%]
+Found lap 627 [66%]
+Found lap 628 [66%]
+Found lap 629 [66%]
+Found lap 630 [66%]
+Found lap 631 [66%]
+Found lap 632 [66%]
+Found lap 633 [67%]
+Found lap 634 [67%]
+Found lap 635 [67%]
+Found lap 636 [67%]
+Found lap 637 [67%]
+Found lap 638 [67%]
+Found lap 639 [67%]
+Found lap 640 [67%]
+Found lap 641 [67%]
+Found lap 642 [67%]
+Found lap 643 [68%]
+Found lap 644 [68%]
+Found lap 645 [68%]
+Found lap 646 [68%]
+Found lap 647 [68%]
+Found lap 648 [68%]
+Found lap 649 [68%]
+Found lap 650 [68%]
+Found lap 651 [68%]
+Found lap 652 [69%]
+Found lap 653 [69%]
+Found lap 654 [69%]
+Found lap 655 [69%]
+Found lap 656 [69%]
+Found lap 657 [69%]
+Found lap 658 [69%]
+Found lap 659 [69%]
+Found lap 660 [69%]
+Found lap 661 [69%]
+Found lap 662 [70%]
+Found lap 663 [70%]
+Found lap 664 [70%]
+Found lap 665 [70%]
+Found lap 666 [70%]
+Found lap 667 [70%]
+Found lap 668 [70%]
+Found lap 669 [70%]
+Found lap 670 [70%]
+Found lap 671 [71%]
+Found lap 672 [71%]
+Found lap 673 [71%]
+Found lap 674 [71%]
+Found lap 675 [71%]
+Found lap 676 [71%]
+Found lap 677 [71%]
+Found lap 678 [71%]
+Found lap 679 [71%]
+Found lap 680 [71%]
+Found lap 681 [72%]
+Found lap 682 [72%]
+Found lap 683 [72%]
+Found lap 684 [72%]
+Found lap 685 [72%]
+Found lap 686 [72%]
+Found lap 687 [72%]
+Found lap 688 [72%]
+Found lap 689 [72%]
+Found lap 690 [73%]
+Found lap 691 [73%]
+Found lap 692 [73%]
+Found lap 693 [73%]
+Found lap 694 [73%]
+Found lap 695 [73%]
+Found lap 696 [73%]
+Found lap 697 [73%]
+Found lap 698 [73%]
+Found lap 699 [73%]
+Found lap 700 [74%]
+Found lap 701 [74%]
+Found lap 702 [74%]
+Found lap 703 [74%]
+Found lap 704 [74%]
+Found lap 705 [74%]
+Found lap 706 [74%]
+Found lap 707 [74%]
+Found lap 708 [74%]
+Found lap 709 [75%]
+Found lap 710 [75%]
+Found lap 711 [75%]
+Found lap 712 [75%]
+Found lap 713 [75%]
+Found lap 714 [75%]
+Found lap 715 [75%]
+Found lap 716 [75%]
+Found lap 717 [75%]
+Found lap 718 [75%]
+Found lap 719 [76%]
+Found lap 720 [76%]
+Found lap 721 [76%]
+Found lap 722 [76%]
+Found lap 723 [76%]
+Found lap 724 [76%]
+Found lap 725 [76%]
+Found lap 726 [76%]
+Found lap 727 [76%]
+Found lap 728 [76%]
+Found lap 729 [77%]
+Found lap 730 [77%]
+Found lap 731 [77%]
+Found lap 732 [77%]
+Found lap 733 [77%]
+Found lap 734 [77%]
+Found lap 735 [77%]
+Found lap 736 [77%]
+Found lap 737 [77%]
+Found lap 738 [78%]
+Found lap 739 [78%]
+Found lap 740 [78%]
+Found lap 741 [78%]
+Found lap 742 [78%]
+Found lap 743 [78%]
+Found lap 744 [78%]
+Found lap 745 [78%]
+Found lap 746 [78%]
+Found lap 747 [78%]
+Found lap 748 [79%]
+Found lap 749 [79%]
+Found lap 750 [79%]
+Found lap 751 [79%]
+Found lap 752 [79%]
+Found lap 753 [79%]
+Found lap 754 [79%]
+Found lap 755 [79%]
+Found lap 756 [79%]
+Found lap 757 [80%]
+Found lap 758 [80%]
+Found lap 759 [80%]
+Found lap 760 [80%]
+Found lap 761 [80%]
+Found lap 762 [80%]
+Found lap 763 [80%]
+Found lap 764 [80%]
+Found lap 765 [80%]
+Found lap 766 [80%]
+Found lap 767 [81%]
+Found lap 768 [81%]
+Found lap 769 [81%]
+Found lap 770 [81%]
+Found lap 771 [81%]
+Found lap 772 [81%]
+Found lap 773 [81%]
+Found lap 774 [81%]
+Found lap 775 [81%]
+Found lap 776 [82%]
+Found lap 777 [82%]
+Found lap 778 [82%]
+Found lap 779 [82%]
+Found lap 780 [82%]
+Found lap 781 [82%]
+Found lap 782 [82%]
+Found lap 783 [82%]
+Found lap 784 [82%]
+Found lap 785 [82%]
+Found lap 786 [83%]
+Found lap 787 [83%]
+Found lap 788 [83%]
+Found lap 789 [83%]
+Found lap 790 [83%]
+Found lap 791 [83%]
+Found lap 792 [83%]
+Found lap 793 [83%]
+Found lap 794 [83%]
+Found lap 795 [84%]
+Found lap 796 [84%]
+Found lap 797 [84%]
+Found lap 798 [84%]
+Found lap 799 [84%]
+Found lap 800 [84%]
+Found lap 801 [84%]
+Found lap 802 [84%]
+Found lap 803 [84%]
+Found lap 804 [84%]
+Found lap 805 [85%]
+Found lap 806 [85%]
+Found lap 807 [85%]
+Found lap 808 [85%]
+Found lap 809 [85%]
+Found lap 810 [85%]
+Found lap 811 [85%]
+Found lap 812 [85%]
+Found lap 813 [85%]
+Found lap 814 [86%]
+Found lap 815 [86%]
+Found lap 816 [86%]
+Found lap 817 [86%]
+Found lap 818 [86%]
+Found lap 819 [86%]
+Found lap 820 [86%]
+Found lap 821 [86%]
+Found lap 822 [86%]
+Found lap 823 [86%]
+Found lap 824 [87%]
+Found lap 825 [87%]
+Found lap 826 [87%]
+Found lap 827 [87%]
+Found lap 828 [87%]
+Found lap 829 [87%]
+Found lap 830 [87%]
+Found lap 831 [87%]
+Found lap 832 [87%]
+Found lap 833 [88%]
+Found lap 834 [88%]
+Found lap 835 [88%]
+Found lap 836 [88%]
+Found lap 837 [88%]
+Found lap 838 [88%]
+Found lap 839 [88%]
+Found lap 840 [88%]
+Found lap 841 [88%]
+Found lap 842 [88%]
+Found lap 843 [89%]
+Found lap 844 [89%]
+Found lap 845 [89%]
+Found lap 846 [89%]
+Found lap 847 [89%]
+Found lap 848 [89%]
+Found lap 849 [89%]
+Found lap 850 [89%]
+Found lap 851 [89%]
+Found lap 852 [90%]
+Found lap 853 [90%]
+Found lap 854 [90%]
+Found lap 855 [90%]
+Found lap 856 [90%]
+Found lap 857 [90%]
+Found lap 858 [90%]
+Found lap 859 [90%]
+Found lap 860 [90%]
+Found lap 861 [90%]
+Found lap 862 [91%]
+Found lap 863 [91%]
+Found lap 864 [91%]
+Found lap 865 [91%]
+Found lap 866 [91%]
+Found lap 867 [91%]
+Found lap 868 [91%]
+Found lap 869 [91%]
+Found lap 870 [91%]
+Found lap 871 [92%]
+Found lap 872 [92%]
+Found lap 873 [92%]
+Found lap 874 [92%]
+Found lap 875 [92%]
+Found lap 876 [92%]
+Found lap 877 [92%]
+Found lap 878 [92%]
+Found lap 879 [92%]
+Found lap 880 [92%]
+Found lap 881 [93%]
+Found lap 882 [93%]
+Found lap 883 [93%]
+Found lap 884 [93%]
+Found lap 885 [93%]
+Found lap 886 [93%]
+Found lap 887 [93%]
+Found lap 888 [93%]
+Found lap 889 [93%]
+Found lap 890 [93%]
+Found lap 891 [94%]
+Found lap 892 [94%]
+Found lap 893 [94%]
+Found lap 894 [94%]
+Found lap 895 [94%]
+Found lap 896 [94%]
+Found lap 897 [94%]
+Found lap 898 [94%]
+Found lap 899 [94%]
+Found lap 900 [95%]
+Found lap 901 [95%]
+Found lap 902 [95%]
+Found lap 903 [95%]
+Found lap 904 [95%]
+Found lap 905 [95%]
+Found lap 906 [95%]
+Found lap 907 [95%]
+Found lap 908 [95%]
+Found lap 909 [95%]
+Found lap 910 [96%]
+Found lap 911 [96%]
+Found lap 912 [96%]
+Found lap 913 [96%]
+Found lap 914 [96%]
+Found lap 915 [96%]
+Found lap 916 [96%]
+Found lap 917 [96%]
+Found lap 918 [96%]
+Found lap 919 [97%]
+Found lap 920 [97%]
+Found lap 921 [97%]
+Found lap 922 [97%]
+Found lap 923 [97%]
+Found lap 924 [97%]
+Found lap 925 [97%]
+Found lap 926 [97%]
+Found lap 927 [97%]
+Found lap 928 [97%]
+Found lap 929 [98%]
+Found lap 930 [98%]
+Found lap 931 [98%]
+Found lap 932 [98%]
+Found lap 933 [98%]
+Found lap 934 [98%]
+Found lap 935 [98%]
+Found lap 936 [98%]
+Found lap 937 [98%]
+Found lap 938 [99%]
+Found lap 939 [99%]
+Found lap 940 [99%]
+Found lap 941 [99%]
+Found lap 942 [99%]
+Found lap 943 [99%]
+Found lap 944 [99%]
+Found lap 945 [99%]
+Found lap 946 [99%]
+Found lap 947 [99%]
+Found lap 948 [100%]
+Found lap 949 [100%]
+Found lap 950 [100%]
+Found lap 951 [100%]
+Found lap 952 [100%]
+All laps received (953).
+Expecting 17890 trackpoints
+Found 60 [0%] trackpoints for activity 297
+Found 120 [1%] trackpoints for activity 297
+Found 180 [1%] trackpoints for activity 297
+Found 240 [1%] trackpoints for activity 297
+Found 300 [2%] trackpoints for activity 297
+Found 360 [2%] trackpoints for activity 297
+Found 420 [2%] trackpoints for activity 297
+Found 480 [3%] trackpoints for activity 297
+Found 540 [3%] trackpoints for activity 297
+Found 600 [3%] trackpoints for activity 297
+Found 660 [4%] trackpoints for activity 297
+Found 720 [4%] trackpoints for activity 297
+Found 780 [4%] trackpoints for activity 297
+Found 840 [5%] trackpoints for activity 297
+Found 900 [5%] trackpoints for activity 297
+Found 945 [5%] trackpoints for activity 297
+Found 60 [6%] trackpoints for activity 298
+Found 120 [6%] trackpoints for activity 298
+Found 180 [6%] trackpoints for activity 298
+Found 240 [7%] trackpoints for activity 298
+Found 300 [7%] trackpoints for activity 298
+Found 360 [7%] trackpoints for activity 298
+Found 420 [8%] trackpoints for activity 298
+Found 480 [8%] trackpoints for activity 298
+Found 540 [8%] trackpoints for activity 298
+Found 600 [9%] trackpoints for activity 298
+Found 660 [9%] trackpoints for activity 298
+Found 720 [9%] trackpoints for activity 298
+Found 780 [10%] trackpoints for activity 298
+Found 840 [10%] trackpoints for activity 298
+Found 900 [10%] trackpoints for activity 298
+Found 909 [10%] trackpoints for activity 298
+Found 60 [11%] trackpoints for activity 299
+Found 120 [11%] trackpoints for activity 299
+Found 180 [11%] trackpoints for activity 299
+Found 240 [12%] trackpoints for activity 299
+Found 300 [12%] trackpoints for activity 299
+Found 360 [12%] trackpoints for activity 299
+Found 420 [13%] trackpoints for activity 299
+Found 480 [13%] trackpoints for activity 299
+Found 540 [13%] trackpoints for activity 299
+Found 600 [14%] trackpoints for activity 299
+Found 660 [14%] trackpoints for activity 299
+Found 710 [14%] trackpoints for activity 299
+Found 60 [15%] trackpoints for activity 300
+Found 120 [15%] trackpoints for activity 300
+Found 180 [15%] trackpoints for activity 300
+Found 240 [16%] trackpoints for activity 300
+Found 300 [16%] trackpoints for activity 300
+Found 360 [16%] trackpoints for activity 300
+Found 420 [17%] trackpoints for activity 300
+Found 480 [17%] trackpoints for activity 300
+Found 540 [17%] trackpoints for activity 300
+Found 600 [18%] trackpoints for activity 300
+Found 660 [18%] trackpoints for activity 300
+Found 720 [18%] trackpoints for activity 300
+Found 780 [19%] trackpoints for activity 300
+Found 789 [19%] trackpoints for activity 300
+Found 60 [19%] trackpoints for activity 301
+Found 120 [19%] trackpoints for activity 301
+Found 180 [20%] trackpoints for activity 301
+Found 240 [20%] trackpoints for activity 301
+Found 300 [20%] trackpoints for activity 301
+Found 360 [21%] trackpoints for activity 301
+Found 420 [21%] trackpoints for activity 301
+Found 480 [21%] trackpoints for activity 301
+Found 540 [22%] trackpoints for activity 301
+Found 600 [22%] trackpoints for activity 301
+Found 660 [22%] trackpoints for activity 301
+Found 720 [23%] trackpoints for activity 301
+Found 780 [23%] trackpoints for activity 301
+Found 794 [23%] trackpoints for activity 301
+Found 60 [24%] trackpoints for activity 302
+Found 120 [24%] trackpoints for activity 302
+Found 180 [24%] trackpoints for activity 302
+Found 240 [25%] trackpoints for activity 302
+Found 300 [25%] trackpoints for activity 302
+Found 360 [25%] trackpoints for activity 302
+Found 420 [26%] trackpoints for activity 302
+Found 480 [26%] trackpoints for activity 302
+Found 540 [26%] trackpoints for activity 302
+Found 600 [27%] trackpoints for activity 302
+Found 660 [27%] trackpoints for activity 302
+Found 720 [27%] trackpoints for activity 302
+Found 766 [27%] trackpoints for activity 302
+Found 60 [28%] trackpoints for activity 303
+Found 120 [28%] trackpoints for activity 303
+Found 180 [28%] trackpoints for activity 303
+Found 240 [29%] trackpoints for activity 303
+Found 300 [29%] trackpoints for activity 303
+Found 360 [29%] trackpoints for activity 303
+Found 420 [30%] trackpoints for activity 303
+Found 480 [30%] trackpoints for activity 303
+Found 540 [30%] trackpoints for activity 303
+Found 600 [31%] trackpoints for activity 303
+Found 660 [31%] trackpoints for activity 303
+Found 720 [31%] trackpoints for activity 303
+Found 780 [32%] trackpoints for activity 303
+Found 840 [32%] trackpoints for activity 303
+Found 900 [32%] trackpoints for activity 303
+Found 960 [33%] trackpoints for activity 303
+Found 1020 [33%] trackpoints for activity 303
+Found 1080 [33%] trackpoints for activity 303
+Found 1140 [34%] trackpoints for activity 303
+Found 1200 [34%] trackpoints for activity 303
+Found 1260 [35%] trackpoints for activity 303
+Found 1320 [35%] trackpoints for activity 303
+Found 1335 [35%] trackpoints for activity 303
+Found 60 [35%] trackpoints for activity 304
+Found 120 [36%] trackpoints for activity 304
+Found 180 [36%] trackpoints for activity 304
+Found 240 [36%] trackpoints for activity 304
+Found 300 [37%] trackpoints for activity 304
+Found 360 [37%] trackpoints for activity 304
+Found 420 [37%] trackpoints for activity 304
+Found 480 [38%] trackpoints for activity 304
+Found 540 [38%] trackpoints for activity 304
+Found 600 [38%] trackpoints for activity 304
+Found 660 [39%] trackpoints for activity 304
+Found 680 [39%] trackpoints for activity 304
+Found 60 [39%] trackpoints for activity 305
+Found 75 [39%] trackpoints for activity 305
+Found 2 [39%] trackpoints for activity 306
+Found 11 [39%] trackpoints for activity 307
+Found 8 [39%] trackpoints for activity 308
+Found 3 [39%] trackpoints for activity 309
+Found 60 [40%] trackpoints for activity 310
+Found 120 [40%] trackpoints for activity 310
+Found 180 [40%] trackpoints for activity 310
+Found 240 [41%] trackpoints for activity 310
+Found 300 [41%] trackpoints for activity 310
+Found 360 [41%] trackpoints for activity 310
+Found 420 [42%] trackpoints for activity 310
+Found 480 [42%] trackpoints for activity 310
+Found 540 [42%] trackpoints for activity 310
+Found 600 [43%] trackpoints for activity 310
+Found 660 [43%] trackpoints for activity 310
+Found 720 [43%] trackpoints for activity 310
+Found 780 [44%] trackpoints for activity 310
+Found 840 [44%] trackpoints for activity 310
+Found 900 [44%] trackpoints for activity 310
+Found 960 [45%] trackpoints for activity 310
+Found 1020 [45%] trackpoints for activity 310
+Found 1080 [45%] trackpoints for activity 310
+Found 1140 [46%] trackpoints for activity 310
+Found 1200 [46%] trackpoints for activity 310
+Found 1214 [46%] trackpoints for activity 310
+Found 60 [46%] trackpoints for activity 311
+Found 120 [47%] trackpoints for activity 311
+Found 180 [47%] trackpoints for activity 311
+Found 240 [47%] trackpoints for activity 311
+Found 300 [48%] trackpoints for activity 311
+Found 360 [48%] trackpoints for activity 311
+Found 420 [48%] trackpoints for activity 311
+Found 480 [49%] trackpoints for activity 311
+Found 519 [49%] trackpoints for activity 311
+Found 60 [49%] trackpoints for activity 312
+Found 120 [50%] trackpoints for activity 312
+Found 180 [50%] trackpoints for activity 312
+Found 240 [50%] trackpoints for activity 312
+Found 300 [51%] trackpoints for activity 312
+Found 360 [51%] trackpoints for activity 312
+Found 420 [51%] trackpoints for activity 312
+Found 480 [52%] trackpoints for activity 312
+Found 540 [52%] trackpoints for activity 312
+Found 600 [52%] trackpoints for activity 312
+Found 660 [53%] trackpoints for activity 312
+Found 720 [53%] trackpoints for activity 312
+Found 780 [53%] trackpoints for activity 312
+Found 840 [54%] trackpoints for activity 312
+Found 900 [54%] trackpoints for activity 312
+Found 960 [54%] trackpoints for activity 312
+Found 968 [54%] trackpoints for activity 312
+Found 60 [55%] trackpoints for activity 313
+Found 120 [55%] trackpoints for activity 313
+Found 180 [55%] trackpoints for activity 313
+Found 240 [56%] trackpoints for activity 313
+Found 300 [56%] trackpoints for activity 313
+Found 360 [56%] trackpoints for activity 313
+Found 420 [57%] trackpoints for activity 313
+Found 480 [57%] trackpoints for activity 313
+Found 540 [57%] trackpoints for activity 313
+Found 600 [58%] trackpoints for activity 313
+Found 660 [58%] trackpoints for activity 313
+Found 715 [58%] trackpoints for activity 313
+Found 60 [59%] trackpoints for activity 314
+Found 120 [59%] trackpoints for activity 314
+Found 180 [59%] trackpoints for activity 314
+Found 240 [60%] trackpoints for activity 314
+Found 300 [60%] trackpoints for activity 314
+Found 360 [60%] trackpoints for activity 314
+Found 420 [61%] trackpoints for activity 314
+Found 480 [61%] trackpoints for activity 314
+Found 540 [61%] trackpoints for activity 314
+Found 600 [62%] trackpoints for activity 314
+Found 660 [62%] trackpoints for activity 314
+Found 720 [62%] trackpoints for activity 314
+Found 780 [63%] trackpoints for activity 314
+Found 840 [63%] trackpoints for activity 314
+Found 900 [63%] trackpoints for activity 314
+Found 960 [64%] trackpoints for activity 314
+Found 1020 [64%] trackpoints for activity 314
+Found 1080 [64%] trackpoints for activity 314
+Found 1140 [65%] trackpoints for activity 314
+Found 1200 [65%] trackpoints for activity 314
+Found 1260 [65%] trackpoints for activity 314
+Found 1320 [66%] trackpoints for activity 314
+Found 1380 [66%] trackpoints for activity 314
+Found 1440 [66%] trackpoints for activity 314
+Found 1500 [67%] trackpoints for activity 314
+Found 1560 [67%] trackpoints for activity 314
+Found 1616 [67%] trackpoints for activity 314
+Found 60 [68%] trackpoints for activity 315
+Found 120 [68%] trackpoints for activity 315
+Found 180 [68%] trackpoints for activity 315
+Found 240 [69%] trackpoints for activity 315
+Found 300 [69%] trackpoints for activity 315
+Found 360 [69%] trackpoints for activity 315
+Found 420 [70%] trackpoints for activity 315
+Found 480 [70%] trackpoints for activity 315
+Found 540 [70%] trackpoints for activity 315
+Found 600 [71%] trackpoints for activity 315
+Found 660 [71%] trackpoints for activity 315
+Found 688 [71%] trackpoints for activity 315
+Found 60 [72%] trackpoints for activity 316
+Found 120 [72%] trackpoints for activity 316
+Found 180 [72%] trackpoints for activity 316
+Found 240 [73%] trackpoints for activity 316
+Found 300 [73%] trackpoints for activity 316
+Found 360 [73%] trackpoints for activity 316
+Found 420 [74%] trackpoints for activity 316
+Found 480 [74%] trackpoints for activity 316
+Found 540 [74%] trackpoints for activity 316
+Found 600 [75%] trackpoints for activity 316
+Found 660 [75%] trackpoints for activity 316
+Found 670 [75%] trackpoints for activity 316
+Found 60 [75%] trackpoints for activity 317
+Found 120 [76%] trackpoints for activity 317
+Found 180 [76%] trackpoints for activity 317
+Found 240 [76%] trackpoints for activity 317
+Found 300 [77%] trackpoints for activity 317
+Found 360 [77%] trackpoints for activity 317
+Found 420 [77%] trackpoints for activity 317
+Found 480 [78%] trackpoints for activity 317
+Found 540 [78%] trackpoints for activity 317
+Found 600 [78%] trackpoints for activity 317
+Found 660 [79%] trackpoints for activity 317
+Found 694 [79%] trackpoints for activity 317
+Found 60 [79%] trackpoints for activity 318
+Found 120 [80%] trackpoints for activity 318
+Found 180 [80%] trackpoints for activity 318
+Found 240 [80%] trackpoints for activity 318
+Found 300 [81%] trackpoints for activity 318
+Found 360 [81%] trackpoints for activity 318
+Found 420 [81%] trackpoints for activity 318
+Found 480 [82%] trackpoints for activity 318
+Found 540 [82%] trackpoints for activity 318
+Found 600 [82%] trackpoints for activity 318
+Found 660 [83%] trackpoints for activity 318
+Found 720 [83%] trackpoints for activity 318
+Found 780 [83%] trackpoints for activity 318
+Found 840 [84%] trackpoints for activity 318
+Found 846 [84%] trackpoints for activity 318
+Found 60 [84%] trackpoints for activity 319
+Found 120 [84%] trackpoints for activity 319
+Found 180 [85%] trackpoints for activity 319
+Found 240 [85%] trackpoints for activity 319
+Found 300 [85%] trackpoints for activity 319
+Found 360 [86%] trackpoints for activity 319
+Found 420 [86%] trackpoints for activity 319
+Found 480 [86%] trackpoints for activity 319
+Found 540 [87%] trackpoints for activity 319
+Found 600 [87%] trackpoints for activity 319
+Found 660 [87%] trackpoints for activity 319
+Found 720 [88%] trackpoints for activity 319
+Found 780 [88%] trackpoints for activity 319
+Found 840 [88%] trackpoints for activity 319
+Found 900 [89%] trackpoints for activity 319
+Found 960 [89%] trackpoints for activity 319
+Found 1020 [89%] trackpoints for activity 319
+Found 1080 [90%] trackpoints for activity 319
+Found 1140 [90%] trackpoints for activity 319
+Found 1200 [90%] trackpoints for activity 319
+Found 1260 [91%] trackpoints for activity 319
+Found 1320 [91%] trackpoints for activity 319
+Found 1380 [91%] trackpoints for activity 319
+Found 1440 [92%] trackpoints for activity 319
+Found 1500 [92%] trackpoints for activity 319
+Found 1504 [92%] trackpoints for activity 319
+Found 60 [92%] trackpoints for activity 320
+Found 120 [93%] trackpoints for activity 320
+Found 180 [93%] trackpoints for activity 320
+Found 240 [93%] trackpoints for activity 320
+Found 300 [94%] trackpoints for activity 320
+Found 360 [94%] trackpoints for activity 320
+Found 420 [94%] trackpoints for activity 320
+Found 480 [95%] trackpoints for activity 320
+Found 540 [95%] trackpoints for activity 320
+Found 600 [95%] trackpoints for activity 320
+Found 660 [96%] trackpoints for activity 320
+Found 699 [96%] trackpoints for activity 320
+Found 60 [96%] trackpoints for activity 321
+Found 120 [97%] trackpoints for activity 321
+Found 180 [97%] trackpoints for activity 321
+Found 240 [97%] trackpoints for activity 321
+Found 300 [98%] trackpoints for activity 321
+Found 360 [98%] trackpoints for activity 321
+Found 420 [98%] trackpoints for activity 321
+Found 480 [99%] trackpoints for activity 321
+Found 540 [99%] trackpoints for activity 321
+Found 600 [99%] trackpoints for activity 321
+Found 660 [100%] trackpoints for activity 321
+Found 720 [100%] trackpoints for activity 321
+Found 780 [100%] trackpoints for activity 321
+Found 840 [101%] trackpoints for activity 321
+Found 900 [101%] trackpoints for activity 321
+Found 960 [101%] trackpoints for activity 321
+Found 967 [101%] trackpoints for activity 321
+Found 4 [101%] trackpoints for activity 322
+Found 6 [101%] trackpoints for activity 323
+Found 21 [101%] trackpoints for activity 324
+Found 6 [102%] trackpoints for activity 325
+Found 6 [102%] trackpoints for activity 326
+Found 2 [102%] trackpoints for activity 327
+Found 5 [102%] trackpoints for activity 328
+Found 10 [102%] trackpoints for activity 329
+All trackpoints received (18187).
+Writing 330 output files.
+Writing output file 2008-10-13-174635-summarized.tcx for activity -1: 56 minutes, 46 seconds
+Writing output file 2008-10-15-170550-summarized.tcx for activity -1: 56 minutes, 23 seconds
+Writing output file 2008-10-20-170123-summarized.tcx for activity -1: 1 hours, 35 minutes, 44 seconds
+Writing output file 2008-10-21-183504-summarized.tcx for activity -1: 55 minutes, 14 seconds
+Writing output file 2008-10-23-165107-summarized.tcx for activity -1: 1 hours, 22 minutes, 42 seconds
+Writing output file 2008-10-28-180045-summarized.tcx for activity -1: 1 hours, 19 minutes, 11 seconds
+Writing output file 2008-10-30-155104-summarized.tcx for activity -1: 59 minutes, 40 seconds
+Writing output file 2008-11-01-153242-summarized.tcx for activity -1: 1 hours, 19 minutes, 44 seconds
+Writing output file 2008-11-02-161952-summarized.tcx for activity -1: 1 hours, 8 minutes, 52 seconds
+Writing output file 2008-11-04-155812-summarized.tcx for activity -1: 52 minutes, 35 seconds
+Writing output file 2008-11-06-162654-summarized.tcx for activity -1: 53 minutes, 24 seconds
+Writing output file 2008-11-10-165813-summarized.tcx for activity -1: 41 minutes, 46 seconds
+Writing output file 2008-11-11-160710-summarized.tcx for activity -1: 56 minutes, 33 seconds
+Writing output file 2008-11-13-161051-summarized.tcx for activity -1: 1 hours, 12 minutes, 8 seconds
+Writing output file 2008-11-16-080703-summarized.tcx for activity -1: 1 hours, 9 minutes, 51 seconds
+Writing output file 2008-11-18-085518-summarized.tcx for activity -1: 27 minutes, 49 seconds
+Writing output file 2008-11-19-071550-summarized.tcx for activity -1: 1 hours, 22 minutes, 38 seconds
+Writing output file 2008-11-20-073043-summarized.tcx for activity -1: 29 minutes, 50 seconds
+Writing output file 2008-11-20-080319-summarized.tcx for activity -1: 54 minutes, 21 seconds
+Writing output file 2008-11-21-231238-summarized.tcx for activity -1: 4 hours, 21 minutes, 12 seconds
+Writing output file 2008-11-26-010933-summarized.tcx for activity -1: 2 minutes, 0 seconds
+Writing output file 2008-11-26-011145-summarized.tcx for activity -1: 5 hours, 12 minutes, 40 seconds
+Writing output file 2008-11-27-043513-summarized.tcx for activity -1: 4 hours, 10 minutes, 14 seconds
+Writing output file 2008-12-01-160347-summarized.tcx for activity -1: 50 minutes, 15 seconds
+Writing output file 2008-12-02-151008-summarized.tcx for activity -1: 54 minutes, 43 seconds
+Writing output file 2008-12-09-152112-summarized.tcx for activity -1: 1 hours, 10 minutes, 0 seconds
+Writing output file 2008-12-14-151549-summarized.tcx for activity -1: 1 hours, 41 minutes, 22 seconds
+Writing output file 2008-12-16-154534-summarized.tcx for activity -1: 6 seconds
+Writing output file 2008-12-16-154639-summarized.tcx for activity -1: 1 hours, 13 minutes, 23 seconds
+Writing output file 2008-12-18-155510-summarized.tcx for activity -1: 59 minutes, 5 seconds
+Writing output file 2008-12-20-105906-summarized.tcx for activity -1: 1 hours, 9 minutes, 24 seconds
+Writing output file 2008-12-24-154506-summarized.tcx for activity -1: 1 hours, 4 minutes, 53 seconds
+Writing output file 2008-12-26-161904-summarized.tcx for activity -1: 1 hours, 13 minutes, 54 seconds
+Writing output file 2008-12-31-152616-summarized.tcx for activity -1: 41 minutes, 49 seconds
+Writing output file 2009-01-07-154917-summarized.tcx for activity -1: 1 hours, 1 minutes, 48 seconds
+Writing output file 2009-01-08-162712-summarized.tcx for activity -1: 49 minutes, 39 seconds
+Writing output file 2009-01-10-162425-summarized.tcx for activity -1: 56 minutes, 31 seconds
+Writing output file 2009-01-11-122734-summarized.tcx for activity -1: 1 hours, 45 seconds
+Writing output file 2009-01-15-162534-summarized.tcx for activity -1: 1 hours, 17 seconds
+Writing output file 2009-01-17-154601-summarized.tcx for activity -1: 53 minutes, 20 seconds
+Writing output file 2009-01-20-160809-summarized.tcx for activity -1: 1 hours, 2 minutes, 19 seconds
+Writing output file 2009-01-21-155931-summarized.tcx for activity -1: 1 hours, 15 minutes, 27 seconds
+Writing output file 2009-01-25-160116-summarized.tcx for activity -1: 1 hours, 9 minutes, 34 seconds
+Writing output file 2009-01-27-163947-summarized.tcx for activity -1: 56 minutes, 25 seconds
+Writing output file 2009-01-29-161630-summarized.tcx for activity -1: 52 minutes, 13 seconds
+Writing output file 2009-02-03-161928-summarized.tcx for activity -1: 59 minutes, 12 seconds
+Writing output file 2009-02-07-160159-summarized.tcx for activity -1: 1 hours, 13 minutes, 1 seconds
+Writing output file 2009-02-10-161524-summarized.tcx for activity -1: 1 hours, 38 minutes, 13 seconds
+Writing output file 2009-02-15-155116-summarized.tcx for activity -1: 18 seconds
+Writing output file 2009-02-15-155207-summarized.tcx for activity -1: 1 hours, 6 minutes, 39 seconds
+Writing output file 2009-02-17-160410-summarized.tcx for activity -1: 1 hours, 22 minutes, 56 seconds
+Writing output file 2009-02-24-163002-summarized.tcx for activity -1: 1 hours, 3 seconds
+Writing output file 2009-02-25-163538-summarized.tcx for activity -1: 1 hours, 12 minutes, 32 seconds
+Writing output file 2009-02-28-163227-summarized.tcx for activity -1: 1 hours, 2 minutes, 28 seconds
+Writing output file 2009-03-03-164043-summarized.tcx for activity -1: 59 minutes, 15 seconds
+Writing output file 2009-03-05-170605-summarized.tcx for activity -1: 48 minutes, 33 seconds
+Writing output file 2009-03-11-181637-summarized.tcx for activity -1: 1 hours, 28 seconds
+Writing output file 2009-03-14-165041-summarized.tcx for activity -1: 2 hours, 53 minutes, 41 seconds
+Writing output file 2009-03-17-180437-summarized.tcx for activity -1: 1 hours, 40 minutes, 11 seconds
+Writing output file 2009-03-18-173850-summarized.tcx for activity -1: 1 hours, 12 minutes, 41 seconds
+Writing output file 2009-03-20-183809-summarized.tcx for activity -1: 44 minutes, 5 seconds
+Writing output file 2009-03-22-123330-summarized.tcx for activity -1: 3 seconds
+Writing output file 2009-03-22-123405-summarized.tcx for activity -1: 1 hours, 29 minutes, 55 seconds
+Writing output file 2009-03-23-153827-summarized.tcx for activity -1: 1 hours, 10 minutes, 1 seconds
+Writing output file 2009-05-14-183501-summarized.tcx for activity -1: 37 minutes, 50 seconds
+Writing output file 2009-05-15-183229-summarized.tcx for activity -1: 4 minutes, 51 seconds
+Writing output file 2009-05-15-183915-summarized.tcx for activity -1: 34 minutes, 13 seconds
+Writing output file 2009-05-16-153249-summarized.tcx for activity -1: 48 minutes, 1 seconds
+Writing output file 2009-05-18-193231-summarized.tcx for activity -1: 49 minutes, 8 seconds
+Writing output file 2009-05-26-185832-summarized.tcx for activity -1: 44 minutes, 11 seconds
+Writing output file 2009-05-28-184016-summarized.tcx for activity -1: 44 minutes, 32 seconds
+Writing output file 2009-06-04-192144-summarized.tcx for activity -1: 41 minutes, 44 seconds
+Writing output file 2009-06-05-180143-summarized.tcx for activity -1: 1 hours, 7 minutes, 16 seconds
+Writing output file 2009-06-06-184305-summarized.tcx for activity -1: 40 minutes, 37 seconds
+Writing output file 2009-06-10-154732-summarized.tcx for activity -1: 30 seconds
+Writing output file 2009-06-10-154955-summarized.tcx for activity -1: 38 minutes, 9 seconds
+Writing output file 2009-06-14-183628-summarized.tcx for activity -1: 39 minutes, 22 seconds
+Writing output file 2009-06-15-162529-summarized.tcx for activity -1: 44 minutes, 9 seconds
+Writing output file 2009-06-21-185330-summarized.tcx for activity -1: 44 minutes, 16 seconds
+Writing output file 2009-06-22-192026-summarized.tcx for activity -1: 39 minutes, 55 seconds
+Writing output file 2009-06-23-192350-summarized.tcx for activity -1: 1 hours, 59 seconds
+Writing output file 2009-06-27-193022-summarized.tcx for activity -1: 41 minutes, 43 seconds
+Writing output file 2009-07-02-191808-summarized.tcx for activity -1: 1 hours, 3 minutes, 29 seconds
+Writing output file 2009-07-05-170517-summarized.tcx for activity -1: 1 hours, 16 minutes, 7 seconds
+Writing output file 2009-07-13-193518-summarized.tcx for activity -1: 41 minutes, 29 seconds
+Writing output file 2009-07-16-193536-summarized.tcx for activity -1: 47 minutes, 34 seconds
+Writing output file 2009-07-20-192137-summarized.tcx for activity -1: 39 minutes, 56 seconds
+Writing output file 2009-07-24-184817-summarized.tcx for activity -1: 1 hours, 4 minutes, 23 seconds
+Writing output file 2009-07-25-191630-summarized.tcx for activity -1: 41 minutes, 37 seconds
+Writing output file 2009-07-27-192615-summarized.tcx for activity -1: 45 minutes, 19 seconds
+Writing output file 2009-07-29-083658-summarized.tcx for activity -1: 1 hours, 1 minutes, 30 seconds
+Writing output file 2009-07-31-184035-summarized.tcx for activity -1: 1 hours, 7 minutes, 3 seconds
+Writing output file 2009-08-02-191834-summarized.tcx for activity -1: 54 minutes, 55 seconds
+Writing output file 2009-08-04-191230-summarized.tcx for activity -1: 1 hours, 14 minutes, 42 seconds
+Writing output file 2009-08-31-183530-summarized.tcx for activity -1: 1 hours, 5 minutes, 55 seconds
+Writing output file 2009-09-10-185245-summarized.tcx for activity -1: 1 hours, 19 minutes, 17 seconds
+Writing output file 2009-09-12-152532-summarized.tcx for activity -1: 1 hours, 3 minutes, 12 seconds
+Writing output file 2009-09-23-182019-summarized.tcx for activity -1: 46 minutes, 27 seconds
+Writing output file 2009-09-24-180630-summarized.tcx for activity -1: 1 hours, 10 minutes, 40 seconds
+Writing output file 2009-09-25-181343-summarized.tcx for activity -1: 1 hours, 34 seconds
+Writing output file 2009-09-28-180356-summarized.tcx for activity -1: 57 minutes, 8 seconds
+Writing output file 2009-10-01-171637-summarized.tcx for activity -1: 53 minutes, 38 seconds
+Writing output file 2009-10-02-181509-summarized.tcx for activity -1: 40 minutes, 49 seconds
+Writing output file 2009-10-05-180302-summarized.tcx for activity -1: 55 minutes, 13 seconds
+Writing output file 2009-10-07-174849-summarized.tcx for activity -1: 1 hours, 8 minutes, 21 seconds
+Writing output file 2009-10-09-175846-summarized.tcx for activity -1: 39 minutes, 39 seconds
+Writing output file 2009-10-10-173437-summarized.tcx for activity -1: 1 hours, 3 minutes, 7 seconds
+Writing output file 2009-10-12-161041-summarized.tcx for activity -1: 23 seconds
+Writing output file 2009-10-12-161111-summarized.tcx for activity -1: 45 minutes, 16 seconds
+Writing output file 2009-10-14-171707-summarized.tcx for activity -1: 1 hours, 22 minutes, 49 seconds
+Writing output file 2009-10-16-171337-summarized.tcx for activity -1: 41 minutes, 30 seconds
+Writing output file 2009-10-21-174249-summarized.tcx for activity -1: 43 minutes, 32 seconds
+Writing output file 2009-10-25-171252-summarized.tcx for activity -1: 1 hours, 6 minutes, 9 seconds
+Writing output file 2009-10-26-203819-summarized.tcx for activity -1: 47 minutes, 16 seconds
+Writing output file 2009-10-27-171115-summarized.tcx for activity -1: 1 hours, 25 minutes, 8 seconds
+Writing output file 2009-10-28-123524-summarized.tcx for activity -1: 3 hours, 57 minutes, 6 seconds
+Writing output file 2009-10-31-155222-summarized.tcx for activity -1: 1 hours, 11 minutes, 29 seconds
+Writing output file 2009-11-01-110740-summarized.tcx for activity -1: 1 hours, 46 minutes, 16 seconds
+Writing output file 2009-11-01-140719-summarized.tcx for activity -1: 1 hours, 41 minutes, 25 seconds
+Writing output file 2009-11-06-153702-summarized.tcx for activity -1: 1 hours, 8 minutes, 38 seconds
+Writing output file 2009-11-07-150911-summarized.tcx for activity -1: 1 hours, 41 minutes, 37 seconds
+Writing output file 2009-11-10-150233-summarized.tcx for activity -1: 1 hours, 7 minutes, 36 seconds
+Writing output file 2009-11-11-143857-summarized.tcx for activity -1: 1 hours, 14 minutes, 48 seconds
+Writing output file 2009-11-18-160116-summarized.tcx for activity -1: 56 minutes, 49 seconds
+Writing output file 2009-11-24-160101-summarized.tcx for activity -1: 56 minutes, 24 seconds
+Writing output file 2009-11-25-161732-summarized.tcx for activity -1: 49 minutes, 57 seconds
+Writing output file 2009-11-26-133702-summarized.tcx for activity -1: 55 minutes, 34 seconds
+Writing output file 2009-11-29-155951-summarized.tcx for activity -1: 1 hours, 20 minutes, 0 seconds
+Writing output file 2009-12-01-154943-summarized.tcx for activity -1: 1 hours, 8 minutes, 51 seconds
+Writing output file 2009-12-03-161826-summarized.tcx for activity -1: 56 minutes, 25 seconds
+Writing output file 2009-12-04-155408-summarized.tcx for activity -1: 1 hours, 7 minutes, 43 seconds
+Writing output file 2009-12-05-135646-summarized.tcx for activity -1: 56 minutes, 37 seconds
+Writing output file 2009-12-07-160449-summarized.tcx for activity -1: 49 minutes, 33 seconds
+Writing output file 2009-12-08-155916-summarized.tcx for activity -1: 58 minutes, 3 seconds
+Writing output file 2009-12-11-150708-summarized.tcx for activity -1: 1 hours, 17 minutes, 26 seconds
+Writing output file 2009-12-13-134912-summarized.tcx for activity -1: 2 hours, 17 minutes, 26 seconds
+Writing output file 2009-12-15-155300-summarized.tcx for activity -1: 1 hours, 14 minutes, 49 seconds
+Writing output file 2009-12-18-070550-summarized.tcx for activity -1: 1 hours, 56 minutes, 12 seconds
+Writing output file 2009-12-20-082524-summarized.tcx for activity -1: 1 hours, 13 minutes, 43 seconds
+Writing output file 2009-12-21-080818-summarized.tcx for activity -1: 57 minutes, 27 seconds
+Writing output file 2009-12-22-080007-summarized.tcx for activity -1: 59 minutes, 31 seconds
+Writing output file 2009-12-25-073806-summarized.tcx for activity -1: 56 minutes, 9 seconds
+Writing output file 2009-12-26-060918-summarized.tcx for activity -1: 3 hours, 3 minutes, 49 seconds
+Writing output file 2009-12-27-081150-summarized.tcx for activity -1: 1 hours, 1 minutes, 31 seconds
+Writing output file 2009-12-28-080314-summarized.tcx for activity -1: 57 minutes, 42 seconds
+Writing output file 2009-12-29-204731-summarized.tcx for activity -1: 5 hours, 2 minutes, 0 seconds
+Writing output file 2010-01-01-041759-summarized.tcx for activity -1: 1 hours, 1 minutes, 4 seconds
+Writing output file 2010-01-01-085136-summarized.tcx for activity -1: 56 minutes, 25 seconds
+Writing output file 2010-01-04-225029-summarized.tcx for activity -1: 4 hours, 52 minutes, 48 seconds
+Writing output file 2010-01-08-075252-summarized.tcx for activity -1: 1 hours, 12 minutes, 16 seconds
+Writing output file 2010-01-09-051446-summarized.tcx for activity -1: 1 hours, 10 minutes, 42 seconds
+Writing output file 2010-01-10-031845-summarized.tcx for activity -1: 1 hours, 8 minutes, 14 seconds
+Writing output file 2010-01-16-002352-summarized.tcx for activity -1: 1 hours, 9 minutes, 18 seconds
+Writing output file 2010-01-18-142340-summarized.tcx for activity -1: 1 hours, 2 minutes, 4 seconds
+Writing output file 2010-01-19-143139-summarized.tcx for activity -1: 49 minutes, 24 seconds
+Writing output file 2010-01-20-145330-summarized.tcx for activity -1: 1 hours, 17 minutes, 40 seconds
+Writing output file 2010-01-23-115717-summarized.tcx for activity -1: 2 hours, 34 minutes, 49 seconds
+Writing output file 2010-01-24-145539-summarized.tcx for activity -1: 1 hours, 3 minutes, 17 seconds
+Writing output file 2010-01-25-162901-summarized.tcx for activity -1: 39 minutes, 24 seconds
+Writing output file 2010-01-27-162411-summarized.tcx for activity -1: 1 hours, 5 minutes, 50 seconds
+Writing output file 2010-01-28-160900-summarized.tcx for activity -1: 24 seconds
+Writing output file 2010-01-28-160929-summarized.tcx for activity -1: 1 hours, 2 minutes, 51 seconds
+Writing output file 2010-01-29-160804-summarized.tcx for activity -1: 55 minutes, 4 seconds
+Writing output file 2010-01-30-142031-summarized.tcx for activity -1: 1 hours, 27 seconds
+Writing output file 2010-01-31-161843-summarized.tcx for activity -1: 41 minutes, 3 seconds
+Writing output file 2010-02-01-153123-summarized.tcx for activity -1: 57 minutes, 45 seconds
+Writing output file 2010-02-02-160458-summarized.tcx for activity -1: 1 hours, 9 minutes, 21 seconds
+Writing output file 2010-02-04-133319-summarized.tcx for activity -1: 50 minutes, 41 seconds
+Writing output file 2010-02-06-130038-summarized.tcx for activity -1: 2 hours, 32 minutes, 52 seconds
+Writing output file 2010-02-08-162200-summarized.tcx for activity -1: 1 hours, 28 minutes, 1 seconds
+Writing output file 2010-02-10-130343-summarized.tcx for activity -1: 1 hours, 5 minutes, 18 seconds
+Writing output file 2010-02-11-151857-summarized.tcx for activity -1: 48 minutes, 49 seconds
+Writing output file 2010-02-25-153052-summarized.tcx for activity -1: 38 minutes, 59 seconds
+Writing output file 2010-02-26-162811-summarized.tcx for activity -1: 37 minutes, 11 seconds
+Writing output file 2010-02-27-143041-summarized.tcx for activity -1: 1 hours, 6 minutes, 11 seconds
+Writing output file 2010-03-02-163445-summarized.tcx for activity -1: 1 hours, 3 minutes, 13 seconds
+Writing output file 2010-03-03-080755-summarized.tcx for activity -1: 1 hours, 3 minutes, 56 seconds
+Writing output file 2010-03-05-171034-summarized.tcx for activity -1: 53 minutes, 58 seconds
+Writing output file 2010-03-07-163155-summarized.tcx for activity -1: 57 minutes, 8 seconds
+Writing output file 2010-03-08-172533-summarized.tcx for activity -1: 45 minutes, 45 seconds
+Writing output file 2010-03-09-155153-summarized.tcx for activity -1: 1 hours, 29 minutes, 41 seconds
+Writing output file 2010-03-15-173314-summarized.tcx for activity -1: 55 minutes, 29 seconds
+Writing output file 2010-03-16-172324-summarized.tcx for activity -1: 55 minutes, 47 seconds
+Writing output file 2010-03-18-182129-summarized.tcx for activity -1: 52 minutes, 24 seconds
+Writing output file 2010-03-19-174351-summarized.tcx for activity -1: 58 minutes, 52 seconds
+Writing output file 2010-03-20-174948-summarized.tcx for activity -1: 1 hours, 5 minutes, 29 seconds
+Writing output file 2010-03-22-174640-summarized.tcx for activity -1: 1 hours, 9 minutes, 48 seconds
+Writing output file 2010-03-25-171941-summarized.tcx for activity -1: 53 minutes, 47 seconds
+Writing output file 2010-03-26-182057-summarized.tcx for activity -1: 44 minutes, 54 seconds
+Writing output file 2010-03-30-183057-summarized.tcx for activity -1: 44 minutes, 22 seconds
+Writing output file 2010-03-31-180859-summarized.tcx for activity -1: 48 minutes, 26 seconds
+Writing output file 2010-04-03-182105-summarized.tcx for activity -1: 39 minutes, 52 seconds
+Writing output file 2010-04-05-173901-summarized.tcx for activity -1: 50 minutes, 47 seconds
+Writing output file 2010-04-19-151731-summarized.tcx for activity -1: 1 hours, 1 minutes, 36 seconds
+Writing output file 2010-04-22-152351-summarized.tcx for activity -1: 1 hours, 18 seconds
+Writing output file 2010-05-03-191428-summarized.tcx for activity -1: 1 hours, 12 minutes, 38 seconds
+Writing output file 2010-05-05-191240-summarized.tcx for activity -1: 41 minutes, 58 seconds
+Writing output file 2010-05-08-185445-summarized.tcx for activity -1: 1 hours, 3 minutes, 23 seconds
+Writing output file 2010-05-12-190810-summarized.tcx for activity -1: 55 minutes, 50 seconds
+Writing output file 2010-05-13-193023-summarized.tcx for activity -1: 1 hours, 3 minutes, 42 seconds
+Writing output file 2010-05-19-153429-summarized.tcx for activity -1: 1 hours, 9 minutes, 36 seconds
+Writing output file 2010-05-20-151851-summarized.tcx for activity -1: 1 hours, 1 minutes, 32 seconds
+Writing output file 2010-05-23-152730-summarized.tcx for activity -1: 1 hours, 43 minutes, 47 seconds
+Writing output file 2010-05-26-185205-summarized.tcx for activity -1: 56 minutes, 36 seconds
+Writing output file 2010-06-01-181111-summarized.tcx for activity -1: 59 minutes, 48 seconds
+Writing output file 2010-06-03-174955-summarized.tcx for activity -1: 1 hours, 10 minutes, 20 seconds
+Writing output file 2010-06-04-174656-summarized.tcx for activity -1: 57 minutes, 6 seconds
+Writing output file 2010-06-07-192507-summarized.tcx for activity -1: 1 hours, 1 minutes, 52 seconds
+Writing output file 2010-06-09-175602-summarized.tcx for activity -1: 1 hours, 5 minutes, 33 seconds
+Writing output file 2010-06-10-194630-summarized.tcx for activity -1: 1 hours, 4 minutes, 12 seconds
+Writing output file 2010-06-12-192606-summarized.tcx for activity -1: 1 hours, 2 minutes, 6 seconds
+Writing output file 2010-06-15-183903-summarized.tcx for activity -1: 58 minutes, 20 seconds
+Writing output file 2010-06-17-195216-summarized.tcx for activity -1: 1 hours, 3 minutes, 38 seconds
+Writing output file 2010-06-20-163127-summarized.tcx for activity -1: 1 hours, 30 minutes, 25 seconds
+Writing output file 2010-06-23-192235-summarized.tcx for activity -1: 1 hours, 9 minutes, 2 seconds
+Writing output file 2010-06-24-194443-summarized.tcx for activity -1: 55 minutes, 35 seconds
+Writing output file 2010-06-27-144253-summarized.tcx for activity -1: 50 minutes, 54 seconds
+Writing output file 2010-06-28-193625-summarized.tcx for activity -1: 1 hours, 14 minutes, 7 seconds
+Writing output file 2010-07-01-191955-summarized.tcx for activity -1: 1 hours, 4 minutes, 53 seconds
+Writing output file 2010-07-04-105515-summarized.tcx for activity -1: 1 hours, 43 minutes, 27 seconds
+Writing output file 2010-07-07-191251-summarized.tcx for activity -1: 1 hours, 13 minutes, 39 seconds
+Writing output file 2010-07-10-143128-summarized.tcx for activity -1: 2 hours, 10 minutes, 32 seconds
+Writing output file 2010-07-14-192854-summarized.tcx for activity -1: 1 hours, 2 minutes, 54 seconds
+Writing output file 2010-07-19-191950-summarized.tcx for activity -1: 1 hours, 6 minutes, 49 seconds
+Writing output file 2010-07-22-192156-summarized.tcx for activity -1: 1 hours, 13 minutes, 37 seconds
+Writing output file 2010-07-25-165023-summarized.tcx for activity -1: 1 hours, 9 minutes, 42 seconds
+Writing output file 2010-08-18-180055-summarized.tcx for activity -1: 1 hours, 6 minutes, 46 seconds
+Writing output file 2010-08-20-175454-summarized.tcx for activity -1: 1 hours, 12 minutes, 34 seconds
+Writing output file 2010-08-21-172639-summarized.tcx for activity -1: 1 hours, 13 minutes, 30 seconds
+Writing output file 2010-08-25-185700-summarized.tcx for activity -1: 1 hours, 6 seconds
+Writing output file 2010-08-30-192919-summarized.tcx for activity -1: 58 minutes, 37 seconds
+Writing output file 2010-09-01-174909-summarized.tcx for activity -1: 51 minutes, 56 seconds
+Writing output file 2010-09-03-181523-summarized.tcx for activity -1: 1 hours, 9 minutes, 18 seconds
+Writing output file 2010-09-07-182650-summarized.tcx for activity -1: 1 hours, 12 minutes, 40 seconds
+Writing output file 2010-09-12-162443-summarized.tcx for activity -1: 28 minutes, 3 seconds
+Writing output file 2010-09-14-181659-summarized.tcx for activity -1: 55 minutes, 52 seconds
+Writing output file 2010-09-16-190231-summarized.tcx for activity -1: 48 minutes, 47 seconds
+Writing output file 2010-09-17-163853-summarized.tcx for activity -1: 1 hours, 17 minutes, 26 seconds
+Writing output file 2010-09-23-181133-summarized.tcx for activity -1: 1 hours, 13 minutes, 55 seconds
+Writing output file 2010-09-26-183744-summarized.tcx for activity -1: 58 minutes, 51 seconds
+Writing output file 2010-10-06-174706-summarized.tcx for activity -1: 1 hours, 7 minutes, 33 seconds
+Writing output file 2010-10-08-175959-summarized.tcx for activity -1: 55 minutes, 25 seconds
+Writing output file 2010-10-09-175419-summarized.tcx for activity -1: 1 hours, 2 minutes, 0 seconds
+Writing output file 2010-10-12-165444-summarized.tcx for activity -1: 1 hours, 6 minutes, 43 seconds
+Writing output file 2010-10-14-160105-summarized.tcx for activity -1: 1 hours, 9 minutes, 23 seconds
+Writing output file 2010-10-17-001146-summarized.tcx for activity -1: 1 hours, 16 minutes, 0 seconds
+Writing output file 2010-10-22-225604-summarized.tcx for activity -1: 58 minutes, 40 seconds
+Writing output file 2010-10-25-171542-summarized.tcx for activity -1: 1 hours, 11 minutes, 44 seconds
+Writing output file 2010-10-26-172536-summarized.tcx for activity -1: 1 hours, 11 minutes, 11 seconds
+Writing output file 2010-10-29-163139-summarized.tcx for activity -1: 1 hours, 34 minutes, 27 seconds
+Writing output file 2010-10-31-162301-summarized.tcx for activity -1: 58 minutes, 45 seconds
+Writing output file 2010-11-04-163928-summarized.tcx for activity -1: 1 hours, 10 minutes, 39 seconds
+Writing output file 2010-11-09-155653-summarized.tcx for activity -1: 54 minutes, 58 seconds
+Writing output file 2010-11-11-143540-summarized.tcx for activity -1: 1 hours, 7 minutes, 39 seconds
+Writing output file 2010-11-13-161420-summarized.tcx for activity -1: 1 hours, 1 minutes, 30 seconds
+Writing output file 2010-11-15-161458-summarized.tcx for activity -1: 45 minutes, 57 seconds
+Writing output file 2010-11-17-155715-summarized.tcx for activity -1: 1 hours, 6 minutes, 5 seconds
+Writing output file 2010-11-18-115017-summarized.tcx for activity -1: 1 hours, 34 minutes, 7 seconds
+Writing output file 2010-11-20-160227-summarized.tcx for activity -1: 56 minutes, 37 seconds
+Writing output file 2010-11-28-155046-summarized.tcx for activity -1: 1 hours, 13 minutes, 56 seconds
+Writing output file 2010-12-04-154832-summarized.tcx for activity -1: 1 hours, 2 minutes, 6 seconds
+Writing output file 2010-12-05-142606-summarized.tcx for activity -1: 44 minutes, 45 seconds
+Writing output file 2010-12-06-160113-summarized.tcx for activity -1: 54 minutes, 8 seconds
+Writing output file 2010-12-09-161547-summarized.tcx for activity -1: 42 minutes, 8 seconds
+Writing output file 2010-12-15-151056-summarized.tcx for activity -1: 40 minutes, 7 seconds
+Writing output file 2010-12-28-144650-summarized.tcx for activity -1: 45 minutes, 38 seconds
+Writing output file 2010-12-30-195647-summarized.tcx for activity -1: 35 minutes, 54 seconds
+Writing output file 2011-01-01-152627-summarized.tcx for activity -1: 1 hours, 10 minutes, 32 seconds
+Writing output file 2011-01-10-153742-summarized.tcx for activity -1: 1 hours, 20 minutes, 16 seconds
+Writing output file 2011-01-12-133505-summarized.tcx for activity -1: 1 hours, 44 minutes, 46 seconds
+Writing output file 2011-01-13-154154-summarized.tcx for activity -1: 1 hours, 7 minutes, 33 seconds
+Writing output file 2011-01-15-142832-summarized.tcx for activity -1: 2 hours, 13 minutes, 50 seconds
+Writing output file 2011-01-20-161854-summarized.tcx for activity -1: 58 minutes, 45 seconds
+Writing output file 2011-01-22-134454-summarized.tcx for activity -1: 47 minutes, 35 seconds
+Writing output file 2011-01-29-104035-summarized.tcx for activity -1: 57 minutes, 43 seconds
+Writing output file 2011-02-21-154455-summarized.tcx for activity -1: 1 hours, 17 minutes, 13 seconds
+Writing output file 2011-03-06-164333-summarized.tcx for activity -1: 54 minutes, 21 seconds
+Writing output file 2011-03-08-162536-summarized.tcx for activity -1: 50 minutes, 38 seconds
+Writing output file 2011-03-09-171457-summarized.tcx for activity -1: 49 minutes, 17 seconds
+Writing output file 2011-03-10-164900-summarized.tcx for activity -1: 53 minutes, 32 seconds
+Writing output file 2011-03-11-170030-summarized.tcx for activity -1: 49 minutes, 46 seconds
+Writing output file 2011-03-12-160018-summarized.tcx for activity -1: 1 hours, 48 minutes, 52 seconds
+Writing output file 2011-03-15-160008-summarized.tcx for activity -1: 1 hours, 2 minutes, 33 seconds
+Writing output file 2011-03-16-165533-summarized.tcx for activity -1: 1 hours, 26 minutes, 49 seconds
+Writing output file 2011-03-17-171326-summarized.tcx for activity -1: 1 hours, 49 minutes, 35 seconds
+Writing output file 2011-03-20-135547-summarized.tcx for activity -1: 1 hours, 7 minutes, 6 seconds
+Writing output file 2011-03-22-170927-summarized.tcx for activity -1: 1 hours, 9 minutes, 56 seconds
+Writing output file 2011-03-23-174638-summarized.tcx for activity -1: 48 minutes, 33 seconds
+Writing output file 2011-03-24-172809-summarized.tcx for activity -1: 1 hours, 23 minutes, 4 seconds
+Writing output file 2011-03-26-162003-summarized.tcx for activity -1: 2 hours, 39 minutes, 38 seconds
+Writing output file 2011-03-28-165915-summarized.tcx for activity -1: 1 hours, 42 minutes, 40 seconds
+Writing output file 2011-03-29-171035-summarized.tcx for activity -1: 1 hours, 48 minutes, 1 seconds
+Writing output file 2011-04-01-163703-summarized.tcx for activity -1: 2 hours, 50 minutes, 30 seconds
+Writing output file 2011-04-04-175735-summarized.tcx for activity -1: 44 minutes, 47 seconds
+Writing output file 2011-04-06-174150-summarized.tcx for activity -1: 1 hours, 20 minutes, 42 seconds
+Writing output file 2011-04-16-161731-summarized.tcx for activity -1: 1 hours, 44 minutes, 18 seconds
+Writing output file 2011-04-27-174314-summarized.tcx for activity -1: 1 hours, 20 minutes, 32 seconds
+Writing output file 2011-05-04-140511.tcx for activity 297: 1 hours, 17 minutes, 19 seconds
+Writing output file 2011-05-09-182538.tcx for activity 298: 1 hours, 10 minutes, 34 seconds
+Writing output file 2011-05-11-190920.tcx for activity 299: 59 minutes, 6 seconds
+Writing output file 2011-05-13-190816.tcx for activity 300: 59 minutes, 2 seconds
+Writing output file 2011-05-15-182259.tcx for activity 301: 57 minutes, 41 seconds
+Writing output file 2011-05-18-155012.tcx for activity 302: 57 minutes, 46 seconds
+Writing output file 2011-05-21-174137.tcx for activity 303: 1 hours, 46 minutes, 59 seconds
+Writing output file 2011-05-23-184311.tcx for activity 304: 55 minutes, 36 seconds
+Writing output file 2011-05-23-193859.tcx for activity 305: 5 minutes, 56 seconds
+Writing output file 2011-05-25-170643.tcx for activity 306: 49 seconds
+Writing output file 2011-05-25-174649.tcx for activity 307: 1 minutes, 25 seconds
+Writing output file 2011-05-25-180416.tcx for activity 308: 41 seconds
+Writing output file 2011-05-25-180511.tcx for activity 309: 14 seconds
+Writing output file 2011-05-26-181929.tcx for activity 310: 1 hours, 33 minutes, 54 seconds
+Writing output file 2011-05-28-162618.tcx for activity 311: 44 minutes, 29 seconds
+Writing output file 2011-06-06-190940.tcx for activity 312: 1 hours, 17 minutes, 56 seconds
+Writing output file 2011-06-08-170449.tcx for activity 313: 58 minutes, 25 seconds
+Writing output file 2011-06-10-172658.tcx for activity 314: 2 hours, 8 minutes, 5 seconds
+Writing output file 2011-06-17-172157.tcx for activity 315: 57 minutes, 57 seconds
+Writing output file 2011-06-20-194633.tcx for activity 316: 1 hours, 3 minutes, 4 seconds
+Writing output file 2011-06-21-194806.tcx for activity 317: 52 minutes, 36 seconds
+Writing output file 2011-06-23-194513.tcx for activity 318: 1 hours, 4 minutes, 47 seconds
+Writing output file 2011-06-28-183034.tcx for activity 319: 1 hours, 54 minutes, 49 seconds
+Writing output file 2011-06-30-194111.tcx for activity 320: 59 minutes, 49 seconds
+Writing output file 2011-07-02-170016.tcx for activity 321: 1 hours, 26 minutes, 35 seconds
+Writing output file 2011-07-02-232111.tcx for activity 322: 31 seconds
+Writing output file 2011-07-02-232347.tcx for activity 323: 41 seconds
+Writing output file 2011-07-02-233222.tcx for activity 324: 2 minutes, 53 seconds
+Writing output file 2011-07-02-234138.tcx for activity 325: 55 seconds
+Writing output file 2011-07-02-235741.tcx for activity 326: 1 minutes, 20 seconds
+Writing output file 2011-07-02-235920.tcx for activity 327: 35 seconds
+Writing output file 2011-07-03-000358.tcx for activity 328: 54 seconds
+Writing output file 2011-07-03-000604.tcx for activity 329: 30 seconds
+Downloaded 330 activities; 362 hours, 28 minutes, 28 seconds of data.
