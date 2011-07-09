@@ -3,10 +3,15 @@ from lxml import etree
 class XMLTree:
     def __init__(self, fname, namespace, root):
         self.ns = namespace
-        self.tree = etree.parse(fname)
+        try:
+            self.tree = etree.parse(fname)
+        except etree.XMLSyntaxError as e:
+            print "Cannot parse XML for", fname
+            self.tree = None
         self.root = root
         
     def find_all(self, token, is_float=True):
+        if self.tree is None: return [None]
         if is_float: 
             return [float(t.text) for t in self.tree.xpath(self.root + token, namespaces=self.ns)]
         else: return [t.text for t in self.tree.xpath(self.root + token, namespaces=self.ns)]
