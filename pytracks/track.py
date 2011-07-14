@@ -26,6 +26,7 @@ class Track:
         tree = XMLTree(fname, 
                        namespace={"t":"http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"}, 
                        root="t:Activities/t:Activity/")
+        if tree is None: return (None, None)
         utc_start_time = tree.find_all("t:Id", is_float=False)[0]
         comment = tree.find_all("t:Comment", is_float=False)
         if len(comment) > 0: comment = comment[0]
